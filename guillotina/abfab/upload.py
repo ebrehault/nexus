@@ -1,26 +1,35 @@
 import os
 import sys
 import requests
+import logging
 
 GUILLOTINA_CONTAINER_ROOT = 'http://localhost:8080/db/my-app/'
 AUTH = ('root', 'root')
 
+def get_url(path):
+    return GUILLOTINA_CONTAINER_ROOT + path[2:]
+
 def get_parent_url(path):
-    parent = GUILLOTINA_CONTAINER_ROOT + '/'.join(path[2:].split('/')[:-1])
-    return parent
+    return '/'.join(get_url(path).split('/')[:-1])
 
 def save_object(path, data):
-    requests.post(
+    res = requests.post(
         get_parent_url(path),
         json=data,
         headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
         auth=AUTH)
+    if not res.ok:
+        logging.error("{}: {}".format(res.status_code, path))
 
-def upload_large_file(path, data):
+def upload_file(path, id, data):
     requests.patch(
-        path,
-        json=,
-        headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
+        get_url(path) + "/@upload/file",
+        data=data.encode('utf-8'),
+        headers={
+            'Accept': 'application/json',
+            'Content-Type': 'application/octet-stream',
+            'X-UPLOAD-FILENAME': id,
+        },
         auth=AUTH,
     )
 
@@ -34,19 +43,15 @@ def create_folder(path):
 def create_file(path):
     id = path.split('/')[-1]
     with open(path) as f:
-        source = f.read()
-        if len(source) < 1024 ** 2:
-            save_object(path, {
-                '@type': 'File',
-                'id': id,
-                'source': source,
-            })
-        else:
+        try:
             save_object(path, {
                 '@type': 'File',
                 'id': id,
             })
-            upload_large_file(path, source)
+            source = f.read()
+            upload_file(path, id, source)
+        except Exception:
+            logging.error("Cannot upload " + path)
 
 def upload_folder(path):
     create_folder(path)

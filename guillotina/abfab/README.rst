@@ -36,9 +36,7 @@ Create contents
     curl -i -X POST http://localhost:8080/db/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "Container", "description": "My abfab app", "id": "my-app", "title": "MyApp"}' --user root:root
     curl -i -X POST http://localhost:8080/db/my-app/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "Directory", "id": "pack1"}' --user root:root
     curl -i -X POST http://localhost:8080/db/my-app/pack1/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "File", "id": "test.js", "source": "console.log('yep');"}' --user root:root
-    curl -i -X PATCH http://localhost:8080/db/my-app/pack1/test.js -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"source": "console.log('yepa');"}' --user root:root
+    curl -i -X POST http://localhost:8080/db/my-app/pack1/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "File", "id": "test.js"}' --user root:root
+    curl -i -X PATCH http://localhost:8080/db/my-app/pack1/test.js/@upload/file -H 'Accept: application/json' --data-raw "console.log('yepa');" -H 'X-UPLOAD-FILENAME: test.js' -H 'Content-Type: application/octet-stream' --user root:root
     curl -i -X DELETE http://localhost:8080/db/my-app/pack1/node_modules --user root:root
     curl -i http://localhost:8080/db/my-app/pack1/test.js
-
-curl -i -X POST http://localhost:8080/db/my-app/pack1/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "File", "id": "test.js"}' --user root:root
-curl -i -X PATCH http://localhost:8080/db/my-app/pack1/test.js/@upload/file -H 'Accept: application/json' --data-raw "console.log('yepa');" --user root:root

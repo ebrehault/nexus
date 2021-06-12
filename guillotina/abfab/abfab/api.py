@@ -1,13 +1,18 @@
 from guillotina import configure
 from guillotina.response import Response
+from guillotina.component import get_multi_adapter
+from guillotina.api.files import DownloadFile
+from guillotina.behaviors.attachment import IAttachment
+from guillotina.interfaces import IFileManager
+from guillotina.interfaces import IFileManager
 from abfab.content import IFile, IDirectory
 
 async def get_source(context, request):
-    resp = Response(status=200)
-    resp.headers['Content-Type'] = context.content_type or 'text/plain'
-    await resp.prepare(request)
-    await resp.write(bytearray(context.source.encode('utf-8')), eof=True)
-    return resp
+    behavior = IAttachment(context)
+    await behavior.load(create=False)
+    field = IAttachment["file"].bind(behavior)
+    adapter = get_multi_adapter((context, request, field), IFileManager)
+    return await adapter.download(disposition="inline")
 
 @configure.service(context=IFile, method='GET',
                    permission='guillotina.Public', allow_access=True)
@@ -26,3 +31,8 @@ async def get_index(context, request):
     index_html = await context.async_get('index.html')
     if index_html:
         return await get_source(index_html, request)
+
+# TODO
+# GET text/html -> return the template content
+# GET application/json -> return regular Guillotina GET 
+# so the tempalte can call '.', and get the expected JSON
