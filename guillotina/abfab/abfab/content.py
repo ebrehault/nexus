@@ -1,6 +1,5 @@
 from guillotina import configure, content, schema
 from guillotina.interfaces import IFolder, IItem
-from mimetypes import guess_type
 
 
 class IDirectory(IFolder):
@@ -25,4 +24,16 @@ class IFile(IItem):
     behaviors=["guillotina.behaviors.attachment.IAttachment"],
 )
 class File(content.Item):
+    pass
+
+class IContent(IItem):
+    view = schema.Text()
+    data = schema.JSONField()
+
+@configure.contenttype(
+    type_name='Content',
+    schema=IContent,
+    globally_addable=True,
+)
+class Content(content.Item):
     pass
