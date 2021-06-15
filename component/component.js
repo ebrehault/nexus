@@ -4,154 +4,58 @@ import {
     append,
     detach,
     element,
-    handle_promise,
     init,
     insert,
     noop,
     safe_not_equal,
-    set_style,
-    space,
+    set_data,
     text,
 } from '../node_modules/svelte/internal/index.mjs';
 
-function create_catch_block(ctx) {
-    let p;
-    let t_value = /*error*/ ctx[2].message + '';
-    let t;
-
-    return {
-        c() {
-            p = element('p');
-            t = text(t_value);
-            set_style(p, 'color', 'red');
-        },
-        m(target, anchor) {
-            insert(target, p, anchor);
-            append(p, t);
-        },
-        p: noop,
-        d(detaching) {
-            if (detaching) detach(p);
-        },
-    };
-}
-
-// (16:4) {:then data}
-function create_then_block(ctx) {
-    let p;
-    let t_value = /*data*/ ctx[1]['@type'] + '';
-    let t;
-
-    return {
-        c() {
-            p = element('p');
-            t = text(t_value);
-        },
-        m(target, anchor) {
-            insert(target, p, anchor);
-            append(p, t);
-        },
-        p: noop,
-        d(detaching) {
-            if (detaching) detach(p);
-        },
-    };
-}
-
-// (14:20)          <p>Loading...</p>     {:then data}
-function create_pending_block(ctx) {
-    let p;
-
-    return {
-        c() {
-            p = element('p');
-            p.textContent = 'Loading...';
-        },
-        m(target, anchor) {
-            insert(target, p, anchor);
-        },
-        p: noop,
-        d(detaching) {
-            if (detaching) detach(p);
-        },
-    };
-}
-
 function create_fragment(ctx) {
     let h1;
-    let t3;
-    let div;
-    let promise_1;
-
-    let info = {
-        ctx,
-        current: null,
-        token: null,
-        hasCatch: true,
-        pending: create_pending_block,
-        then: create_then_block,
-        catch: create_catch_block,
-        value: 1,
-        error: 2,
-    };
-
-    handle_promise((promise_1 = /*promise*/ ctx[0]), info);
+    let t0;
+    let t1;
+    let t2;
 
     return {
         c() {
             h1 = element('h1');
-            h1.textContent = `Hello ${name}!`;
-            t3 = space();
-            div = element('div');
-            info.block.c();
+            t0 = text('This is ');
+            t1 = text(/*name*/ ctx[0]);
+            t2 = text('!');
         },
         m(target, anchor) {
             insert(target, h1, anchor);
-            insert(target, t3, anchor);
-            insert(target, div, anchor);
-            info.block.m(div, (info.anchor = null));
-            info.mount = () => div;
-            info.anchor = null;
+            append(h1, t0);
+            append(h1, t1);
+            append(h1, t2);
         },
-        p(new_ctx, [dirty]) {
-            ctx = new_ctx;
-
-            {
-                const child_ctx = ctx.slice();
-                child_ctx[1] = child_ctx[2] = info.resolved;
-                info.block.p(child_ctx, dirty);
-            }
+        p(ctx, [dirty]) {
+            if (dirty & /*name*/ 1) set_data(t1, /*name*/ ctx[0]);
         },
         i: noop,
         o: noop,
         d(detaching) {
             if (detaching) detach(h1);
-            if (detaching) detach(t3);
-            if (detaching) detach(div);
-            info.block.d();
-            info.token = null;
-            info = null;
         },
     };
 }
 
-let name = 'world';
+function instance($$self, $$props, $$invalidate) {
+    let { name } = $$props;
 
-async function getData() {
-    let response = await fetch('http://localhost:8080/');
-    let data = await response.json();
-    return data;
-}
+    $$self.$$set = ($$props) => {
+        if ('name' in $$props) $$invalidate(0, (name = $$props.name));
+    };
 
-function instance($$self) {
-    const promise = getData();
-    return [promise];
+    return [name];
 }
 
 class Component extends SvelteComponent {
     constructor(options) {
         super();
-        init(this, options, instance, create_fragment, safe_not_equal, {});
+        init(this, options, instance, create_fragment, safe_not_equal, { name: 0 });
     }
 }
 

@@ -23,12 +23,13 @@ Running
 
 Most simple way to get running::
 
-  ./bin/guillotina
+    cd guillotina/abfab
+    guillotina
 
 
 Running Postgresql Server:
 
-    docker run --rm -e POSTGRES_DB=guillotina -e POSTGRES_USER=guillotina -p 127.0.0.1:5432:5432 --name postgres postgres:9.6
+    docker run -e POSTGRES_DB=guillotina -e POSTGRES_USER=guillotina -p 127.0.0.1:5432:5432 --name postgres postgres:9.6
 
 Create contents
 ---------------
@@ -38,5 +39,6 @@ Create contents
     curl -i -X POST http://localhost:8080/db/my-app/pack1/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "File", "id": "test.js", "source": "console.log('yep');"}' --user root:root
     curl -i -X POST http://localhost:8080/db/my-app/pack1/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "File", "id": "test.js"}' --user root:root
     curl -i -X PATCH http://localhost:8080/db/my-app/pack1/test.js/@upload/file -H 'Accept: application/json' --data-raw "console.log('yepa');" -H 'X-UPLOAD-FILENAME: test.js' -H 'Content-Type: application/octet-stream' --user root:root
-    curl -i -X DELETE http://localhost:8080/db/my-app/pack1/node_modules --user root:root
+    curl -i -X DELETE http://localhost:8080/db/my-app/node_modules --user root:root
     curl -i http://localhost:8080/db/my-app/pack1/test.js
+    curl -i -X POST http://localhost:8080/db/my-app/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "Content", "id": "content2", "view": "/views/component/render.js", "data": {"year": 1994}}' --user root:root
