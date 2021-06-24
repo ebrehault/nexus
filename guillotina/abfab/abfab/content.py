@@ -4,7 +4,8 @@ from guillotina.events import IObjectAddedEvent
 from mimetypes import guess_type
 
 class IDirectory(IFolder):
-    pass
+    main = schema.Text()
+    module = schema.Text()
 
 @configure.contenttype(
     type_name='Directory',

@@ -1,0 +1,56 @@
+<html>
+
+<head>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            margin: 0px;
+            padding: 0px;
+            overflow: hidden;
+        }
+
+        #vim-editor {
+            padding: 2px;
+            margin: 0px;
+            width: calc(100% - 4px);
+            height: calc(100% - 4px);
+            background-color: #282c33;
+        }
+
+        #vim-canvas {
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+        }
+
+        #vim-input {
+            width: 1px;
+            color: transparent;
+            background-color: transparent;
+            padding: 0px;
+            border: 0px;
+            outline: none;
+            vertical-align: middle;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="vim-editor">
+        <canvas id="vim-canvas"></canvas>
+        <input id="vim-input"
+               autocomplete="off"
+               autofocus />
+        <script type="module"
+                src="./index.js"></script>
+    </div>
+</body>
+
+</html>
