@@ -21,7 +21,7 @@ auth_token_validators:
     - guillotina.auth.validators.JWTValidator
 cors:
     allow_origin:
-        - http://localhost:8080
+        - '*'
         - 'chrome-extension://*'
     allow_methods:
         - GET

@@ -1,7 +1,7 @@
 import { VimWasm, checkBrowserCompatibility } from '/node_modules/vim-wasm/vimwasm.js';
 import { compile } from '/node_modules/svelte/compiler.mjs';
 
-console.log(`Wheels on fire,\nRolling down the road.\nBest notify my next of kin\nThis wheel shall explode\n\n`);
+console.log(`Wheels on fire,\nRolling down the road.\nBest notify my next of kin\nThis wheel shall explode!\n\n`);
 
 const errmsg = checkBrowserCompatibility();
 if (errmsg !== undefined) {
@@ -50,6 +50,16 @@ vim.onFileExport = (fullpath, contents) => {
     console.log(fullpath, contents);
     const decoder = new TextDecoder('utf-8');
     const source = decoder.decode(contents);
+    fetch('http://localhost:8080/db/my-app/views/component/render.js/@upload/file', {
+        method: 'PATCH',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/octet-stream',
+            'X-UPLOAD-FILENAME': 'render.js',
+            Authorization: 'Basic ' + btoa('root:root'),
+        },
+        body: contents,
+    });
     if (fullpath.endsWith('.svelte')) {
         const { js, css } = compile(source, {
             sveltePath: ABFAB_ROOT + '/node_modules/svelte',
@@ -78,10 +88,12 @@ vim.onError = console.error;
 
 // Start Vim (give option object if necessary)
 vim.start({
-    cmdArgs: ['/test.svelte', '-c', 'set number\nset filetype=html'],
+    // cmdArgs: ['/test.svelte', '-c', 'set number\nset filetype=html'],
+    cmdArgs: ['/render.js', '-c', 'set number\nautocmd BufWritePost * export'],
     // dirs: ['/'],
-    files: {
-        '/test.svelte': '<h1>hello, world!</h1>',
-        // '/.vim/vimrc': 'set number\nset noexpandtab\nau BufRead,BufNewFile *.svelte set filetype=html',
-    },
+    fetchFiles: { '/render.js': 'http://localhost:8080/db/my-app/views/component/render.js' },
+    // files: {
+    //     '/test.svelte': '<h1>hello, world!</h1>',
+    //     // '/.vim/vimrc': 'set number\nset noexpandtab\nau BufRead,BufNewFile *.svelte set filetype=html',
+    // },
 });
