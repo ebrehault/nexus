@@ -31,17 +31,36 @@ def update_object(path, data):
     if not res.ok:
         logging.error("{}: {}".format(res.status_code, path))
 
-def upload_file(path, id, data):
-    requests.patch(
-        get_url(path) + "/@upload/file",
-        data=data.encode('utf-8'),
-        headers={
-            'Accept': 'application/json',
-            'Content-Type': 'application/octet-stream',
-            'X-UPLOAD-FILENAME': id,
-        },
-        auth=AUTH,
-    )
+def upload_file(path, id):
+    file_upload_path = get_url(path) + "/@tusupload/file/" + id
+    TOTAL_SIZE = os.path.getsize(path)
+    CHUNK_SIZE = 100000
+    offset = 0
+    
+    with open(path, 'rb') as source_file:
+        requests.post(
+            file_upload_path,
+            headers={
+                "TUS-RESUMABLE": "1",
+                "UPLOAD-LENGTH": str(TOTAL_SIZE),
+                "X-UPLOAD-FILENAME": id
+            },
+            auth=AUTH,
+        )
+        chunk = source_file.read(CHUNK_SIZE)
+        while chunk:
+            requests.patch(
+                file_upload_path,
+                data=chunk,
+                headers={
+                    "TUS-RESUMABLE": "1",
+                    'Upload-Offset': str(offset),
+                    "X-UPLOAD-FILENAME": id
+                },
+                auth=AUTH,
+            )
+            offset += CHUNK_SIZE
+            chunk = source_file.read(CHUNK_SIZE)
 
 def create_folder(path):
     id = path.split('/')[-1]
@@ -52,23 +71,19 @@ def create_folder(path):
 
 def create_file(path):
     id = path.split('/')[-1]
-    with open(path) as f:
-        if id == 'package.json':
-            content = json.loads(f.read())
+    if id == 'package.json':
+        with open(path, encoding='utf-8') as source_file:
+            content = json.loads(source_file.read())
             if content.get('module') or content.get('main'):
                 data = {'main': content.get('main'), 'module': content.get('module')}
                 parent = '/'.join(path.split('/')[:-1])
                 update_object(parent, data)
-        else:
-            try:
-                save_object(path, {
-                    '@type': 'File',
-                    'id': id,
-                })
-                source = f.read()
-                upload_file(path, id, source)
-            except Exception:
-                logging.error("Cannot upload " + path)
+    else:
+        save_object(path, {
+            '@type': 'File',
+            'id': id,
+        })
+        upload_file(path, id)
 
 def upload_folder(path):
     create_folder(path)

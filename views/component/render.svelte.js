@@ -15,6 +15,7 @@ import {
 function create_fragment(ctx) {
 	let h1;
 	let t0;
+	let t1_value = /*context*/ ctx[0].year + "";
 	let t1;
 	let t2;
 
@@ -22,7 +23,7 @@ function create_fragment(ctx) {
 		c() {
 			h1 = element("h1");
 			t0 = text("Rendering ");
-			t1 = text(/*year*/ ctx[0]);
+			t1 = text(t1_value);
 			t2 = text("!");
 		},
 		m(target, anchor) {
@@ -32,7 +33,7 @@ function create_fragment(ctx) {
 			append(h1, t2);
 		},
 		p(ctx, [dirty]) {
-			if (dirty & /*year*/ 1) set_data(t1, /*year*/ ctx[0]);
+			if (dirty & /*context*/ 1 && t1_value !== (t1_value = /*context*/ ctx[0].year + "")) set_data(t1, t1_value);
 		},
 		i: noop,
 		o: noop,
@@ -43,19 +44,19 @@ function create_fragment(ctx) {
 }
 
 function instance($$self, $$props, $$invalidate) {
-	let { year } = $$props;
+	let { context } = $$props;
 
 	$$self.$$set = $$props => {
-		if ("year" in $$props) $$invalidate(0, year = $$props.year);
+		if ("context" in $$props) $$invalidate(0, context = $$props.context);
 	};
 
-	return [year];
+	return [context];
 }
 
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		init(this, options, instance, create_fragment, safe_not_equal, { year: 0 });
+		init(this, options, instance, create_fragment, safe_not_equal, { context: 0 });
 	}
 }
 

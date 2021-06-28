@@ -1,5 +1,5 @@
 <script>
-	export let year;
+	export let context;
 </script>
 
-<h1>Rendering {year}!</h1>
+<h1>Rendering {context.year}!</h1>

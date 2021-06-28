@@ -66,27 +66,12 @@ vim.onFileExport = (fullpath, contents) => {
         });
         console.log(js.code, css?.code);
     }
-    // const slashIdx = fullpath.lastIndexOf('/');
-    // const filename = slashIdx !== -1 ? fullpath.slice(slashIdx + 1) : fullpath;
-    // const blob = new Blob([contents], { type: 'application/octet-stream' });
-    // const url = URL.createObjectURL(blob);
-    // const a = document.createElement('a');
-    // a.style.display = 'none';
-    // a.href = url;
-    // a.rel = 'noopener';
-    // a.download = filename;
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
-    // URL.revokeObjectURL(url);
 };
 
 vim.readClipboard = navigator.clipboard.readText;
 vim.onWriteClipboard = navigator.clipboard.writeText;
-
 vim.onError = console.error;
 
-// Start Vim (give option object if necessary)
 vim.start({
     // cmdArgs: ['/test.svelte', '-c', 'set number\nset filetype=html'],
     cmdArgs: ['/render.js', '-c', 'set number\nautocmd BufWritePost * export'],
