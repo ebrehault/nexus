@@ -24,8 +24,8 @@ import { onMount } from "/db/my-app/node_modules/svelte/index.mjs";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-xy4k9h-style";
-	style.textContent = ".container.svelte-xy4k9h{display:flex;flex-direction:column;align-items:center;height:100vh;width:100vw;margin:0px;padding:0px;overflow:hidden}#vim-editor.svelte-xy4k9h{padding:2px;margin:0px;width:calc(100% - 4px);height:calc(100% - 4px);background-color:#282c33}#vim-canvas.svelte-xy4k9h{padding:0px;width:100%;height:100%}#vim-input.svelte-xy4k9h{width:1px;color:transparent;background-color:transparent;padding:0px;border:0px;outline:none;vertical-align:middle;position:absolute;top:0px;left:0px}";
+	style.id = "svelte-jv99cx-style";
+	style.textContent = ".container.svelte-jv99cx{display:flex;flex-direction:column;align-items:center;height:calc(100vh - 16px);width:calc(100vw - 16px);margin:0px;padding:0px;overflow:hidden}#vim-editor.svelte-jv99cx{padding:2px;margin:0px;width:calc(100% - 4px);height:calc(100% - 4px);background-color:#282c33}#vim-canvas.svelte-jv99cx{padding:0px;width:100%;height:100%}#vim-input.svelte-jv99cx{width:1px;color:transparent;background-color:transparent;padding:0px;border:0px;outline:none;vertical-align:middle;position:absolute;top:0px;left:0px}";
 	append(document_1.head, style);
 }
 
@@ -36,10 +36,10 @@ function create_fragment(ctx) {
 		c() {
 			div1 = element("div");
 
-			div1.innerHTML = `<div id="vim-editor" class="svelte-xy4k9h"><canvas id="vim-canvas" class="svelte-xy4k9h"></canvas> 
-        <input id="vim-input" autocomplete="off" autofocus="" class="svelte-xy4k9h"/></div>`;
+			div1.innerHTML = `<div id="vim-editor" class="svelte-jv99cx"><canvas id="vim-canvas" class="svelte-jv99cx"></canvas> 
+        <input id="vim-input" autocomplete="off" autofocus="" class="svelte-jv99cx"/></div>`;
 
-			attr(div1, "class", "container svelte-xy4k9h");
+			attr(div1, "class", "container svelte-jv99cx");
 		},
 		m(target, anchor) {
 			insert(target, div1, anchor);
@@ -116,7 +116,6 @@ function instance($$self, $$props, $$invalidate) {
 
 		vim.onFileExport = (fullpath, contents) => {
 			const ABFAB_ROOT = "/db/my-app";
-			console.log(fullpath, contents);
 			const decoder = new TextDecoder("utf-8");
 			const source = decoder.decode(contents);
 
@@ -145,10 +144,10 @@ function instance($$self, $$props, $$invalidate) {
 						"Content-Type": "application/json",
 						Authorization: "Basic " + btoa("root:root")
 					},
-					body: { "@type": "File", "id": filename + ".js" }
+					body: JSON.stringify({ "@type": "File", "id": filename + ".js" })
 				});
 
-				const body = js.replace(RE, "from \"$1/index.mjs\";");
+				const body = js.code.replace(RE, "from \"$1/index.mjs\";");
 
 				fetch(jsFilePath + "/@upload/file", {
 					method: "PATCH",
@@ -166,15 +165,17 @@ function instance($$self, $$props, $$invalidate) {
 		vim.readClipboard = navigator.clipboard.readText;
 		vim.onWriteClipboard = navigator.clipboard.writeText;
 		vim.onError = console.error;
-		let options = "set number\nautocmd BufWritePost * export";
+		const options = ["set number"];
 
 		if (isSvelte) {
-			options += "\nset filetype=html";
+			options.push("set filetype=html");
 		}
+
+		options.push("autocmd BufWritePost * export");
 
 		vim.start({
 			// cmdArgs: ['/test.svelte', '-c', 'set number\nset filetype=html'],
-			cmdArgs: [filename, "-c", "set number\nautocmd BufWritePost * export"],
+			cmdArgs: [filename, "-c", options.join("\n")],
 			// dirs: ['/'],
 			// fetchFiles: { [location.pathname]: 'http://localhost:8080/db/my-app/views/component/render.js' },
 			files: { [filename]: context }, //     '/test.svelte': '<h1>hello, world!</h1>',
@@ -193,7 +194,7 @@ function instance($$self, $$props, $$invalidate) {
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document_1.getElementById("svelte-xy4k9h-style")) add_css();
+		if (!document_1.getElementById("svelte-jv99cx-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, { context: 0 });
 	}
 }

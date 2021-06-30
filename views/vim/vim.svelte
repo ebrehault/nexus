@@ -60,7 +60,6 @@
     
         vim.onFileExport = (fullpath, contents) => {
             const ABFAB_ROOT = '/db/my-app';
-            console.log(fullpath, contents);
             const decoder = new TextDecoder('utf-8');
             const source = decoder.decode(contents);
             fetch(pathname + '/@upload/file', {
@@ -85,12 +84,12 @@
                         'Content-Type': 'application/json',
                         Authorization: 'Basic ' + btoa('root:root'),
                     },
-                    body: {
+                    body: JSON.stringify({
                         '@type': 'File',
                         'id': filename + '.js',
-                    },
+                    }),
                 });
-                const body = js.replace(RE, 'from "$1/index.mjs";');
+                const body = js.code.replace(RE, 'from "$1/index.mjs";');
                 fetch(jsFilePath + '/@upload/file', {
                     method: 'PATCH',
                     headers: {
@@ -108,13 +107,14 @@
         vim.onWriteClipboard = navigator.clipboard.writeText;
         vim.onError = console.error;
 
-        let options = 'set number\nautocmd BufWritePost * export';
+        const options = ['set number'];
         if (isSvelte) {
-            options += '\nset filetype=html';
+            options.push('set filetype=html');
         }
+        options.push('autocmd BufWritePost * export')
         vim.start({
             // cmdArgs: ['/test.svelte', '-c', 'set number\nset filetype=html'],
-            cmdArgs: [filename, '-c', 'set number\nautocmd BufWritePost * export'],
+            cmdArgs: [filename, '-c', options.join('\n')],
             // dirs: ['/'],
             // fetchFiles: { [location.pathname]: 'http://localhost:8080/db/my-app/views/component/render.js' },
             files: {
@@ -131,8 +131,8 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        height: 100vh;
-        width: 100vw;
+        height: calc(100vh - 16px);
+        width: calc(100vw - 16px);
         margin: 0px;
         padding: 0px;
         overflow: hidden;

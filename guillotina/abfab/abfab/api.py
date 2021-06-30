@@ -77,7 +77,7 @@ async def get_view_or_data(context, request):
         view = await get_object_by_path(context.view)
         if view.type_name == 'Directory':
             return await get_index(view, request)
-        if view.content_type == "application/javascript":
+        if view.content_type == "application/javascript" or view.id.endswith('.svelte'):
             return wrap_component(view, './' + context.id)
         else:
             return await view_source(view, request)
