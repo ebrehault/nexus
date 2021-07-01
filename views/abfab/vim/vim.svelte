@@ -7,7 +7,7 @@
     onMount(() => {
         initVim();
     });
-    
+
     function initVim() {
         console.log(`Wheels on fire,\nRolling down the road.\nBest notify my next of kin\nThis wheel shall explode!\n\n`);
         
@@ -60,46 +60,15 @@
     
         vim.onFileExport = (fullpath, contents) => {
             const ABFAB_ROOT = '/db/my-app';
-            const decoder = new TextDecoder('utf-8');
-            const source = decoder.decode(contents);
-            fetch(pathname + '/@upload/file', {
-                method: 'PATCH',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/octet-stream',
-                    'X-UPLOAD-FILENAME': filename,
-                    Authorization: 'Basic ' + btoa('root:root'),
-                },
-                body: contents,
-            });
+            saveFile(fullpath, contents);
             if (isSvelte) {
+                const decoder = new TextDecoder('utf-8');
+                const source = decoder.decode(contents);
                 const { js } = compile(source, {
                     sveltePath: ABFAB_ROOT + '/node_modules/svelte',
                 });
-                const jsFilePath = pathname + '.js';
-                fetch(jsFilePath, {
-                    method: 'PUT',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                        Authorization: 'Basic ' + btoa('root:root'),
-                    },
-                    body: JSON.stringify({
-                        '@type': 'File',
-                        'id': filename + '.js',
-                    }),
-                });
-                const body = js.code.replace(RE, 'from "$1/index.mjs";');
-                fetch(jsFilePath + '/@upload/file', {
-                    method: 'PATCH',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/octet-stream',
-                        'X-UPLOAD-FILENAME': filename + '.js',
-                        Authorization: 'Basic ' + btoa('root:root'),
-                    },
-                    body,
-                });
+                const jsFilePath = fullpath + '.js';
+                saveFile(jsFilePath, js.code.replace(RE, 'from "$1/index.mjs";'));
             }
         };
     
@@ -111,17 +80,47 @@
         if (isSvelte) {
             options.push('set filetype=html');
         }
-        options.push('autocmd BufWritePost * export')
+        options.push('autocmd BufWritePost * export');
+        const folder = pathname.split('/');
         vim.start({
             // cmdArgs: ['/test.svelte', '-c', 'set number\nset filetype=html'],
-            cmdArgs: [filename, '-c', options.join('\n')],
-            // dirs: ['/'],
+            cmdArgs: [pathname, '-c', options.join('\n')],
+            dirs: folder.reduce((all, dir, index) => {
+                all.push(folder.slice(0, index).join('/'));
+                return all;
+            }, []).slice(2),
             // fetchFiles: { [location.pathname]: 'http://localhost:8080/db/my-app/views/component/render.js' },
             files: {
-                [filename]: context,
+                [pathname]: context,
             //     '/test.svelte': '<h1>hello, world!</h1>',
             //     // '/.vim/vimrc': 'set number\nset noexpandtab\nau BufRead,BufNewFile *.svelte set filetype=html',
             },
+        });
+    }
+
+    function saveFile(filepath, body) {
+        const filename = filepath.split('/').pop();
+        fetch(filepath, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Basic ' + btoa('root:root'),
+            },
+            body: JSON.stringify({
+                '@type': 'File',
+                'id': filename,
+            }),
+        });
+        fetch(filepath + '/@upload/file', {
+            method: 'PATCH',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/octet-stream',
+                'X-UPLOAD-FILENAME': filename,
+                Authorization: 'Basic ' + btoa('root:root'),
+            },
+            body,
         });
     }
 
