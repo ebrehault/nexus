@@ -21,6 +21,7 @@ import {
 
 import { compile } from "/db/my-app/node_modules/svelte/compiler.mjs";
 import { onMount } from "/db/my-app/node_modules/svelte/index.mjs";
+import { saveFile } from "../api.js";
 
 function add_css() {
 	var style = element("style");
@@ -51,31 +52,6 @@ function create_fragment(ctx) {
 			if (detaching) detach(div1);
 		}
 	};
-}
-
-function saveFile(filepath, body) {
-	const filename = filepath.split("/").pop();
-
-	fetch(filepath, {
-		method: "PUT",
-		headers: {
-			Accept: "application/json",
-			"Content-Type": "application/json",
-			Authorization: "Basic " + btoa("root:root")
-		},
-		body: JSON.stringify({ "@type": "File", "id": filename })
-	});
-
-	fetch(filepath + "/@upload/file", {
-		method: "PATCH",
-		headers: {
-			Accept: "application/json",
-			"Content-Type": "application/octet-stream",
-			"X-UPLOAD-FILENAME": filename,
-			Authorization: "Basic " + btoa("root:root")
-		},
-		body
-	});
 }
 
 function instance($$self, $$props, $$invalidate) {
@@ -141,19 +117,20 @@ function instance($$self, $$props, $$invalidate) {
 
 		vim.onFileExport = (fullpath, contents) => {
 			const ABFAB_ROOT = "/db/my-app";
-			saveFile(fullpath, contents);
 
-			if (isSvelte) {
-				const decoder = new TextDecoder("utf-8");
-				const source = decoder.decode(contents);
+			saveFile(fullpath, contents).then(() => {
+				if (isSvelte) {
+					const decoder = new TextDecoder("utf-8");
+					const source = decoder.decode(contents);
 
-				const { js } = compile(source, {
-					sveltePath: ABFAB_ROOT + "/node_modules/svelte"
-				});
+					const { js } = compile(source, {
+						sveltePath: ABFAB_ROOT + "/node_modules/svelte"
+					});
 
-				const jsFilePath = fullpath + ".js";
-				saveFile(jsFilePath, js.code.replace(RE, "from \"$1/index.mjs\";"));
-			}
+					const jsFilePath = fullpath + ".js";
+					saveFile(jsFilePath, js.code.replace(RE, "from \"$1/index.mjs\";"));
+				}
+			});
 		};
 
 		vim.readClipboard = navigator.clipboard.readText;

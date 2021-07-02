@@ -3,6 +3,7 @@
     import { VimWasm, checkBrowserCompatibility } from '/db/my-app/node_modules/vim-wasm/vimwasm.js';
     import { compile } from '/db/my-app/node_modules/svelte/compiler.mjs';
     import { onMount } from 'svelte';
+    import { saveFile } from '../api.js';
 
     onMount(() => {
         initVim();
@@ -60,16 +61,17 @@
     
         vim.onFileExport = (fullpath, contents) => {
             const ABFAB_ROOT = '/db/my-app';
-            saveFile(fullpath, contents);
-            if (isSvelte) {
-                const decoder = new TextDecoder('utf-8');
-                const source = decoder.decode(contents);
-                const { js } = compile(source, {
-                    sveltePath: ABFAB_ROOT + '/node_modules/svelte',
-                });
-                const jsFilePath = fullpath + '.js';
-                saveFile(jsFilePath, js.code.replace(RE, 'from "$1/index.mjs";'));
-            }
+            saveFile(fullpath, contents).then(() => {
+                if (isSvelte) {
+                    const decoder = new TextDecoder('utf-8');
+                    const source = decoder.decode(contents);
+                    const { js } = compile(source, {
+                        sveltePath: ABFAB_ROOT + '/node_modules/svelte',
+                    });
+                    const jsFilePath = fullpath + '.js';
+                    saveFile(jsFilePath, js.code.replace(RE, 'from "$1/index.mjs";'));
+                }
+            });
         };
     
         vim.readClipboard = navigator.clipboard.readText;
@@ -95,32 +97,6 @@
             //     '/test.svelte': '<h1>hello, world!</h1>',
             //     // '/.vim/vimrc': 'set number\nset noexpandtab\nau BufRead,BufNewFile *.svelte set filetype=html',
             },
-        });
-    }
-
-    function saveFile(filepath, body) {
-        const filename = filepath.split('/').pop();
-        fetch(filepath, {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: 'Basic ' + btoa('root:root'),
-            },
-            body: JSON.stringify({
-                '@type': 'File',
-                'id': filename,
-            }),
-        });
-        fetch(filepath + '/@upload/file', {
-            method: 'PATCH',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/octet-stream',
-                'X-UPLOAD-FILENAME': filename,
-                Authorization: 'Basic ' + btoa('root:root'),
-            },
-            body,
         });
     }
 
