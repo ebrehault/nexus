@@ -42,3 +42,5 @@ Create contents
     curl -i -X DELETE http://localhost:8080/db/my-app/node_modules --user root:root
     curl -i http://localhost:8080/db/my-app/pack1/test.js
     curl -i -X POST http://localhost:8080/db/my-app/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "Content", "id": "content2", "view": "/views/component/render.svelte", "data": {"year": 1994}}' --user root:root
+    curl -i -X POST http://localhost:8080/db/my-app/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "Content", "id": "content1", "view": "/views/component/render.svelte", "data": {"year": 1993}}' --user root:root
+    curl -i -X PATCH http://localhost:8080/db/my-app/content2 -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"view": "/views/component/render2.svelte"}' --user root:root

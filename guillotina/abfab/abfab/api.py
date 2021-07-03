@@ -24,11 +24,12 @@ def wrap_component(js_component, path_to_content, type='json'):
 <html lang="en">
 <script type="module">
     import Component from '{component}';
+    import Main from '/db/my-app/views/abfab/main.svelte.js';
     let response = await fetch('{path_to_content}');
     let context = await response.{type}();
-    const component = new Component({{
+    const component = new Main({{
         target: document.body,
-        props: {{context}},
+        props: {{context, component: Component}},
     }});
     export default component;
 </script>
