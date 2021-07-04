@@ -102,22 +102,10 @@
 
 </script>
 <style>
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: calc(100vh - 16px);
-        width: calc(100vw - 16px);
-        margin: 0px;
-        padding: 0px;
-        overflow: hidden;
-    }
-
     #vim-editor {
-        padding: 2px;
         margin: 0px;
-        width: calc(100% - 4px);
-        height: calc(100% - 4px);
+        width: 100%;
+        height: 100%;
         background-color: #282c33;
     }
 
@@ -140,13 +128,10 @@
         left: 0px;
     }
 </style>
-
-<div class="container">
-    <div id="vim-editor">
-        <canvas id="vim-canvas"></canvas>
-        <input id="vim-input"
-                autocomplete="off"
-                autofocus />
-        
-    </div>
+<div id="vim-editor">
+    <canvas id="vim-canvas"></canvas>
+    <input id="vim-input"
+            autocomplete="off"
+            autofocus />
+    
 </div>

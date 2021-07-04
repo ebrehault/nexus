@@ -92,7 +92,7 @@ def upload_folder(path, root):
         remote_content_path = os.path.join(path, content)
         if os.path.isdir(local_content_path):
             upload_folder(remote_content_path, root)
-        else:
+        elif not args.svelteOnly or content.endswith('.svelte') or content.endswith('.svelte.js'):
             create_file(remote_content_path, local_content_path)
 
 def compile_svelte(path):
@@ -120,7 +120,7 @@ def download_folder(path, root):
         headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
         auth=AUTH)
     for item in res.json():
-        if item['type'] == 'File':
+        if item['type'] == 'File' and (not args.svelteOnly or item['path'].endswith('.svelte')):
             download_file(item, root)
         else:
             dir_path = os.path.join(root, item['path'])
@@ -136,12 +136,15 @@ parser.add_argument('--auth', metavar='auth', type=str,
                     help='username:password')
 parser.add_argument('--root', metavar='root', type=str,
                     help='path to local root for storage')
+parser.add_argument('--svelteOnly', action="store_true",
+                    help='restrict to svelte files only')
 args = parser.parse_args()
 AUTH = tuple(args.auth.split(':'))
 if args.command == 'up':
     folder_path = os.path.join(args.root, args.path)
     compile_svelte(folder_path)
-    delete_remote(args.path)
+    if not args.svelteOnly:
+        delete_remote(args.path)
     upload_folder(args.path, args.root)
 else:
     download_folder(args.path, args.root)

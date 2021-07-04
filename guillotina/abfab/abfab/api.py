@@ -88,8 +88,8 @@ async def get_view_or_data(context, request):
 @configure.service(context=IFile, method='GET', name='@edit',
                    permission='guillotina.Public', allow_access=True)
 async def run_editor(context, request):
-    vim_view = await get_object_by_path('/abfab/editor/vim.svelte.js')
-    return wrap_component(vim_view, '.?raw=true', 'text')
+    editor_view = await get_object_by_path('/abfab/editor/editor.svelte')
+    return wrap_component(editor_view, '.?raw=true', 'text')
 
 @configure.service(context=IDirectory, method='GET', name='@tree',
                    permission='guillotina.Public', allow_access=True)

@@ -25,31 +25,32 @@ import { saveFile } from "../api.js";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-jv99cx-style";
-	style.textContent = ".container.svelte-jv99cx{display:flex;flex-direction:column;align-items:center;height:calc(100vh - 16px);width:calc(100vw - 16px);margin:0px;padding:0px;overflow:hidden}#vim-editor.svelte-jv99cx{padding:2px;margin:0px;width:calc(100% - 4px);height:calc(100% - 4px);background-color:#282c33}#vim-canvas.svelte-jv99cx{padding:0px;width:100%;height:100%}#vim-input.svelte-jv99cx{width:1px;color:transparent;background-color:transparent;padding:0px;border:0px;outline:none;vertical-align:middle;position:absolute;top:0px;left:0px}";
+	style.id = "svelte-djs9k6-style";
+	style.textContent = "#vim-editor.svelte-djs9k6{margin:0px;width:100%;height:100%;background-color:#282c33}#vim-canvas.svelte-djs9k6{padding:0px;width:100%;height:100%}#vim-input.svelte-djs9k6{width:1px;color:transparent;background-color:transparent;padding:0px;border:0px;outline:none;vertical-align:middle;position:absolute;top:0px;left:0px}";
 	append(document_1.head, style);
 }
 
 function create_fragment(ctx) {
-	let div1;
+	let div;
 
 	return {
 		c() {
-			div1 = element("div");
+			div = element("div");
 
-			div1.innerHTML = `<div id="vim-editor" class="svelte-jv99cx"><canvas id="vim-canvas" class="svelte-jv99cx"></canvas> 
-        <input id="vim-input" autocomplete="off" autofocus="" class="svelte-jv99cx"/></div>`;
+			div.innerHTML = `<canvas id="vim-canvas" class="svelte-djs9k6"></canvas> 
+    <input id="vim-input" autocomplete="off" autofocus="" class="svelte-djs9k6"/>`;
 
-			attr(div1, "class", "container svelte-jv99cx");
+			attr(div, "id", "vim-editor");
+			attr(div, "class", "svelte-djs9k6");
 		},
 		m(target, anchor) {
-			insert(target, div1, anchor);
+			insert(target, div, anchor);
 		},
 		p: noop,
 		i: noop,
 		o: noop,
 		d(detaching) {
-			if (detaching) detach(div1);
+			if (detaching) detach(div);
 		}
 	};
 }
@@ -172,7 +173,7 @@ function instance($$self, $$props, $$invalidate) {
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document_1.getElementById("svelte-jv99cx-style")) add_css();
+		if (!document_1.getElementById("svelte-djs9k6-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, { context: 0 });
 	}
 }
