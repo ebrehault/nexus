@@ -22,11 +22,4 @@ fs.readFile(source, 'utf8', (err, data) => {
             }
         });
     }
-    // if (result.css.code) {
-    //     fs.writeFile(source + '.css', result.css.code, function (err) {
-    //         if (err) {
-    //             return console.log(err);
-    //         }
-    //     });
-    // }
 });

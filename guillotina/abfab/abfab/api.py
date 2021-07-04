@@ -24,7 +24,7 @@ def wrap_component(js_component, path_to_content, type='json'):
 <html lang="en">
 <script type="module">
     import Component from '{component}';
-    import Main from '/db/my-app/views/abfab/main.svelte.js';
+    import Main from '/db/my-app/abfab/main.svelte.js';
     let response = await fetch('{path_to_content}');
     let context = await response.{type}();
     const component = new Main({{
@@ -88,9 +88,19 @@ async def get_view_or_data(context, request):
 @configure.service(context=IFile, method='GET', name='@edit',
                    permission='guillotina.Public', allow_access=True)
 async def run_editor(context, request):
-    vim_view = await get_object_by_path('/views/abfab/vim/vim.svelte.js')
+    vim_view = await get_object_by_path('/abfab/editor/vim.svelte.js')
     return wrap_component(vim_view, '.?raw=true', 'text')
 
+@configure.service(context=IDirectory, method='GET', name='@tree',
+                   permission='guillotina.Public', allow_access=True)
+async def get_file_tree(context, request):
+    children = []
+    async for _, obj in context.async_items():
+        children.append({"type": obj.type_name, "url": get_object_url(obj), "path": get_content_path(obj)})
+        if obj.type_name == 'Directory':
+            sub = await get_file_tree(obj, request)
+            children += sub
+    return children
 
 @configure.service(context=IContent, method='GET', name='@default',
                    permission='guillotina.Public', allow_access=True)

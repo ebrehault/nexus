@@ -28,7 +28,7 @@ function create_fragment(ctx) {
 	return {
 		c() {
 			h1 = element("h1");
-			t0 = text("Hi, Rendering ");
+			t0 = text("Hi, also rendering ");
 			t1 = text(t1_value);
 			t2 = text("!");
 			t3 = space();

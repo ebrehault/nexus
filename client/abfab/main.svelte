@@ -3,6 +3,15 @@
     export let context;
 
     // Adapted from https://github.com/sveltejs/kit/blob/master/packages/kit/src/runtime/client/router.js
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    addEventListener('beforeunload', () => {
+        history.scrollRestoration = 'auto';
+    });
+    addEventListener('load', () => {
+        history.scrollRestoration = 'manual';
+    });
     addEventListener('click', (event) => {
         if (event.button || event.which !== 1) return;
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
