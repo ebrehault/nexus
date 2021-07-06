@@ -129,11 +129,26 @@ function instance($$self, $$props, $$invalidate) {
 	});
 
 	async function navigate(href) {
-		const response = await fetch(`${href}/@default`);
+		const [path, query] = href.split("?");
+		const response = await fetch(`${path}/@default`);
 		const fullObject = await response.json();
-		const module = await import(`/db/my-app${fullObject.view}`);
-		$$invalidate(0, component = module.default);
-		$$invalidate(1, context = fullObject.data);
+
+		if (fullObject["@type"] === "Content") {
+			const module = await import(`/db/my-app${fullObject.view}`);
+			$$invalidate(0, component = module.default);
+			$$invalidate(1, context = fullObject.data);
+		} else {
+			const module = await import(fullObject["@id"]);
+			$$invalidate(0, component = module.default);
+
+			if (query) {
+				const queryContext = query.split("context=")[1];
+
+				if (queryContext) {
+					$$invalidate(1, context = JSON.parse(decodeURIComponent(queryContext)));
+				}
+			}
+		}
 	}
 
 	$$self.$$set = $$props => {

@@ -37,11 +37,23 @@
         return node;
     }
     async function navigate(href) {
-        const response = await fetch(`${href}/@default`);
+        const [path, query] = href.split('?');
+        const response = await fetch(`${path}/@default`);
         const fullObject = await response.json();
-        const module = await import(`/db/my-app${fullObject.view}`);
-        component = module.default;
-        context = fullObject.data;
+        if (fullObject['@type'] === 'Content') {
+            const module = await import(`/db/my-app${fullObject.view}`);
+            component = module.default;
+            context = fullObject.data;
+        } else {
+            const module = await import(fullObject['@id']);
+            component = module.default;
+            if (query) {
+                const queryContext = query.split('context=')[1];
+                if (queryContext) {
+                    context = JSON.parse(decodeURIComponent(queryContext));
+                }
+            }
+        }   
     }
 </script>
 <svelte:component this={component} context={context}></svelte:component>
