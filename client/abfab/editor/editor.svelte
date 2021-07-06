@@ -1,10 +1,13 @@
 <script>
     export let context;
     import VimEditor from './vim.svelte';
+    import Viewer from './viewer.svelte';
     import AFButton from '../ui/button.svelte';
     let play = false;
+    let componentPath;
 
     function togglePlay() {
+        componentPath = location.pathname.replace('/@edit', '');
         play = !play;
         window.dispatchEvent(new Event('resize'));
     }
@@ -78,4 +81,7 @@
     <div class="editor-container {play ? 'half' : ''}">
         <VimEditor context={context}></VimEditor>
     </div>
+    {#if play}
+    <Viewer componentPath={componentPath}></Viewer>
+    {/if}
 </main>

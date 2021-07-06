@@ -123,7 +123,7 @@ def download_folder(path, root):
         if item['type'] == 'File' and (not args.svelteOnly or item['path'].endswith('.svelte')):
             download_file(item, root)
         else:
-            dir_path = os.path.join(root, item['path'])
+            dir_path = os.path.join(root, item['path'][1:])
             if not os.path.exists(dir_path):
                 os.makedirs(dir_path)
 
