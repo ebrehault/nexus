@@ -2,190 +2,115 @@
 import {
 	SvelteComponent,
 	append,
-	assign,
 	attr,
-	check_outros,
-	create_component,
-	destroy_component,
 	detach,
 	element,
-	get_spread_object,
-	get_spread_update,
-	group_outros,
 	init,
 	insert,
 	listen,
-	mount_component,
+	noop,
 	safe_not_equal,
-	set_data,
-	set_input_value,
 	space,
-	text,
-	transition_in,
-	transition_out
+	text
 } from "/db/my-app/node_modules/svelte/internal/index.mjs";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-1madhki-style";
-	style.textContent = "section.svelte-1madhki{margin-left:1em}";
+	style.id = "svelte-1npbbsi-style";
+	style.textContent = "section.svelte-1npbbsi{margin-left:1em;width:calc(50vw - 1.5em)}iframe.svelte-1npbbsi{width:100%;border:0;display:block;height:50vh}";
 	append(document.head, style);
 }
 
 function create_fragment(ctx) {
 	let section;
-	let div;
-	let switch_instance;
+	let iframe;
+	let iframe_src_value;
 	let t0;
 	let textarea;
 	let t1;
 	let t2;
-	let current;
 	let mounted;
 	let dispose;
-	const switch_instance_spread_levels = [/*data*/ ctx[1]];
-	var switch_value = /*component*/ ctx[0];
-
-	function switch_props(ctx) {
-		let switch_instance_props = {};
-
-		for (let i = 0; i < switch_instance_spread_levels.length; i += 1) {
-			switch_instance_props = assign(switch_instance_props, switch_instance_spread_levels[i]);
-		}
-
-		return { props: switch_instance_props };
-	}
-
-	if (switch_value) {
-		switch_instance = new switch_value(switch_props(ctx));
-	}
 
 	return {
 		c() {
 			section = element("section");
-			div = element("div");
-			if (switch_instance) create_component(switch_instance.$$.fragment);
+			iframe = element("iframe");
 			t0 = space();
 			textarea = element("textarea");
 			t1 = space();
-			t2 = text(/*dataValue*/ ctx[2]);
-			attr(div, "class", "view");
-			attr(section, "class", "svelte-1madhki");
+			t2 = text(dataValue);
+			if (iframe.src !== (iframe_src_value = /*path*/ ctx[0])) attr(iframe, "src", iframe_src_value);
+			attr(iframe, "class", "svelte-1npbbsi");
+			attr(section, "class", "svelte-1npbbsi");
 		},
 		m(target, anchor) {
 			insert(target, section, anchor);
-			append(section, div);
-
-			if (switch_instance) {
-				mount_component(switch_instance, div, null);
-			}
-
+			append(section, iframe);
 			append(section, t0);
 			append(section, textarea);
-			set_input_value(textarea, /*dataValue*/ ctx[2]);
 			append(section, t1);
 			append(section, t2);
-			current = true;
 
 			if (!mounted) {
-				dispose = listen(textarea, "input", /*textarea_input_handler*/ ctx[4]);
+				dispose = listen(textarea, "keyup", /*keyup_handler*/ ctx[3]);
 				mounted = true;
 			}
 		},
 		p(ctx, [dirty]) {
-			const switch_instance_changes = (dirty & /*data*/ 2)
-			? get_spread_update(switch_instance_spread_levels, [get_spread_object(/*data*/ ctx[1])])
-			: {};
-
-			if (switch_value !== (switch_value = /*component*/ ctx[0])) {
-				if (switch_instance) {
-					group_outros();
-					const old_component = switch_instance;
-
-					transition_out(old_component.$$.fragment, 1, 0, () => {
-						destroy_component(old_component, 1);
-					});
-
-					check_outros();
-				}
-
-				if (switch_value) {
-					switch_instance = new switch_value(switch_props(ctx));
-					create_component(switch_instance.$$.fragment);
-					transition_in(switch_instance.$$.fragment, 1);
-					mount_component(switch_instance, div, null);
-				} else {
-					switch_instance = null;
-				}
-			} else if (switch_value) {
-				switch_instance.$set(switch_instance_changes);
+			if (dirty & /*path*/ 1 && iframe.src !== (iframe_src_value = /*path*/ ctx[0])) {
+				attr(iframe, "src", iframe_src_value);
 			}
-
-			if (dirty & /*dataValue*/ 4) {
-				set_input_value(textarea, /*dataValue*/ ctx[2]);
-			}
-
-			if (!current || dirty & /*dataValue*/ 4) set_data(t2, /*dataValue*/ ctx[2]);
 		},
-		i(local) {
-			if (current) return;
-			if (switch_instance) transition_in(switch_instance.$$.fragment, local);
-			current = true;
-		},
-		o(local) {
-			if (switch_instance) transition_out(switch_instance.$$.fragment, local);
-			current = false;
-		},
+		i: noop,
+		o: noop,
 		d(detaching) {
 			if (detaching) detach(section);
-			if (switch_instance) destroy_component(switch_instance);
 			mounted = false;
 			dispose();
 		}
 	};
 }
 
+let dataValue = "";
+
 function instance($$self, $$props, $$invalidate) {
 	let { componentPath } = $$props;
-	let component;
-	let data = { context: { year: 10 } };
-	let dataValue = "";
+	let dataError = false;
+	let path = componentPath;
+	let timer;
+	let data = "";
 
-	async function getComponent(path) {
-		const module = await import(path);
-		$$invalidate(0, component = module.default);
+	function debounce(value) {
+		clearTimeout(timer);
+		setTimeout(() => updateData(value), 750);
 	}
 
-	function updateData(event) {
+	function updateData(value) {
 		try {
-			$$invalidate(1, data = JSON.parse(event.target.value));
+			data = JSON.stringify(JSON.parse(value));
+			$$invalidate(0, path = `${componentPath}?context=${data}`);
+			console.log(path);
 			dataError = false;
 		} catch(e) {
 			dataError = true;
 		}
 	}
 
-	if (componentPath) {
-		getComponent(componentPath);
-	}
-
-	function textarea_input_handler() {
-		dataValue = this.value;
-		$$invalidate(2, dataValue);
-	}
+	const keyup_handler = ({ target: { value } }) => debounce(value);
 
 	$$self.$$set = $$props => {
-		if ("componentPath" in $$props) $$invalidate(3, componentPath = $$props.componentPath);
+		if ("componentPath" in $$props) $$invalidate(2, componentPath = $$props.componentPath);
 	};
 
-	return [component, data, dataValue, componentPath, textarea_input_handler];
+	return [path, debounce, componentPath, keyup_handler];
 }
 
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document.getElementById("svelte-1madhki-style")) add_css();
-		init(this, options, instance, create_fragment, safe_not_equal, { componentPath: 3 });
+		if (!document.getElementById("svelte-1npbbsi-style")) add_css();
+		init(this, options, instance, create_fragment, safe_not_equal, { componentPath: 2 });
 	}
 }
 
