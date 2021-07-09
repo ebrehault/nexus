@@ -1,19 +1,26 @@
 <script>
-    export let context;
     import VimEditor from './vim.svelte';
     import Viewer from './viewer.svelte';
     import AFButton from '../ui/button.svelte';
+    
+    export let context;
+    
     let play = false;
     let componentPath;
+    let viewer;
 
     function togglePlay() {
         componentPath = location.pathname.replace('/@edit', '');
         play = !play;
         window.dispatchEvent(new Event('resize'));
     }
+    
+    function refreshViewer() {
+        viewer.refresh();
+    }
 </script>
 <svelte:head>
-    <link rel="stylesheet" href="/db/my-app/abfab/pastanaga/styles.a2374b02e1a26e40320b.css">
+    <link rel="stylesheet" href="/db/my-app/abfab/pastanaga/pastanaga.css">
 </svelte:head>
 <style>
     header {
@@ -25,6 +32,11 @@
         height: 2em;
         padding: 0.2em;
         margin-left: 0.2em;
+    }
+    header ul {
+        margin-left: auto;
+        margin-right: 1em;
+        display: flex;
     }
     main {
         display: flex;
@@ -52,12 +64,18 @@
         overflow: hidden;
     }
     .editor-container.half {
-        width: calc(50vw - 3.5em);
+        width: 50vw;
     }
 </style>
 <header>
     <img src="/db/my-app/abfab/abfab.svg" alt="AbFab logo" />
     <ul>
+        {#if play}
+        <li>
+            <AFButton aspect="basic" icon="refresh" label="Refresh" size="small"
+                on:click={refreshViewer}/>
+        </li>
+        {/if}
         <li>
             <AFButton kind="primary" aspect="basic" icon="play" label="Play" size="small" active={play}
                 on:click={togglePlay}/>
@@ -71,7 +89,7 @@
                 <AFButton kind="primary" aspect="basic" icon="components" label="Components" size="small" active={true}/>
             </li>
             <li>
-                <AFButton kind="primary" aspect="basic" icon="data" label="Data" size="small" />
+                <AFButton kind="primary" aspect="basic" icon="globe" label="Data" size="small" />
             </li>
             <li>
                 <AFButton kind="primary" aspect="basic" icon="libraries" label="Libraries" size="small" />
@@ -82,6 +100,6 @@
         <VimEditor context={context}></VimEditor>
     </div>
     {#if play}
-    <Viewer componentPath={componentPath}></Viewer>
+    <Viewer bind:this={viewer} componentPath={componentPath}></Viewer>
     {/if}
 </main>

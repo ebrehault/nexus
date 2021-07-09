@@ -3,6 +3,7 @@ import {
 	SvelteComponent,
 	append,
 	attr,
+	binding_callbacks,
 	check_outros,
 	create_component,
 	destroy_component,
@@ -12,6 +13,7 @@ import {
 	init,
 	insert,
 	mount_component,
+	noop,
 	safe_not_equal,
 	space,
 	transition_in,
@@ -24,44 +26,88 @@ import AFButton from "../ui/button.svelte";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-1qcgxxn-style";
-	style.textContent = "header.svelte-1qcgxxn.svelte-1qcgxxn{height:2em;display:flex;align-items:center}header.svelte-1qcgxxn img.svelte-1qcgxxn{height:2em;padding:0.2em;margin-left:0.2em}main.svelte-1qcgxxn.svelte-1qcgxxn{display:flex}nav.svelte-1qcgxxn.svelte-1qcgxxn{width:3em}ul.svelte-1qcgxxn.svelte-1qcgxxn{list-style-type:none;margin:0;padding:0;text-align:center}nav.svelte-1qcgxxn li.svelte-1qcgxxn{padding:1em 0}.editor-container.svelte-1qcgxxn.svelte-1qcgxxn{display:flex;flex-direction:column;align-items:center;height:calc(100vh - 2.5em);width:calc(100vw - 3.5em);margin:0px;padding:0px;overflow:hidden}.editor-container.half.svelte-1qcgxxn.svelte-1qcgxxn{width:calc(50vw - 3.5em)}";
+	style.id = "svelte-1iuaeqf-style";
+	style.textContent = "header.svelte-1iuaeqf.svelte-1iuaeqf{height:2em;display:flex;align-items:center}header.svelte-1iuaeqf img.svelte-1iuaeqf{height:2em;padding:0.2em;margin-left:0.2em}header.svelte-1iuaeqf ul.svelte-1iuaeqf{margin-left:auto;margin-right:1em;display:flex}main.svelte-1iuaeqf.svelte-1iuaeqf{display:flex}nav.svelte-1iuaeqf.svelte-1iuaeqf{width:3em}ul.svelte-1iuaeqf.svelte-1iuaeqf{list-style-type:none;margin:0;padding:0;text-align:center}nav.svelte-1iuaeqf li.svelte-1iuaeqf{padding:1em 0}.editor-container.svelte-1iuaeqf.svelte-1iuaeqf{display:flex;flex-direction:column;align-items:center;height:calc(100vh - 2.5em);width:calc(100vw - 3.5em);margin:0px;padding:0px;overflow:hidden}.editor-container.half.svelte-1iuaeqf.svelte-1iuaeqf{width:50vw}";
 	append(document.head, style);
 }
 
-// (84:4) {#if play}
-function create_if_block(ctx) {
-	let viewer;
+// (73:8) {#if play}
+function create_if_block_1(ctx) {
+	let li;
+	let afbutton;
 	let current;
 
-	viewer = new Viewer({
-			props: { componentPath: /*componentPath*/ ctx[2] }
+	afbutton = new AFButton({
+			props: {
+				aspect: "basic",
+				icon: "refresh",
+				label: "Refresh",
+				size: "small"
+			}
 		});
+
+	afbutton.$on("click", /*refreshViewer*/ ctx[5]);
 
 	return {
 		c() {
-			create_component(viewer.$$.fragment);
+			li = element("li");
+			create_component(afbutton.$$.fragment);
 		},
 		m(target, anchor) {
-			mount_component(viewer, target, anchor);
+			insert(target, li, anchor);
+			mount_component(afbutton, li, null);
 			current = true;
 		},
-		p(ctx, dirty) {
-			const viewer_changes = {};
-			if (dirty & /*componentPath*/ 4) viewer_changes.componentPath = /*componentPath*/ ctx[2];
-			viewer.$set(viewer_changes);
-		},
+		p: noop,
 		i(local) {
 			if (current) return;
-			transition_in(viewer.$$.fragment, local);
+			transition_in(afbutton.$$.fragment, local);
 			current = true;
 		},
 		o(local) {
-			transition_out(viewer.$$.fragment, local);
+			transition_out(afbutton.$$.fragment, local);
 			current = false;
 		},
 		d(detaching) {
-			destroy_component(viewer, detaching);
+			if (detaching) detach(li);
+			destroy_component(afbutton);
+		}
+	};
+}
+
+// (102:4) {#if play}
+function create_if_block(ctx) {
+	let viewer_1;
+	let current;
+	let viewer_1_props = { componentPath: /*componentPath*/ ctx[2] };
+	viewer_1 = new Viewer({ props: viewer_1_props });
+	/*viewer_1_binding*/ ctx[6](viewer_1);
+
+	return {
+		c() {
+			create_component(viewer_1.$$.fragment);
+		},
+		m(target, anchor) {
+			mount_component(viewer_1, target, anchor);
+			current = true;
+		},
+		p(ctx, dirty) {
+			const viewer_1_changes = {};
+			if (dirty & /*componentPath*/ 4) viewer_1_changes.componentPath = /*componentPath*/ ctx[2];
+			viewer_1.$set(viewer_1_changes);
+		},
+		i(local) {
+			if (current) return;
+			transition_in(viewer_1.$$.fragment, local);
+			current = true;
+		},
+		o(local) {
+			transition_out(viewer_1.$$.fragment, local);
+			current = false;
+		},
+		d(detaching) {
+			/*viewer_1_binding*/ ctx[6](null);
+			destroy_component(viewer_1, detaching);
 		}
 	};
 }
@@ -74,26 +120,28 @@ function create_fragment(ctx) {
 	let img_src_value;
 	let t1;
 	let ul0;
+	let t2;
 	let li0;
 	let afbutton0;
-	let t2;
+	let t3;
 	let main;
 	let nav;
 	let ul1;
 	let li1;
 	let afbutton1;
-	let t3;
+	let t4;
 	let li2;
 	let afbutton2;
-	let t4;
+	let t5;
 	let li3;
 	let afbutton3;
-	let t5;
+	let t6;
 	let div;
 	let vimeditor;
 	let div_class_value;
-	let t6;
+	let t7;
 	let current;
+	let if_block0 = /*play*/ ctx[1] && create_if_block_1(ctx);
 
 	afbutton0 = new AFButton({
 			props: {
@@ -106,7 +154,7 @@ function create_fragment(ctx) {
 			}
 		});
 
-	afbutton0.$on("click", /*togglePlay*/ ctx[3]);
+	afbutton0.$on("click", /*togglePlay*/ ctx[4]);
 
 	afbutton1 = new AFButton({
 			props: {
@@ -123,7 +171,7 @@ function create_fragment(ctx) {
 			props: {
 				kind: "primary",
 				aspect: "basic",
-				icon: "data",
+				icon: "globe",
 				label: "Data",
 				size: "small"
 			}
@@ -140,7 +188,7 @@ function create_fragment(ctx) {
 		});
 
 	vimeditor = new VimEditor({ props: { context: /*context*/ ctx[0] } });
-	let if_block = /*play*/ ctx[1] && create_if_block(ctx);
+	let if_block1 = /*play*/ ctx[1] && create_if_block(ctx);
 
 	return {
 		c() {
@@ -150,39 +198,41 @@ function create_fragment(ctx) {
 			img = element("img");
 			t1 = space();
 			ul0 = element("ul");
+			if (if_block0) if_block0.c();
+			t2 = space();
 			li0 = element("li");
 			create_component(afbutton0.$$.fragment);
-			t2 = space();
+			t3 = space();
 			main = element("main");
 			nav = element("nav");
 			ul1 = element("ul");
 			li1 = element("li");
 			create_component(afbutton1.$$.fragment);
-			t3 = space();
+			t4 = space();
 			li2 = element("li");
 			create_component(afbutton2.$$.fragment);
-			t4 = space();
+			t5 = space();
 			li3 = element("li");
 			create_component(afbutton3.$$.fragment);
-			t5 = space();
+			t6 = space();
 			div = element("div");
 			create_component(vimeditor.$$.fragment);
-			t6 = space();
-			if (if_block) if_block.c();
+			t7 = space();
+			if (if_block1) if_block1.c();
 			attr(link, "rel", "stylesheet");
-			attr(link, "href", "/db/my-app/abfab/pastanaga/styles.a2374b02e1a26e40320b.css");
+			attr(link, "href", "/db/my-app/abfab/pastanaga/pastanaga.css");
 			if (img.src !== (img_src_value = "/db/my-app/abfab/abfab.svg")) attr(img, "src", img_src_value);
 			attr(img, "alt", "AbFab logo");
-			attr(img, "class", "svelte-1qcgxxn");
-			attr(ul0, "class", "svelte-1qcgxxn");
-			attr(header, "class", "svelte-1qcgxxn");
-			attr(li1, "class", "svelte-1qcgxxn");
-			attr(li2, "class", "svelte-1qcgxxn");
-			attr(li3, "class", "svelte-1qcgxxn");
-			attr(ul1, "class", "svelte-1qcgxxn");
-			attr(nav, "class", "svelte-1qcgxxn");
-			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1qcgxxn");
-			attr(main, "class", "svelte-1qcgxxn");
+			attr(img, "class", "svelte-1iuaeqf");
+			attr(ul0, "class", "svelte-1iuaeqf");
+			attr(header, "class", "svelte-1iuaeqf");
+			attr(li1, "class", "svelte-1iuaeqf");
+			attr(li2, "class", "svelte-1iuaeqf");
+			attr(li3, "class", "svelte-1iuaeqf");
+			attr(ul1, "class", "svelte-1iuaeqf");
+			attr(nav, "class", "svelte-1iuaeqf");
+			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1iuaeqf");
+			attr(main, "class", "svelte-1iuaeqf");
 		},
 		m(target, anchor) {
 			append(document.head, link);
@@ -191,28 +241,53 @@ function create_fragment(ctx) {
 			append(header, img);
 			append(header, t1);
 			append(header, ul0);
+			if (if_block0) if_block0.m(ul0, null);
+			append(ul0, t2);
 			append(ul0, li0);
 			mount_component(afbutton0, li0, null);
-			insert(target, t2, anchor);
+			insert(target, t3, anchor);
 			insert(target, main, anchor);
 			append(main, nav);
 			append(nav, ul1);
 			append(ul1, li1);
 			mount_component(afbutton1, li1, null);
-			append(ul1, t3);
+			append(ul1, t4);
 			append(ul1, li2);
 			mount_component(afbutton2, li2, null);
-			append(ul1, t4);
+			append(ul1, t5);
 			append(ul1, li3);
 			mount_component(afbutton3, li3, null);
-			append(main, t5);
+			append(main, t6);
 			append(main, div);
 			mount_component(vimeditor, div, null);
-			append(main, t6);
-			if (if_block) if_block.m(main, null);
+			append(main, t7);
+			if (if_block1) if_block1.m(main, null);
 			current = true;
 		},
 		p(ctx, [dirty]) {
+			if (/*play*/ ctx[1]) {
+				if (if_block0) {
+					if_block0.p(ctx, dirty);
+
+					if (dirty & /*play*/ 2) {
+						transition_in(if_block0, 1);
+					}
+				} else {
+					if_block0 = create_if_block_1(ctx);
+					if_block0.c();
+					transition_in(if_block0, 1);
+					if_block0.m(ul0, t2);
+				}
+			} else if (if_block0) {
+				group_outros();
+
+				transition_out(if_block0, 1, 1, () => {
+					if_block0 = null;
+				});
+
+				check_outros();
+			}
+
 			const afbutton0_changes = {};
 			if (dirty & /*play*/ 2) afbutton0_changes.active = /*play*/ ctx[1];
 			afbutton0.$set(afbutton0_changes);
@@ -220,28 +295,28 @@ function create_fragment(ctx) {
 			if (dirty & /*context*/ 1) vimeditor_changes.context = /*context*/ ctx[0];
 			vimeditor.$set(vimeditor_changes);
 
-			if (!current || dirty & /*play*/ 2 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1qcgxxn")) {
+			if (!current || dirty & /*play*/ 2 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1iuaeqf")) {
 				attr(div, "class", div_class_value);
 			}
 
 			if (/*play*/ ctx[1]) {
-				if (if_block) {
-					if_block.p(ctx, dirty);
+				if (if_block1) {
+					if_block1.p(ctx, dirty);
 
 					if (dirty & /*play*/ 2) {
-						transition_in(if_block, 1);
+						transition_in(if_block1, 1);
 					}
 				} else {
-					if_block = create_if_block(ctx);
-					if_block.c();
-					transition_in(if_block, 1);
-					if_block.m(main, null);
+					if_block1 = create_if_block(ctx);
+					if_block1.c();
+					transition_in(if_block1, 1);
+					if_block1.m(main, null);
 				}
-			} else if (if_block) {
+			} else if (if_block1) {
 				group_outros();
 
-				transition_out(if_block, 1, 1, () => {
-					if_block = null;
+				transition_out(if_block1, 1, 1, () => {
+					if_block1 = null;
 				});
 
 				check_outros();
@@ -249,35 +324,38 @@ function create_fragment(ctx) {
 		},
 		i(local) {
 			if (current) return;
+			transition_in(if_block0);
 			transition_in(afbutton0.$$.fragment, local);
 			transition_in(afbutton1.$$.fragment, local);
 			transition_in(afbutton2.$$.fragment, local);
 			transition_in(afbutton3.$$.fragment, local);
 			transition_in(vimeditor.$$.fragment, local);
-			transition_in(if_block);
+			transition_in(if_block1);
 			current = true;
 		},
 		o(local) {
+			transition_out(if_block0);
 			transition_out(afbutton0.$$.fragment, local);
 			transition_out(afbutton1.$$.fragment, local);
 			transition_out(afbutton2.$$.fragment, local);
 			transition_out(afbutton3.$$.fragment, local);
 			transition_out(vimeditor.$$.fragment, local);
-			transition_out(if_block);
+			transition_out(if_block1);
 			current = false;
 		},
 		d(detaching) {
 			detach(link);
 			if (detaching) detach(t0);
 			if (detaching) detach(header);
+			if (if_block0) if_block0.d();
 			destroy_component(afbutton0);
-			if (detaching) detach(t2);
+			if (detaching) detach(t3);
 			if (detaching) detach(main);
 			destroy_component(afbutton1);
 			destroy_component(afbutton2);
 			destroy_component(afbutton3);
 			destroy_component(vimeditor);
-			if (if_block) if_block.d();
+			if (if_block1) if_block1.d();
 		}
 	};
 }
@@ -286,6 +364,7 @@ function instance($$self, $$props, $$invalidate) {
 	let { context } = $$props;
 	let play = false;
 	let componentPath;
+	let viewer;
 
 	function togglePlay() {
 		$$invalidate(2, componentPath = location.pathname.replace("/@edit", ""));
@@ -293,17 +372,36 @@ function instance($$self, $$props, $$invalidate) {
 		window.dispatchEvent(new Event("resize"));
 	}
 
+	function refreshViewer() {
+		viewer.refresh();
+	}
+
+	function viewer_1_binding($$value) {
+		binding_callbacks[$$value ? "unshift" : "push"](() => {
+			viewer = $$value;
+			$$invalidate(3, viewer);
+		});
+	}
+
 	$$self.$$set = $$props => {
 		if ("context" in $$props) $$invalidate(0, context = $$props.context);
 	};
 
-	return [context, play, componentPath, togglePlay];
+	return [
+		context,
+		play,
+		componentPath,
+		viewer,
+		togglePlay,
+		refreshViewer,
+		viewer_1_binding
+	];
 }
 
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document.getElementById("svelte-1qcgxxn-style")) add_css();
+		if (!document.getElementById("svelte-1iuaeqf-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, { context: 0 });
 	}
 }

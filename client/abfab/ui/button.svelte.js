@@ -3,6 +3,7 @@ import {
 	SvelteComponent,
 	append,
 	attr,
+	bubble,
 	detach,
 	element,
 	init,
@@ -16,8 +17,6 @@ import {
 	text,
 	xlink_attr
 } from "/db/my-app/node_modules/svelte/internal/index.mjs";
-
-import { createEventDispatcher } from "/db/my-app/node_modules/svelte/index.mjs";
 
 function create_fragment(ctx) {
 	let button;
@@ -66,7 +65,7 @@ function create_fragment(ctx) {
 			append(span0, t1);
 
 			if (!mounted) {
-				dispose = listen(button, "click", /*dispatchClick*/ ctx[7]);
+				dispose = listen(button, "click", /*click_handler*/ ctx[7]);
 				mounted = true;
 			}
 		},
@@ -111,10 +110,9 @@ function instance($$self, $$props, $$invalidate) {
 	let { kind = "secondary" } = $$props; // primary, secondary, destructive
 	let { active = false } = $$props;
 	let { disabled = false } = $$props;
-	const dispatch = createEventDispatcher();
 
-	function dispatchClick(event) {
-		dispatch("click", { event });
+	function click_handler(event) {
+		bubble($$self, event);
 	}
 
 	$$self.$$set = $$props => {
@@ -127,7 +125,7 @@ function instance($$self, $$props, $$invalidate) {
 		if ("disabled" in $$props) $$invalidate(6, disabled = $$props.disabled);
 	};
 
-	return [label, icon, size, aspect, kind, active, disabled, dispatchClick];
+	return [label, icon, size, aspect, kind, active, disabled, click_handler];
 }
 
 class Component extends SvelteComponent {
