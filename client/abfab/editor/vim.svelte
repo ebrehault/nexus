@@ -4,6 +4,9 @@
     import { compile } from '/db/my-app/node_modules/svelte/compiler.mjs';
     import { onMount } from 'svelte';
     import { saveFile } from '../api.js';
+    import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
     onMount(() => {
         initVim();
@@ -69,7 +72,10 @@
                         sveltePath: ABFAB_ROOT + '/node_modules/svelte',
                     });
                     const jsFilePath = fullpath + '.js';
-                    saveFile(jsFilePath, js.code.replace(RE, 'from "$1/index.mjs";'));
+                    saveFile(jsFilePath, js.code.replace(RE, 'from "$1/index.mjs";'))
+                        .then(() => dispatch('save', {file: fullpath}));
+                } else {
+                    dispatch('save', {file: fullpath});
                 }
             });
         };

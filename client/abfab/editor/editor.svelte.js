@@ -31,7 +31,7 @@ function add_css() {
 	append(document.head, style);
 }
 
-// (73:8) {#if play}
+// (74:8) {#if play}
 function create_if_block_1(ctx) {
 	let li;
 	let afbutton;
@@ -75,7 +75,7 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (102:4) {#if play}
+// (103:4) {#if play}
 function create_if_block(ctx) {
 	let viewer_1;
 	let current;
@@ -188,6 +188,7 @@ function create_fragment(ctx) {
 		});
 
 	vimeditor = new VimEditor({ props: { context: /*context*/ ctx[0] } });
+	vimeditor.$on("save", /*refreshViewer*/ ctx[5]);
 	let if_block1 = /*play*/ ctx[1] && create_if_block(ctx);
 
 	return {

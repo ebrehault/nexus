@@ -19,6 +19,7 @@
         viewer.refresh();
     }
 </script>
+
 <svelte:head>
     <link rel="stylesheet" href="/db/my-app/abfab/pastanaga/pastanaga.css">
 </svelte:head>
@@ -97,7 +98,7 @@
         </ul>
     </nav>
     <div class="editor-container {play ? 'half' : ''}">
-        <VimEditor context={context}></VimEditor>
+        <VimEditor context={context} on:save={refreshViewer}></VimEditor>
     </div>
     {#if play}
     <Viewer bind:this={viewer} componentPath={componentPath}></Viewer>

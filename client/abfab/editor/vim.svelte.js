@@ -22,6 +22,7 @@ import {
 import { compile } from "/db/my-app/node_modules/svelte/compiler.mjs";
 import { onMount } from "/db/my-app/node_modules/svelte/index.mjs";
 import { saveFile } from "../api.js";
+import { createEventDispatcher } from "/db/my-app/node_modules/svelte/index.mjs";
 
 function add_css() {
 	var style = element("style");
@@ -57,6 +58,7 @@ function create_fragment(ctx) {
 
 function instance($$self, $$props, $$invalidate) {
 	let { context } = $$props;
+	const dispatch = createEventDispatcher();
 
 	onMount(() => {
 		initVim();
@@ -129,7 +131,9 @@ function instance($$self, $$props, $$invalidate) {
 					});
 
 					const jsFilePath = fullpath + ".js";
-					saveFile(jsFilePath, js.code.replace(RE, "from \"$1/index.mjs\";"));
+					saveFile(jsFilePath, js.code.replace(RE, "from \"$1/index.mjs\";")).then(() => dispatch("save", { file: fullpath }));
+				} else {
+					dispatch("save", { file: fullpath });
 				}
 			});
 		};

@@ -154,10 +154,10 @@ function instance($$self, $$props, $$invalidate) {
 	let jsonData = "";
 	let iframe;
 
-	function displayData(value) {
+	function displayData(value, timestamp) {
 		try {
 			const data = JSON.stringify(JSON.parse(value));
-			$$invalidate(0, path = `${componentPath}?context=${data}`);
+			$$invalidate(0, path = `${componentPath}?time=${timestamp}&context=${data}`);
 			$$invalidate(2, dataError = false);
 		} catch(e) {
 			$$invalidate(2, dataError = true);
@@ -165,12 +165,14 @@ function instance($$self, $$props, $$invalidate) {
 	}
 
 	function refresh() {
+		const timestamp = new Date().toISOString();
+
 		if (contentPath) {
-			$$invalidate(0, path = contentPath);
+			$$invalidate(0, path = `${contentPath}?time=${timestamp}`);
 		} else if (jsonData) {
-			displayData(jsonData);
+			displayData(jsonData, timestamp);
 		} else {
-			$$invalidate(0, path = componentPath);
+			$$invalidate(0, path = `${componentPath}?time=${timestamp}`);
 		}
 	}
 

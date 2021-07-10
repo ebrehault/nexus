@@ -9,10 +9,10 @@
 	let jsonData = '';
 	let iframe;
 
-    function displayData(value) {
+    function displayData(value, timestamp) {
         try {
             const data = JSON.stringify(JSON.parse(value));
-            path = `${componentPath}?context=${data}`;
+            path = `${componentPath}?time=${timestamp}&context=${data}`;
 			dataError = false;
         } catch(e) {
             dataError = true;
@@ -20,12 +20,13 @@
     }
 
     export function refresh() {
+        const timestamp = new Date().toISOString();
         if (contentPath) {
-            path = contentPath;
+            path = `${contentPath}?time=${timestamp}`;
         } else if (jsonData) {
-            displayData(jsonData);
+            displayData(jsonData, timestamp);
         } else {
-            path = componentPath;
+            path = `${componentPath}?time=${timestamp}`;
         }
     }
 </script>
