@@ -83,10 +83,10 @@ async def get_directory(context, request):
                    permission='guillotina.Public', allow_access=True)
 async def get_view_or_data(context, request):
     if "text/html" in request.headers["ACCEPT"]:
-        view_path = context.view
+        view_path = request.query.get('view') or context.view
         if view_path.endswith('.svelte'):
             view_path += '.js'
-        view = await get_object_by_path(context.view)
+        view = await get_object_by_path(view_path)
         if view.type_name == 'Directory':
             return await get_index(view, request)
         if view.content_type == "application/javascript" or view.id.endswith('.svelte'):

@@ -22,7 +22,7 @@
     export function refresh() {
         const timestamp = new Date().toISOString();
         if (contentPath) {
-            path = `${contentPath}?time=${timestamp}`;
+            path = `${contentPath}?view=${componentPath.replace('/db/my-app', '')}&time=${timestamp}`;
         } else if (jsonData) {
             displayData(jsonData, timestamp);
         } else {
@@ -32,11 +32,13 @@
 </script>
 <section>
     <iframe bind:this={iframe} src={path} title="Component viewer"></iframe>
+    <AFInput id="content" label="Content path" placeholder="/path/to/content" bind:value={contentPath}
+        hint="The corresponding data content will be rendered using the current component."/>
     <AFTextarea id="data" label="Data" placeholder="[1, 2, 3]"
         disabled={!!contentPath}
         error={dataError ? 'Invalid JSON' : ''}
+        hint="If you do not have any relevant data content, you can just put a JSON sample here. (Content path will take precedence)"
         bind:value={jsonData} />
-    <AFInput id="content" label="Content path" placeholder="/path/to/content" bind:value={contentPath} />
 </section>
 <style>
 section {

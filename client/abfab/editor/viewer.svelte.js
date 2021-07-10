@@ -34,40 +34,22 @@ function create_fragment(ctx) {
 	let iframe_1;
 	let iframe_1_src_value;
 	let t0;
-	let aftextarea;
+	let afinput;
 	let updating_value;
 	let t1;
-	let afinput;
+	let aftextarea;
 	let updating_value_1;
 	let current;
 
-	function aftextarea_value_binding(value) {
-		/*aftextarea_value_binding*/ ctx[8](value);
-	}
-
-	let aftextarea_props = {
-		id: "data",
-		label: "Data",
-		placeholder: "[1, 2, 3]",
-		disabled: !!/*contentPath*/ ctx[1],
-		error: /*dataError*/ ctx[2] ? "Invalid JSON" : ""
-	};
-
-	if (/*jsonData*/ ctx[3] !== void 0) {
-		aftextarea_props.value = /*jsonData*/ ctx[3];
-	}
-
-	aftextarea = new AFTextarea({ props: aftextarea_props });
-	binding_callbacks.push(() => bind(aftextarea, "value", aftextarea_value_binding));
-
 	function afinput_value_binding(value) {
-		/*afinput_value_binding*/ ctx[9](value);
+		/*afinput_value_binding*/ ctx[8](value);
 	}
 
 	let afinput_props = {
 		id: "content",
 		label: "Content path",
-		placeholder: "/path/to/content"
+		placeholder: "/path/to/content",
+		hint: "The corresponding data content will be rendered using the current component."
 	};
 
 	if (/*contentPath*/ ctx[1] !== void 0) {
@@ -77,14 +59,34 @@ function create_fragment(ctx) {
 	afinput = new AFInput({ props: afinput_props });
 	binding_callbacks.push(() => bind(afinput, "value", afinput_value_binding));
 
+	function aftextarea_value_binding(value) {
+		/*aftextarea_value_binding*/ ctx[9](value);
+	}
+
+	let aftextarea_props = {
+		id: "data",
+		label: "Data",
+		placeholder: "[1, 2, 3]",
+		disabled: !!/*contentPath*/ ctx[1],
+		error: /*dataError*/ ctx[2] ? "Invalid JSON" : "",
+		hint: "If you do not have any relevant data content, you can just put a JSON sample here. (Content path will take precedence)"
+	};
+
+	if (/*jsonData*/ ctx[3] !== void 0) {
+		aftextarea_props.value = /*jsonData*/ ctx[3];
+	}
+
+	aftextarea = new AFTextarea({ props: aftextarea_props });
+	binding_callbacks.push(() => bind(aftextarea, "value", aftextarea_value_binding));
+
 	return {
 		c() {
 			section = element("section");
 			iframe_1 = element("iframe");
 			t0 = space();
-			create_component(aftextarea.$$.fragment);
-			t1 = space();
 			create_component(afinput.$$.fragment);
+			t1 = space();
+			create_component(aftextarea.$$.fragment);
 			if (iframe_1.src !== (iframe_1_src_value = /*path*/ ctx[0])) attr(iframe_1, "src", iframe_1_src_value);
 			attr(iframe_1, "title", "Component viewer");
 			attr(iframe_1, "class", "svelte-15ogg5q");
@@ -95,9 +97,9 @@ function create_fragment(ctx) {
 			append(section, iframe_1);
 			/*iframe_1_binding*/ ctx[7](iframe_1);
 			append(section, t0);
-			mount_component(aftextarea, section, null);
-			append(section, t1);
 			mount_component(afinput, section, null);
+			append(section, t1);
+			mount_component(aftextarea, section, null);
 			current = true;
 		},
 		p(ctx, [dirty]) {
@@ -105,43 +107,43 @@ function create_fragment(ctx) {
 				attr(iframe_1, "src", iframe_1_src_value);
 			}
 
+			const afinput_changes = {};
+
+			if (!updating_value && dirty & /*contentPath*/ 2) {
+				updating_value = true;
+				afinput_changes.value = /*contentPath*/ ctx[1];
+				add_flush_callback(() => updating_value = false);
+			}
+
+			afinput.$set(afinput_changes);
 			const aftextarea_changes = {};
 			if (dirty & /*contentPath*/ 2) aftextarea_changes.disabled = !!/*contentPath*/ ctx[1];
 			if (dirty & /*dataError*/ 4) aftextarea_changes.error = /*dataError*/ ctx[2] ? "Invalid JSON" : "";
 
-			if (!updating_value && dirty & /*jsonData*/ 8) {
-				updating_value = true;
-				aftextarea_changes.value = /*jsonData*/ ctx[3];
-				add_flush_callback(() => updating_value = false);
-			}
-
-			aftextarea.$set(aftextarea_changes);
-			const afinput_changes = {};
-
-			if (!updating_value_1 && dirty & /*contentPath*/ 2) {
+			if (!updating_value_1 && dirty & /*jsonData*/ 8) {
 				updating_value_1 = true;
-				afinput_changes.value = /*contentPath*/ ctx[1];
+				aftextarea_changes.value = /*jsonData*/ ctx[3];
 				add_flush_callback(() => updating_value_1 = false);
 			}
 
-			afinput.$set(afinput_changes);
+			aftextarea.$set(aftextarea_changes);
 		},
 		i(local) {
 			if (current) return;
-			transition_in(aftextarea.$$.fragment, local);
 			transition_in(afinput.$$.fragment, local);
+			transition_in(aftextarea.$$.fragment, local);
 			current = true;
 		},
 		o(local) {
-			transition_out(aftextarea.$$.fragment, local);
 			transition_out(afinput.$$.fragment, local);
+			transition_out(aftextarea.$$.fragment, local);
 			current = false;
 		},
 		d(detaching) {
 			if (detaching) detach(section);
 			/*iframe_1_binding*/ ctx[7](null);
-			destroy_component(aftextarea);
 			destroy_component(afinput);
+			destroy_component(aftextarea);
 		}
 	};
 }
@@ -168,7 +170,7 @@ function instance($$self, $$props, $$invalidate) {
 		const timestamp = new Date().toISOString();
 
 		if (contentPath) {
-			$$invalidate(0, path = `${contentPath}?time=${timestamp}`);
+			$$invalidate(0, path = `${contentPath}?view=${componentPath.replace("/db/my-app", "")}&time=${timestamp}`);
 		} else if (jsonData) {
 			displayData(jsonData, timestamp);
 		} else {
@@ -183,14 +185,14 @@ function instance($$self, $$props, $$invalidate) {
 		});
 	}
 
-	function aftextarea_value_binding(value) {
-		jsonData = value;
-		$$invalidate(3, jsonData);
-	}
-
 	function afinput_value_binding(value) {
 		contentPath = value;
 		$$invalidate(1, contentPath);
+	}
+
+	function aftextarea_value_binding(value) {
+		jsonData = value;
+		$$invalidate(3, jsonData);
 	}
 
 	$$self.$$set = $$props => {
@@ -206,8 +208,8 @@ function instance($$self, $$props, $$invalidate) {
 		componentPath,
 		refresh,
 		iframe_1_binding,
-		aftextarea_value_binding,
-		afinput_value_binding
+		afinput_value_binding,
+		aftextarea_value_binding
 	];
 }
 
