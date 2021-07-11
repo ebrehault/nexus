@@ -3,9 +3,10 @@ import {
 	SvelteComponent,
 	append,
 	attr,
+	binding_callbacks,
 	bubble,
 	detach,
-	element,
+	element as element_1,
 	init,
 	insert,
 	listen,
@@ -19,6 +20,8 @@ import {
 	toggle_class
 } from "/db/my-app/node_modules/svelte/internal/index.mjs";
 
+import { onMount } from "/db/my-app/node_modules/svelte/index.mjs";
+
 function create_if_block(ctx) {
 	let small;
 	let t_value = (/*error*/ ctx[7] || /*hint*/ ctx[4]) + "";
@@ -27,7 +30,7 @@ function create_if_block(ctx) {
 
 	return {
 		c() {
-			small = element("small");
+			small = element_1("small");
 			t = text(t_value);
 			attr(small, "aria-live", "polite");
 			attr(small, "class", "pa-field-help");
@@ -69,10 +72,10 @@ function create_fragment(ctx) {
 
 	return {
 		c() {
-			div = element("div");
-			input = element("input");
+			div = element_1("div");
+			input = element_1("input");
 			t0 = space();
-			label_1 = element("label");
+			label_1 = element_1("label");
 			t1 = text(/*label*/ ctx[2]);
 			t2 = space();
 			if (if_block) if_block.c();
@@ -92,6 +95,7 @@ function create_fragment(ctx) {
 		m(target, anchor) {
 			insert(target, div, anchor);
 			append(div, input);
+			/*input_binding*/ ctx[17](input);
 			set_input_value(input, /*value*/ ctx[0]);
 			append(div, t0);
 			append(div, label_1);
@@ -101,14 +105,14 @@ function create_fragment(ctx) {
 
 			if (!mounted) {
 				dispose = [
-					listen(input, "input", /*input_input_handler*/ ctx[15]),
-					listen(input, "input", /*input_handler*/ ctx[8]),
-					listen(input, "keyup", /*keyup_handler*/ ctx[9]),
-					listen(input, "change", /*change_handler*/ ctx[10]),
-					listen(input, "keypress", /*keypress_handler*/ ctx[11]),
-					listen(input, "keydown", /*keydown_handler*/ ctx[12]),
-					listen(input, "focus", /*focus_handler*/ ctx[13]),
-					listen(input, "blur", /*blur_handler*/ ctx[14])
+					listen(input, "input", /*input_input_handler*/ ctx[18]),
+					listen(input, "input", /*input_handler*/ ctx[10]),
+					listen(input, "keyup", /*keyup_handler*/ ctx[11]),
+					listen(input, "change", /*change_handler*/ ctx[12]),
+					listen(input, "keypress", /*keypress_handler*/ ctx[13]),
+					listen(input, "keydown", /*keydown_handler*/ ctx[14]),
+					listen(input, "focus", /*focus_handler*/ ctx[15]),
+					listen(input, "blur", /*blur_handler*/ ctx[16])
 				];
 
 				mounted = true;
@@ -174,6 +178,7 @@ function create_fragment(ctx) {
 		o: noop,
 		d(detaching) {
 			if (detaching) detach(div);
+			/*input_binding*/ ctx[17](null);
 			if (if_block) if_block.d();
 			mounted = false;
 			run_all(dispose);
@@ -184,12 +189,15 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let { id } = $$props;
 	let { label } = $$props;
+	let { type = "text" } = $$props;
 	let { placeholder } = $$props;
 	let { hint } = $$props;
 	let { disabled = false } = $$props;
 	let { readonly = false } = $$props;
 	let { value } = $$props;
 	let { error } = $$props;
+	let element;
+	onMount(() => $$invalidate(8, element.type = type, element));
 
 	function input_handler(event) {
 		bubble($$self, event);
@@ -219,6 +227,13 @@ function instance($$self, $$props, $$invalidate) {
 		bubble($$self, event);
 	}
 
+	function input_binding($$value) {
+		binding_callbacks[$$value ? "unshift" : "push"](() => {
+			element = $$value;
+			$$invalidate(8, element);
+		});
+	}
+
 	function input_input_handler() {
 		value = this.value;
 		$$invalidate(0, value);
@@ -227,6 +242,7 @@ function instance($$self, $$props, $$invalidate) {
 	$$self.$$set = $$props => {
 		if ("id" in $$props) $$invalidate(1, id = $$props.id);
 		if ("label" in $$props) $$invalidate(2, label = $$props.label);
+		if ("type" in $$props) $$invalidate(9, type = $$props.type);
 		if ("placeholder" in $$props) $$invalidate(3, placeholder = $$props.placeholder);
 		if ("hint" in $$props) $$invalidate(4, hint = $$props.hint);
 		if ("disabled" in $$props) $$invalidate(5, disabled = $$props.disabled);
@@ -244,6 +260,8 @@ function instance($$self, $$props, $$invalidate) {
 		disabled,
 		readonly,
 		error,
+		element,
+		type,
 		input_handler,
 		keyup_handler,
 		change_handler,
@@ -251,6 +269,7 @@ function instance($$self, $$props, $$invalidate) {
 		keydown_handler,
 		focus_handler,
 		blur_handler,
+		input_binding,
 		input_input_handler
 	];
 }
@@ -262,6 +281,7 @@ class Component extends SvelteComponent {
 		init(this, options, instance, create_fragment, safe_not_equal, {
 			id: 1,
 			label: 2,
+			type: 9,
 			placeholder: 3,
 			hint: 4,
 			disabled: 5,

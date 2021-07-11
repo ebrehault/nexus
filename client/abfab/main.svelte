@@ -1,4 +1,8 @@
 <script>
+    import { AbFabStore } from '/db/my-app/abfab/api.js';
+    import { onDestroy } from 'svelte';
+    import { derived } from 'svelte/store';
+
     export let component;
     export let context;
 
@@ -29,7 +33,6 @@
             return;
         }
         event.preventDefault();
-        history.pushState({}, '', href);
         navigate(href);
     });
     function find_anchor(node) {
@@ -37,6 +40,7 @@
         return node;
     }
     async function navigate(href) {
+        history.pushState({}, '', href);
         const [path, query] = href.split('?');
         const response = await fetch(`${path}/@default`);
         const fullObject = await response.json();
@@ -55,5 +59,19 @@
             }
         }   
     }
+
+    const subscriptions = [];
+    const _location = derived(AbFabStore, (state) => state.location);
+    subscriptions.push(_location.subscribe(value => navigate(value)));
+
+    const _logged = derived(AbFabStore, (state) => state.logged);
+    subscriptions.push(_logged.subscribe(isLogged => {
+		if (!isLogged) {
+            localStorage.removeItem('auth');
+            navigate('/db/my-app/abfab/login/login.svelte');
+        }
+	}));
+
+	onDestroy(() => subscriptions.map(unsubscribe => unsubscribe()));
 </script>
 <svelte:component this={component} context={context}></svelte:component>

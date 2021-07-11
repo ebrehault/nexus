@@ -114,7 +114,7 @@ async def get_file_tree(context, request):
     return children
 
 @configure.service(context=IContent, method='GET', name='@default',
-                   permission='guillotina.Public', allow_access=True)
+                   permission='guillotina.ViewContent', allow_access=True)
 @configure.service(context=IDirectory, method='GET', name='@default',
                    permission='guillotina.Public', allow_access=True)
 @configure.service(context=IFile, method='GET', name='@default',

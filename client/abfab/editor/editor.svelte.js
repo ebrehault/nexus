@@ -23,15 +23,16 @@ import {
 import VimEditor from "./vim.svelte";
 import Viewer from "./viewer.svelte";
 import AFButton from "../ui/button.svelte";
+import Toolbar from "./toolbar.svelte";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-1iuaeqf-style";
-	style.textContent = "header.svelte-1iuaeqf.svelte-1iuaeqf{height:2em;display:flex;align-items:center}header.svelte-1iuaeqf img.svelte-1iuaeqf{height:2em;padding:0.2em;margin-left:0.2em}header.svelte-1iuaeqf ul.svelte-1iuaeqf{margin-left:auto;margin-right:1em;display:flex}main.svelte-1iuaeqf.svelte-1iuaeqf{display:flex}nav.svelte-1iuaeqf.svelte-1iuaeqf{width:3em}ul.svelte-1iuaeqf.svelte-1iuaeqf{list-style-type:none;margin:0;padding:0;text-align:center}nav.svelte-1iuaeqf li.svelte-1iuaeqf{padding:1em 0}.editor-container.svelte-1iuaeqf.svelte-1iuaeqf{display:flex;flex-direction:column;align-items:center;height:calc(100vh - 2.5em);width:calc(100vw - 3.5em);margin:0px;padding:0px;overflow:hidden}.editor-container.half.svelte-1iuaeqf.svelte-1iuaeqf{width:50vw}";
+	style.id = "svelte-1jg2c03-style";
+	style.textContent = "ul.svelte-1jg2c03.svelte-1jg2c03{list-style-type:none;margin:0;padding:0;text-align:center}header.svelte-1jg2c03.svelte-1jg2c03{height:2em;display:flex;align-items:center}header.svelte-1jg2c03 img.svelte-1jg2c03{height:2em;padding:0.2em;margin-left:0.2em}header.svelte-1jg2c03 ul.svelte-1jg2c03{margin-left:auto;margin-right:1em;display:flex}main.svelte-1jg2c03.svelte-1jg2c03{display:flex}.editor-container.svelte-1jg2c03.svelte-1jg2c03{display:flex;flex-direction:column;align-items:center;height:calc(100vh - 2.5em);width:calc(100vw - 3.5em);margin:0px;padding:0px;overflow:hidden}.editor-container.half.svelte-1jg2c03.svelte-1jg2c03{width:50vw}";
 	append(document.head, style);
 }
 
-// (74:8) {#if play}
+// (32:8) {#if play}
 function create_if_block_1(ctx) {
 	let li;
 	let afbutton;
@@ -75,7 +76,7 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (103:4) {#if play}
+// (49:4) {#if play}
 function create_if_block(ctx) {
 	let viewer_1;
 	let current;
@@ -119,31 +120,22 @@ function create_fragment(ctx) {
 	let img;
 	let img_src_value;
 	let t1;
-	let ul0;
+	let ul;
 	let t2;
-	let li0;
-	let afbutton0;
+	let li;
+	let afbutton;
 	let t3;
 	let main;
-	let nav;
-	let ul1;
-	let li1;
-	let afbutton1;
+	let toolbar;
 	let t4;
-	let li2;
-	let afbutton2;
-	let t5;
-	let li3;
-	let afbutton3;
-	let t6;
 	let div;
 	let vimeditor;
 	let div_class_value;
-	let t7;
+	let t5;
 	let current;
 	let if_block0 = /*play*/ ctx[1] && create_if_block_1(ctx);
 
-	afbutton0 = new AFButton({
+	afbutton = new AFButton({
 			props: {
 				kind: "primary",
 				aspect: "basic",
@@ -154,39 +146,8 @@ function create_fragment(ctx) {
 			}
 		});
 
-	afbutton0.$on("click", /*togglePlay*/ ctx[4]);
-
-	afbutton1 = new AFButton({
-			props: {
-				kind: "primary",
-				aspect: "basic",
-				icon: "components",
-				label: "Components",
-				size: "small",
-				active: true
-			}
-		});
-
-	afbutton2 = new AFButton({
-			props: {
-				kind: "primary",
-				aspect: "basic",
-				icon: "globe",
-				label: "Data",
-				size: "small"
-			}
-		});
-
-	afbutton3 = new AFButton({
-			props: {
-				kind: "primary",
-				aspect: "basic",
-				icon: "libraries",
-				label: "Libraries",
-				size: "small"
-			}
-		});
-
+	afbutton.$on("click", /*togglePlay*/ ctx[4]);
+	toolbar = new Toolbar({});
 	vimeditor = new VimEditor({ props: { context: /*context*/ ctx[0] } });
 	vimeditor.$on("save", /*refreshViewer*/ ctx[5]);
 	let if_block1 = /*play*/ ctx[1] && create_if_block(ctx);
@@ -198,42 +159,28 @@ function create_fragment(ctx) {
 			header = element("header");
 			img = element("img");
 			t1 = space();
-			ul0 = element("ul");
+			ul = element("ul");
 			if (if_block0) if_block0.c();
 			t2 = space();
-			li0 = element("li");
-			create_component(afbutton0.$$.fragment);
+			li = element("li");
+			create_component(afbutton.$$.fragment);
 			t3 = space();
 			main = element("main");
-			nav = element("nav");
-			ul1 = element("ul");
-			li1 = element("li");
-			create_component(afbutton1.$$.fragment);
+			create_component(toolbar.$$.fragment);
 			t4 = space();
-			li2 = element("li");
-			create_component(afbutton2.$$.fragment);
-			t5 = space();
-			li3 = element("li");
-			create_component(afbutton3.$$.fragment);
-			t6 = space();
 			div = element("div");
 			create_component(vimeditor.$$.fragment);
-			t7 = space();
+			t5 = space();
 			if (if_block1) if_block1.c();
 			attr(link, "rel", "stylesheet");
 			attr(link, "href", "/db/my-app/abfab/pastanaga/pastanaga.css");
 			if (img.src !== (img_src_value = "/db/my-app/abfab/abfab.svg")) attr(img, "src", img_src_value);
 			attr(img, "alt", "AbFab logo");
-			attr(img, "class", "svelte-1iuaeqf");
-			attr(ul0, "class", "svelte-1iuaeqf");
-			attr(header, "class", "svelte-1iuaeqf");
-			attr(li1, "class", "svelte-1iuaeqf");
-			attr(li2, "class", "svelte-1iuaeqf");
-			attr(li3, "class", "svelte-1iuaeqf");
-			attr(ul1, "class", "svelte-1iuaeqf");
-			attr(nav, "class", "svelte-1iuaeqf");
-			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1iuaeqf");
-			attr(main, "class", "svelte-1iuaeqf");
+			attr(img, "class", "svelte-1jg2c03");
+			attr(ul, "class", "svelte-1jg2c03");
+			attr(header, "class", "svelte-1jg2c03");
+			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1jg2c03");
+			attr(main, "class", "svelte-1jg2c03");
 		},
 		m(target, anchor) {
 			append(document.head, link);
@@ -241,27 +188,18 @@ function create_fragment(ctx) {
 			insert(target, header, anchor);
 			append(header, img);
 			append(header, t1);
-			append(header, ul0);
-			if (if_block0) if_block0.m(ul0, null);
-			append(ul0, t2);
-			append(ul0, li0);
-			mount_component(afbutton0, li0, null);
+			append(header, ul);
+			if (if_block0) if_block0.m(ul, null);
+			append(ul, t2);
+			append(ul, li);
+			mount_component(afbutton, li, null);
 			insert(target, t3, anchor);
 			insert(target, main, anchor);
-			append(main, nav);
-			append(nav, ul1);
-			append(ul1, li1);
-			mount_component(afbutton1, li1, null);
-			append(ul1, t4);
-			append(ul1, li2);
-			mount_component(afbutton2, li2, null);
-			append(ul1, t5);
-			append(ul1, li3);
-			mount_component(afbutton3, li3, null);
-			append(main, t6);
+			mount_component(toolbar, main, null);
+			append(main, t4);
 			append(main, div);
 			mount_component(vimeditor, div, null);
-			append(main, t7);
+			append(main, t5);
 			if (if_block1) if_block1.m(main, null);
 			current = true;
 		},
@@ -277,7 +215,7 @@ function create_fragment(ctx) {
 					if_block0 = create_if_block_1(ctx);
 					if_block0.c();
 					transition_in(if_block0, 1);
-					if_block0.m(ul0, t2);
+					if_block0.m(ul, t2);
 				}
 			} else if (if_block0) {
 				group_outros();
@@ -289,14 +227,14 @@ function create_fragment(ctx) {
 				check_outros();
 			}
 
-			const afbutton0_changes = {};
-			if (dirty & /*play*/ 2) afbutton0_changes.active = /*play*/ ctx[1];
-			afbutton0.$set(afbutton0_changes);
+			const afbutton_changes = {};
+			if (dirty & /*play*/ 2) afbutton_changes.active = /*play*/ ctx[1];
+			afbutton.$set(afbutton_changes);
 			const vimeditor_changes = {};
 			if (dirty & /*context*/ 1) vimeditor_changes.context = /*context*/ ctx[0];
 			vimeditor.$set(vimeditor_changes);
 
-			if (!current || dirty & /*play*/ 2 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1iuaeqf")) {
+			if (!current || dirty & /*play*/ 2 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1jg2c03")) {
 				attr(div, "class", div_class_value);
 			}
 
@@ -326,20 +264,16 @@ function create_fragment(ctx) {
 		i(local) {
 			if (current) return;
 			transition_in(if_block0);
-			transition_in(afbutton0.$$.fragment, local);
-			transition_in(afbutton1.$$.fragment, local);
-			transition_in(afbutton2.$$.fragment, local);
-			transition_in(afbutton3.$$.fragment, local);
+			transition_in(afbutton.$$.fragment, local);
+			transition_in(toolbar.$$.fragment, local);
 			transition_in(vimeditor.$$.fragment, local);
 			transition_in(if_block1);
 			current = true;
 		},
 		o(local) {
 			transition_out(if_block0);
-			transition_out(afbutton0.$$.fragment, local);
-			transition_out(afbutton1.$$.fragment, local);
-			transition_out(afbutton2.$$.fragment, local);
-			transition_out(afbutton3.$$.fragment, local);
+			transition_out(afbutton.$$.fragment, local);
+			transition_out(toolbar.$$.fragment, local);
 			transition_out(vimeditor.$$.fragment, local);
 			transition_out(if_block1);
 			current = false;
@@ -349,12 +283,10 @@ function create_fragment(ctx) {
 			if (detaching) detach(t0);
 			if (detaching) detach(header);
 			if (if_block0) if_block0.d();
-			destroy_component(afbutton0);
+			destroy_component(afbutton);
 			if (detaching) detach(t3);
 			if (detaching) detach(main);
-			destroy_component(afbutton1);
-			destroy_component(afbutton2);
-			destroy_component(afbutton3);
+			destroy_component(toolbar);
 			destroy_component(vimeditor);
 			if (if_block1) if_block1.d();
 		}
@@ -374,7 +306,9 @@ function instance($$self, $$props, $$invalidate) {
 	}
 
 	function refreshViewer() {
-		viewer.refresh();
+		if (viewer) {
+			viewer.refresh();
+		}
 	}
 
 	function viewer_1_binding($$value) {
@@ -402,7 +336,7 @@ function instance($$self, $$props, $$invalidate) {
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document.getElementById("svelte-1iuaeqf-style")) add_css();
+		if (!document.getElementById("svelte-1jg2c03-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, { context: 0 });
 	}
 }

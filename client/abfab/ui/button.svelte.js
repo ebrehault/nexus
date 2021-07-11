@@ -15,51 +15,80 @@ import {
 	space,
 	svg_element,
 	text,
+	toggle_class,
 	xlink_attr
 } from "/db/my-app/node_modules/svelte/internal/index.mjs";
 
-function create_fragment(ctx) {
-	let button;
-	let span1;
+function create_if_block(ctx) {
 	let pa_icon;
 	let svg;
 	let use;
 	let use_xlink_href_value;
 	let svg_class_value;
+
+	return {
+		c() {
+			pa_icon = element("pa-icon");
+			svg = svg_element("svg");
+			use = svg_element("use");
+			xlink_attr(use, "xlink:href", use_xlink_href_value = "/db/my-app/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1]);
+			attr(svg, "class", svg_class_value = "pa-" + /*size*/ ctx[2]);
+		},
+		m(target, anchor) {
+			insert(target, pa_icon, anchor);
+			append(pa_icon, svg);
+			append(svg, use);
+		},
+		p(ctx, dirty) {
+			if (dirty & /*icon*/ 2 && use_xlink_href_value !== (use_xlink_href_value = "/db/my-app/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1])) {
+				xlink_attr(use, "xlink:href", use_xlink_href_value);
+			}
+
+			if (dirty & /*size*/ 4 && svg_class_value !== (svg_class_value = "pa-" + /*size*/ ctx[2])) {
+				attr(svg, "class", svg_class_value);
+			}
+		},
+		d(detaching) {
+			if (detaching) detach(pa_icon);
+		}
+	};
+}
+
+function create_fragment(ctx) {
+	let button;
+	let span1;
 	let t0;
 	let span0;
 	let t1;
 	let button_class_value;
 	let mounted;
 	let dispose;
+	let if_block = /*icon*/ ctx[1] && create_if_block(ctx);
 
 	return {
 		c() {
 			button = element("button");
 			span1 = element("span");
-			pa_icon = element("pa-icon");
-			svg = svg_element("svg");
-			use = svg_element("use");
+			if (if_block) if_block.c();
 			t0 = space();
 			span0 = element("span");
 			t1 = text(/*label*/ ctx[0]);
-			xlink_attr(use, "xlink:href", use_xlink_href_value = "/db/my-app/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1]);
-			attr(svg, "class", svg_class_value = "pa-" + /*size*/ ctx[2]);
-			attr(span0, "class", "pa-button-label pa-sr-only");
+			attr(span0, "class", "pa-button-label");
+			toggle_class(span0, "pa-sr-only", !!/*icon*/ ctx[1]);
 			attr(span1, "tabindex", "-1");
 			attr(span1, "class", "pa-button-wrapper");
-			attr(button, "class", button_class_value = "pa-button pa-" + /*size*/ ctx[2] + " pa-" + /*kind*/ ctx[4] + " pa-" + /*aspect*/ ctx[3] + " " + (/*active*/ ctx[5] ? "pa-active" : "") + " pa-button-icon");
+			attr(button, "class", button_class_value = "pa-button pa-" + /*size*/ ctx[2] + " pa-" + /*kind*/ ctx[4] + " pa-" + /*aspect*/ ctx[3]);
 			attr(button, "type", "button");
 			attr(button, "aria-label", /*label*/ ctx[0]);
 			attr(button, "tabindex", "0");
 			button.disabled = /*disabled*/ ctx[6];
+			toggle_class(button, "pa-active", /*active*/ ctx[5]);
+			toggle_class(button, "pa-button-icon", /*icon*/ ctx[1]);
 		},
 		m(target, anchor) {
 			insert(target, button, anchor);
 			append(button, span1);
-			append(span1, pa_icon);
-			append(pa_icon, svg);
-			append(svg, use);
+			if (if_block) if_block.m(span1, null);
 			append(span1, t0);
 			append(span1, span0);
 			append(span0, t1);
@@ -70,17 +99,26 @@ function create_fragment(ctx) {
 			}
 		},
 		p(ctx, [dirty]) {
-			if (dirty & /*icon*/ 2 && use_xlink_href_value !== (use_xlink_href_value = "/db/my-app/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1])) {
-				xlink_attr(use, "xlink:href", use_xlink_href_value);
-			}
-
-			if (dirty & /*size*/ 4 && svg_class_value !== (svg_class_value = "pa-" + /*size*/ ctx[2])) {
-				attr(svg, "class", svg_class_value);
+			if (/*icon*/ ctx[1]) {
+				if (if_block) {
+					if_block.p(ctx, dirty);
+				} else {
+					if_block = create_if_block(ctx);
+					if_block.c();
+					if_block.m(span1, t0);
+				}
+			} else if (if_block) {
+				if_block.d(1);
+				if_block = null;
 			}
 
 			if (dirty & /*label*/ 1) set_data(t1, /*label*/ ctx[0]);
 
-			if (dirty & /*size, kind, aspect, active*/ 60 && button_class_value !== (button_class_value = "pa-button pa-" + /*size*/ ctx[2] + " pa-" + /*kind*/ ctx[4] + " pa-" + /*aspect*/ ctx[3] + " " + (/*active*/ ctx[5] ? "pa-active" : "") + " pa-button-icon")) {
+			if (dirty & /*icon*/ 2) {
+				toggle_class(span0, "pa-sr-only", !!/*icon*/ ctx[1]);
+			}
+
+			if (dirty & /*size, kind, aspect*/ 28 && button_class_value !== (button_class_value = "pa-button pa-" + /*size*/ ctx[2] + " pa-" + /*kind*/ ctx[4] + " pa-" + /*aspect*/ ctx[3])) {
 				attr(button, "class", button_class_value);
 			}
 
@@ -91,11 +129,20 @@ function create_fragment(ctx) {
 			if (dirty & /*disabled*/ 64) {
 				button.disabled = /*disabled*/ ctx[6];
 			}
+
+			if (dirty & /*size, kind, aspect, active*/ 60) {
+				toggle_class(button, "pa-active", /*active*/ ctx[5]);
+			}
+
+			if (dirty & /*size, kind, aspect, icon*/ 30) {
+				toggle_class(button, "pa-button-icon", /*icon*/ ctx[1]);
+			}
 		},
 		i: noop,
 		o: noop,
 		d(detaching) {
 			if (detaching) detach(button);
+			if (if_block) if_block.d();
 			mounted = false;
 			dispose();
 		}

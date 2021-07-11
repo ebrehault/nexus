@@ -92,7 +92,7 @@ def upload_folder(path, root):
         remote_content_path = os.path.join(path, content)
         if os.path.isdir(local_content_path):
             upload_folder(remote_content_path, root)
-        elif not args.svelteOnly or content.endswith('.svelte') or content.endswith('.svelte.js'):
+        elif not args.svelteOnly or content.endswith('.svelte') or content.endswith('.js'):
             create_file(remote_content_path, local_content_path)
 
 def compile_svelte(path):

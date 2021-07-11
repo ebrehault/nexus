@@ -15,6 +15,10 @@ import {
 	transition_out
 } from "/db/my-app/node_modules/svelte/internal/index.mjs";
 
+import { AbFabStore } from "/db/my-app/abfab/api.js";
+import { onDestroy } from "/db/my-app/node_modules/svelte/index.mjs";
+import { derived } from "/db/my-app/node_modules/svelte/store/index.mjs";
+
 function create_fragment(ctx) {
 	let switch_instance;
 	let switch_instance_anchor;
@@ -124,11 +128,11 @@ function instance($$self, $$props, $$invalidate) {
 		}
 
 		event.preventDefault();
-		history.pushState({}, "", href);
 		navigate(href);
 	});
 
 	async function navigate(href) {
+		history.pushState({}, "", href);
 		const [path, query] = href.split("?");
 		const response = await fetch(`${path}/@default`);
 		const fullObject = await response.json();
@@ -150,6 +154,20 @@ function instance($$self, $$props, $$invalidate) {
 			}
 		}
 	}
+
+	const subscriptions = [];
+	const _location = derived(AbFabStore, state => state.location);
+	subscriptions.push(_location.subscribe(value => navigate(value)));
+	const _logged = derived(AbFabStore, state => state.logged);
+
+	subscriptions.push(_logged.subscribe(isLogged => {
+		if (!isLogged) {
+			localStorage.removeItem("auth");
+			navigate("/db/my-app/abfab/login/login.svelte");
+		}
+	}));
+
+	onDestroy(() => subscriptions.map(unsubscribe => unsubscribe()));
 
 	$$self.$$set = $$props => {
 		if ("component" in $$props) $$invalidate(0, component = $$props.component);
