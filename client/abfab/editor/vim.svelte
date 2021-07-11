@@ -5,6 +5,21 @@
     import { onMount } from 'svelte';
     import { saveFile } from '../api.js';
     import { createEventDispatcher } from 'svelte';
+    import AFButton from '../ui/button.svelte';
+    let error;
+    let warnings = [];
+    $: hasError = !!error || warnings.length > 0;
+    $: if (hasError) {
+        updateErrors();
+    }
+    function discardErrors() {
+        error = undefined;
+        warnings = [];
+        updateErrors();
+    }
+    function updateErrors() {
+        window.dispatchEvent(new Event('resize'));
+    }
 
 	const dispatch = createEventDispatcher();
 
@@ -64,20 +79,35 @@
     
         vim.onFileExport = (fullpath, contents) => {
             const ABFAB_ROOT = '/db/my-app';
-            saveFile(fullpath, contents).then(() => {
-                if (isSvelte) {
+            let js = '';
+            if (isSvelte) {
+                try {
                     const decoder = new TextDecoder('utf-8');
                     const source = decoder.decode(contents);
-                    const { js } = compile(source, {
+                    const result = compile(source, {
                         sveltePath: ABFAB_ROOT + '/node_modules/svelte',
                     });
-                    const jsFilePath = fullpath + '.js';
-                    saveFile(jsFilePath, js.code.replace(RE, 'from "$1/index.mjs";'))
-                        .then(() => dispatch('save', {file: fullpath}));
-                } else {
-                    dispatch('save', {file: fullpath});
+                    error = undefined;
+                    js = result.js;
+                    warnings = result.warnings;
+                    if (warnings.length === 0) {
+                        updateErrors();
+                    }
+                } catch (e) {
+                    error = e;
                 }
-            });
+            }
+            if (!error) {
+                saveFile(fullpath, contents).then(() => {
+                    if (isSvelte) {
+                        const jsFilePath = fullpath + '.js';
+                        saveFile(jsFilePath, js.code.replace(RE, 'from "$1/index.mjs";'))
+                            .then(() => dispatch('save', {file: fullpath}));
+                    } else {
+                        dispatch('save', {file: fullpath});
+                    }
+                });
+            }
         };
     
         vim.readClipboard = navigator.clipboard.readText;
@@ -114,6 +144,9 @@
         height: 100%;
         background-color: #282c33;
     }
+    #vim-editor.has-error {
+        height: 80%;
+    }
 
     #vim-canvas {
         padding: 0px;
@@ -133,11 +166,59 @@
         top: 0px;
         left: 0px;
     }
+    .errors-container {
+        overflow: auto;
+        position: relative;
+    }
+    .errors {
+        height: 100%;
+        overflow: auto;
+        font-size: var(--font-size-xs);
+    }
+    .errors div {
+        color: var(--color-accent-primary-lightest);
+        padding: 0.25em;
+    }
+    .errors .error {
+        background-color: var(--color-accent-secondary-dark);
+    }
+    .errors .warning {
+        background-color: var(--color-accent-secondary-default);
+    }
+    .errors code {
+        display: block;
+        white-space: pre-wrap;
+        padding: 0.25em;
+        margin: 0.25em;
+        color: var(--color-neutral-primary-lighter);
+    }
+    .discard-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.25em;
+    }
 </style>
-<div id="vim-editor">
+<div id="vim-editor" class:has-error={hasError}>
     <canvas id="vim-canvas"></canvas>
     <input id="vim-input"
             autocomplete="off"
             autofocus />
-    
 </div>
+{#if hasError }
+<div class="errors-container">
+    <span class="discard-button">
+        <AFButton aspect="solid" icon="cross" label="Discard" size="small"
+            on:click={discardErrors}/>
+    </span>
+    <div class="errors">
+        {#if error} <div class="error">{error.message}<code>{error.frame}</code></div>{/if}
+        {#each warnings as warning}
+        <div class="warning">
+            {warning.message}
+            <code>{warning.frame}</code>
+        </div>
+        {/each}
+    </div>
+</div>
+{/if}

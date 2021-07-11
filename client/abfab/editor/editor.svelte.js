@@ -27,8 +27,8 @@ import Toolbar from "./toolbar.svelte";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-1jg2c03-style";
-	style.textContent = "ul.svelte-1jg2c03.svelte-1jg2c03{list-style-type:none;margin:0;padding:0;text-align:center}header.svelte-1jg2c03.svelte-1jg2c03{height:2em;display:flex;align-items:center}header.svelte-1jg2c03 img.svelte-1jg2c03{height:2em;padding:0.2em;margin-left:0.2em}header.svelte-1jg2c03 ul.svelte-1jg2c03{margin-left:auto;margin-right:1em;display:flex}main.svelte-1jg2c03.svelte-1jg2c03{display:flex}.editor-container.svelte-1jg2c03.svelte-1jg2c03{display:flex;flex-direction:column;align-items:center;height:calc(100vh - 2.5em);width:calc(100vw - 3.5em);margin:0px;padding:0px;overflow:hidden}.editor-container.half.svelte-1jg2c03.svelte-1jg2c03{width:50vw}";
+	style.id = "svelte-z6ft2h-style";
+	style.textContent = "ul.svelte-z6ft2h.svelte-z6ft2h{list-style-type:none;margin:0;padding:0;text-align:center}header.svelte-z6ft2h.svelte-z6ft2h{height:2em;display:flex;align-items:center}header.svelte-z6ft2h img.svelte-z6ft2h{height:2em;padding:0.2em;margin-left:0.2em}header.svelte-z6ft2h ul.svelte-z6ft2h{margin-left:auto;margin-right:1em;display:flex}main.svelte-z6ft2h.svelte-z6ft2h{display:flex}.editor-container.svelte-z6ft2h.svelte-z6ft2h{display:flex;flex-direction:column;height:calc(100vh - 2.5em);width:calc(100vw - 3.5em);margin:0px;padding:0px;overflow:hidden}.editor-container.half.svelte-z6ft2h.svelte-z6ft2h{width:50vw}";
 	append(document.head, style);
 }
 
@@ -176,11 +176,11 @@ function create_fragment(ctx) {
 			attr(link, "href", "/db/my-app/abfab/pastanaga/pastanaga.css");
 			if (img.src !== (img_src_value = "/db/my-app/abfab/abfab.svg")) attr(img, "src", img_src_value);
 			attr(img, "alt", "AbFab logo");
-			attr(img, "class", "svelte-1jg2c03");
-			attr(ul, "class", "svelte-1jg2c03");
-			attr(header, "class", "svelte-1jg2c03");
-			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1jg2c03");
-			attr(main, "class", "svelte-1jg2c03");
+			attr(img, "class", "svelte-z6ft2h");
+			attr(ul, "class", "svelte-z6ft2h");
+			attr(header, "class", "svelte-z6ft2h");
+			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-z6ft2h");
+			attr(main, "class", "svelte-z6ft2h");
 		},
 		m(target, anchor) {
 			append(document.head, link);
@@ -234,7 +234,7 @@ function create_fragment(ctx) {
 			if (dirty & /*context*/ 1) vimeditor_changes.context = /*context*/ ctx[0];
 			vimeditor.$set(vimeditor_changes);
 
-			if (!current || dirty & /*play*/ 2 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-1jg2c03")) {
+			if (!current || dirty & /*play*/ 2 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-z6ft2h")) {
 				attr(div, "class", div_class_value);
 			}
 
@@ -336,7 +336,7 @@ function instance($$self, $$props, $$invalidate) {
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document.getElementById("svelte-1jg2c03-style")) add_css();
+		if (!document.getElementById("svelte-z6ft2h-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, { context: 0 });
 	}
 }

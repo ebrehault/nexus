@@ -78,7 +78,6 @@
     .editor-container {
         display: flex;
         flex-direction: column;
-        align-items: center;
         height: calc(100vh - 2.5em);
         width: calc(100vw - 3.5em);
         margin: 0px;
