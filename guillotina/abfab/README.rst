@@ -35,6 +35,10 @@ Create contents
 ---------------
 
     curl -i -X POST http://localhost:8080/db/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "Container", "description": "My abfab app", "id": "my-app", "title": "MyApp"}' --user root:root
+    curl http://localhost:8080/db/my-app/@addons --user root:root -X POST -H 'Accept: application/json' --data-raw '{
+        "id": "dbusers"
+    }'
+
     curl -i -X POST http://localhost:8080/db/my-app/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "Directory", "id": "pack1"}' --user root:root
     curl -i -X POST http://localhost:8080/db/my-app/pack1/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "File", "id": "test.js", "source": "console.log('yep');"}' --user root:root
     curl -i -X POST http://localhost:8080/db/my-app/pack1/ -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"@type": "File", "id": "test.js"}' --user root:root

@@ -3,6 +3,7 @@ applications:
     - abfab
     - guillotina.contrib.catalog.pg
     - guillotina.contrib.swagger
+    - guillotina.contrib.dbusers
 databases:
     db:
         storage: postgresql
