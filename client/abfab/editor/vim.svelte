@@ -89,8 +89,9 @@
                     });
                     error = undefined;
                     js = result.js;
+                    const warningsFixed = result.warnings.length === 0 && warnings.length > 0;
                     warnings = result.warnings;
-                    if (warnings.length === 0) {
+                    if (warningsFixed) {
                         updateErrors();
                     }
                 } catch (e) {

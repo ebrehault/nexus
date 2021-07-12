@@ -50,7 +50,7 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (208:0) {#if hasError }
+// (209:0) {#if hasError }
 function create_if_block(ctx) {
 	let div1;
 	let span;
@@ -166,7 +166,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (215:8) {#if error}
+// (216:8) {#if error}
 function create_if_block_1(ctx) {
 	let div;
 	let t0_value = /*error*/ ctx[0].message + "";
@@ -200,7 +200,7 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (216:8) {#each warnings as warning}
+// (217:8) {#each warnings as warning}
 function create_each_block(ctx) {
 	let div;
 	let t0_value = /*warning*/ ctx[7].message + "";
@@ -405,9 +405,10 @@ function instance($$self, $$props, $$invalidate) {
 
 					$$invalidate(0, error = undefined);
 					js = result.js;
+					const warningsFixed = result.warnings.length === 0 && warnings.length > 0;
 					$$invalidate(1, warnings = result.warnings);
 
-					if (warnings.length === 0) {
+					if (warningsFixed) {
 						updateErrors();
 					}
 				} catch(e) {

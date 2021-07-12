@@ -62,7 +62,11 @@
 
     const subscriptions = [];
     const _location = derived(AbFabStore, (state) => state.location);
-    subscriptions.push(_location.subscribe(value => navigate(value)));
+    subscriptions.push(_location.subscribe(value => {
+        if(value) {
+            navigate(value);
+        }
+    }));
 
     const _logged = derived(AbFabStore, (state) => state.logged);
     subscriptions.push(_logged.subscribe(isLogged => {
