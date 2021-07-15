@@ -4,6 +4,7 @@ import {
 	append,
 	attr,
 	check_outros,
+	component_subscribe,
 	create_component,
 	destroy_component,
 	destroy_each,
@@ -33,8 +34,9 @@ import {
 
 import { compile } from "/db/my-app/node_modules/svelte/compiler.mjs";
 import { onMount } from "/db/my-app/node_modules/svelte/index.mjs";
-import { saveFile } from "../api.js";
-import { createEventDispatcher } from "/db/my-app/node_modules/svelte/index.mjs";
+import { derived } from "/db/my-app/node_modules/svelte/store/index.mjs";
+import { saveFile, EditorStore } from "./editor.js";
+import { createEventDispatcher, onDestroy } from "/db/my-app/node_modules/svelte/index.mjs";
 import AFButton from "../ui/button.svelte";
 
 function add_css() {
@@ -46,11 +48,11 @@ function add_css() {
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[7] = list[i];
+	child_ctx[10] = list[i];
 	return child_ctx;
 }
 
-// (209:0) {#if hasError }
+// (221:0) {#if hasError }
 function create_if_block(ctx) {
 	let div1;
 	let span;
@@ -166,7 +168,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (216:8) {#if error}
+// (228:8) {#if error}
 function create_if_block_1(ctx) {
 	let div;
 	let t0_value = /*error*/ ctx[0].message + "";
@@ -200,14 +202,14 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (217:8) {#each warnings as warning}
+// (229:8) {#each warnings as warning}
 function create_each_block(ctx) {
 	let div;
-	let t0_value = /*warning*/ ctx[7].message + "";
+	let t0_value = /*warning*/ ctx[10].message + "";
 	let t0;
 	let t1;
 	let code;
-	let t2_value = /*warning*/ ctx[7].frame + "";
+	let t2_value = /*warning*/ ctx[10].frame + "";
 	let t2;
 	let t3;
 
@@ -231,8 +233,8 @@ function create_each_block(ctx) {
 			append(div, t3);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*warnings*/ 2 && t0_value !== (t0_value = /*warning*/ ctx[7].message + "")) set_data(t0, t0_value);
-			if (dirty & /*warnings*/ 2 && t2_value !== (t2_value = /*warning*/ ctx[7].frame + "")) set_data(t2, t2_value);
+			if (dirty & /*warnings*/ 2 && t0_value !== (t0_value = /*warning*/ ctx[10].message + "")) set_data(t0, t0_value);
+			if (dirty & /*warnings*/ 2 && t2_value !== (t2_value = /*warning*/ ctx[10].frame + "")) set_data(t2, t2_value);
 		},
 		d(detaching) {
 			if (detaching) detach(div);
@@ -320,9 +322,13 @@ function updateErrors() {
 
 function instance($$self, $$props, $$invalidate) {
 	let hasError;
+	let $EditorStore;
+	component_subscribe($$self, EditorStore, $$value => $$invalidate(7, $EditorStore = $$value));
 	let { context } = $$props;
 	let error;
 	let warnings = [];
+	let vim;
+	let pathname = location.pathname.replace("/@edit", "");
 
 	function discardErrors() {
 		$$invalidate(0, error = undefined);
@@ -332,14 +338,9 @@ function instance($$self, $$props, $$invalidate) {
 
 	const dispatch = createEventDispatcher();
 
-	onMount(() => {
-		initVim();
-	});
-
 	function initVim() {
 		console.log(`Wheels on fire,\nRolling down the road.\nBest notify my next of kin\nThis wheel shall explode!\n\n`);
 		const RE = new RegExp(/from "(.+\/svelte(\/\w+){0,1})";/g);
-		const pathname = location.pathname.replace("/@edit", "");
 		const filename = pathname.split("/").pop();
 		const isSvelte = filename.endsWith(".svelte");
 		const errmsg = checkBrowserCompatibility();
@@ -350,11 +351,11 @@ function instance($$self, $$props, $$invalidate) {
 
 		const screenCanvasElement = document.getElementById("vim-canvas");
 
-		const vim = new VimWasm({
+		$$invalidate(5, vim = new VimWasm({
 				canvas: screenCanvasElement,
 				input: document.getElementById("vim-input"),
 				workerScriptPath: "/db/my-app/node_modules/vim-wasm/vim.js"
-			});
+			}));
 
 		// Handle drag and drop
 		function cancel(e) {
@@ -386,51 +387,59 @@ function instance($$self, $$props, $$invalidate) {
 			false
 		);
 
-		vim.onVimExit = status => {
-			alert(`Vim exited with status ${status}`);
-		};
+		$$invalidate(
+			5,
+			vim.onVimExit = status => {
+				alert(`Vim exited with status ${status}`);
+			},
+			vim
+		);
 
-		vim.onFileExport = (fullpath, contents) => {
-			const ABFAB_ROOT = "/db/my-app";
-			let js = "";
+		$$invalidate(
+			5,
+			vim.onFileExport = (fullpath, contents) => {
+				const ABFAB_ROOT = "/db/my-app";
+				let js = "";
 
-			if (isSvelte) {
-				try {
-					const decoder = new TextDecoder("utf-8");
-					const source = decoder.decode(contents);
+				if (isSvelte) {
+					try {
+						const decoder = new TextDecoder("utf-8");
+						const source = decoder.decode(contents);
 
-					const result = compile(source, {
-						sveltePath: ABFAB_ROOT + "/node_modules/svelte"
-					});
+						const result = compile(source, {
+							sveltePath: ABFAB_ROOT + "/node_modules/svelte"
+						});
 
-					$$invalidate(0, error = undefined);
-					js = result.js;
-					const warningsFixed = result.warnings.length === 0 && warnings.length > 0;
-					$$invalidate(1, warnings = result.warnings);
+						$$invalidate(0, error = undefined);
+						js = result.js;
+						const warningsFixed = result.warnings.length === 0 && warnings.length > 0;
+						$$invalidate(1, warnings = result.warnings);
 
-					if (warningsFixed) {
-						updateErrors();
+						if (warningsFixed) {
+							updateErrors();
+						}
+					} catch(e) {
+						$$invalidate(0, error = e);
 					}
-				} catch(e) {
-					$$invalidate(0, error = e);
 				}
-			}
 
-			if (!error) {
-				saveFile(fullpath, contents).then(() => {
-					if (isSvelte) {
-						const jsFilePath = fullpath + ".js";
-						saveFile(jsFilePath, js.code.replace(RE, "from \"$1/index.mjs\";")).then(() => dispatch("save", { file: fullpath }));
-					} else {
-						dispatch("save", { file: fullpath });
-					}
-				});
-			}
-		};
+				if (!error) {
+					saveFile(fullpath, contents).then(() => {
+						if (isSvelte) {
+							const jsFilePath = fullpath + ".js";
+							saveFile(jsFilePath, js.code.replace(RE, "from \"$1/index.mjs\";")).then(() => dispatch("save", { file: fullpath }));
+						} else {
+							dispatch("save", { file: fullpath });
+						}
+					});
+				}
+			},
+			vim
+		);
 
-		vim.readClipboard = navigator.clipboard.readText;
-		vim.onWriteClipboard = navigator.clipboard.writeText;
-		vim.onError = console.error;
+		$$invalidate(5, vim.readClipboard = navigator.clipboard.readText, vim);
+		$$invalidate(5, vim.onWriteClipboard = navigator.clipboard.writeText, vim);
+		$$invalidate(5, vim.onError = console.error, vim);
 		const options = ["set number"];
 
 		if (isSvelte) {
@@ -443,13 +452,11 @@ function instance($$self, $$props, $$invalidate) {
 		vim.start({
 			// cmdArgs: ['/test.svelte', '-c', 'set number\nset filetype=html'],
 			cmdArgs: [pathname, "-c", options.join("\n")],
-			dirs: folder.reduce(
-				(all, dir, index) => {
-					all.push(folder.slice(0, index).join("/"));
-					return all;
-				},
-				[]
-			).slice(2),
+			dirs: $EditorStore.dirs,
+			// dirs: folder.reduce((all, dir, index) => {
+			//     all.push(folder.slice(0, index).join('/'));
+			//     return all;
+			// }, []).slice(2),
 			// fetchFiles: { [location.pathname]: 'http://localhost:8080/db/my-app/views/component/render.js' },
 			files: { [pathname]: context }, //     '/test.svelte': '<h1>hello, world!</h1>',
 			//     // '/.vim/vimrc': 'set number\nset noexpandtab\nau BufRead,BufNewFile *.svelte set filetype=html',
@@ -462,6 +469,12 @@ function instance($$self, $$props, $$invalidate) {
 	};
 
 	$$self.$$.update = () => {
+		if ($$self.$$.dirty & /*vim, $EditorStore*/ 160) {
+			$: if (!vim && $EditorStore.dirs.length > 0) {
+				initVim();
+			}
+		}
+
 		if ($$self.$$.dirty & /*error, warnings*/ 3) {
 			$: $$invalidate(2, hasError = !!error || warnings.length > 0);
 		}
@@ -471,9 +484,21 @@ function instance($$self, $$props, $$invalidate) {
 				updateErrors();
 			}
 		}
+
+		if ($$self.$$.dirty & /*vim, pathname, context*/ 112) {
+			$: if (vim) {
+				const _pathname = location.pathname.replace("/@edit", "");
+
+				if (_pathname !== pathname) {
+					const enc = new TextEncoder();
+					vim.dropFile(_pathname.slice(1), enc.encode(context));
+					$$invalidate(6, pathname = _pathname);
+				}
+			}
+		}
 	};
 
-	return [error, warnings, hasError, discardErrors, context];
+	return [error, warnings, hasError, discardErrors, context, vim, pathname, $EditorStore];
 }
 
 class Component extends SvelteComponent {

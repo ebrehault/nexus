@@ -1,5 +1,5 @@
 <script>
-    import { AbFabStore } from '/db/my-app/abfab/api.js';
+    import { AbFabStore } from '/db/my-app/abfab/core.js';
     import { onDestroy } from 'svelte';
     import { derived } from 'svelte/store';
 
@@ -42,22 +42,31 @@
     async function navigate(href) {
         history.pushState({}, '', href);
         const [path, query] = href.split('?');
-        const response = await fetch(`${path}/@default`);
-        const fullObject = await response.json();
-        if (fullObject['@type'] === 'Content') {
-            const module = await import(`/db/my-app${fullObject.view}`);
+        const auth = { Authorization: 'Bearer ' + localStorage.getItem('auth') };
+        if (path.endsWith('/@edit')) {
+            const response = await fetch(`${path.replace('/@edit', '')}?raw=true`, {headers: { ...auth }});
+            const code = await response.text();
+            const module = await import(`/db/my-app/abfab/editor/editor.svelte`);
+            context = code;
             component = module.default;
-            context = fullObject.data;
         } else {
-            const module = await import(fullObject['@id']);
-            component = module.default;
-            if (query) {
-                const queryContext = query.split('context=')[1];
-                if (queryContext) {
-                    context = JSON.parse(decodeURIComponent(queryContext));
+            const response = await fetch(`${path}/@default`, {headers: { ...auth }});
+            const fullObject = await response.json();
+            if (fullObject['@type'] === 'Content') {
+                const module = await import(`/db/my-app${fullObject.view}`);
+                component = module.default;
+                context = fullObject.data;
+            } else {
+                const module = await import(fullObject['@id']);
+                component = module.default;
+                if (query) {
+                    const queryContext = query.split('context=')[1];
+                    if (queryContext) {
+                        context = JSON.parse(decodeURIComponent(queryContext));
+                    }
                 }
-            }
-        }   
+            }   
+        }
     }
 
     const subscriptions = [];

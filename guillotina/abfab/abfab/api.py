@@ -3,11 +3,10 @@ from guillotina.component import get_multi_adapter
 from guillotina.behaviors.attachment import IAttachment
 from guillotina.api.content import DefaultGET
 from guillotina.response import HTTPFound
-from guillotina.interfaces import IFileManager
+from guillotina.interfaces import IFileManager, IContainer
 from guillotina.utils import get_current_container, navigate_to, get_object_url, get_content_path
 from abfab.content import IFile, IDirectory, IContent
 from urllib.parse import urlparse
-import json
 
 async def get_object_by_path(path):
     container = get_current_container()
@@ -102,15 +101,32 @@ async def run_editor(context, request):
     editor_view = await get_object_by_path('/abfab/editor/editor.svelte')
     return wrap_component(request, editor_view, '.?raw=true', 'text')
 
-@configure.service(context=IDirectory, method='GET', name='@tree',
+@configure.service(context=IDirectory, method='GET', name='@allfiles',
                    permission='guillotina.Public', allow_access=True)
-async def get_file_tree(context, request):
+async def get_all_files(context, request):
     children = []
     async for _, obj in context.async_items():
         children.append({"type": obj.type_name, "url": get_object_url(obj), "path": get_content_path(obj)})
         if obj.type_name == 'Directory':
-            sub = await get_file_tree(obj, request)
+            sub = await get_all_files(obj, request)
             children += sub
+    return children
+
+@configure.service(context=IDirectory, method='GET', name='@tree',
+                   permission='guillotina.Public', allow_access=True)
+@configure.service(context=IContainer, method='GET', name='@tree',
+                   permission='guillotina.Public', allow_access=True)
+async def get_tree(context, request, depth=3):
+    children = []
+    depth = depth - 1
+    async for _, obj in context.async_items():
+        data = {"type": obj.type_name, "path": get_content_path(obj)}
+        if obj.type_name == 'Directory':
+            if depth > 0:
+                data["children"] = await get_tree(obj, request, depth)
+            else:
+                data["not_loaded"] = True
+        children.append(data)
     return children
 
 @configure.service(context=IContent, method='GET', name='@default',

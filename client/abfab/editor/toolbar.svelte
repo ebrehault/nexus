@@ -1,9 +1,11 @@
 <script>
     import AFButton from '/db/my-app/abfab/ui/button.svelte';
-    import {AbFabStore} from '/db/my-app/abfab/api.js';
+    import {AbFabStore} from '../core.js';
+    import {EditorStore} from './editor.js';
     import { clickOutside } from '/db/my-app/abfab/ui/clickOutside.js';
 
     let showMore = false;
+    let showNavigation = false;
 
     function logout() {
         AbFabStore.update((state) => ({
@@ -11,17 +13,26 @@
             logged: false,
         }))
     }
+
+    function toggleNavigation() {
+        EditorStore.update((state) => {
+            showNavigation = !state.showNavigation;
+            return {
+                ...state,
+                showNavigation,
+            };
+        });
+        window.dispatchEvent(new Event('resize'));
+    }
 </script>
 <nav>
     <ul>
         <li>
-            <AFButton kind="primary" aspect="basic" icon="components" label="Components" size="small" active={true}/>
+            <AFButton kind="primary" aspect="basic" icon="folder" label="Explore" size="small"
+                      active={showNavigation} on:click={toggleNavigation} />
         </li>
         <li>
-            <AFButton kind="primary" aspect="basic" icon="globe" label="Data" size="small" />
-        </li>
-        <li>
-            <AFButton kind="primary" aspect="basic" icon="libraries" label="Libraries" size="small" />
+            <AFButton kind="primary" aspect="basic" icon="search" label="Search" size="small" />
         </li>
         <li class="more-button">
             <AFButton kind="primary" aspect="basic" icon="more-horizontal" label="Settings" size="small"

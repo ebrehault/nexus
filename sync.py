@@ -116,7 +116,7 @@ def download_file(obj, root):
 
 def download_folder(path, root):
     res = requests.get(
-        get_url(path) + "/@tree",
+        get_url(path) + "/@allfiles",
         headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
         auth=AUTH)
     for item in res.json():

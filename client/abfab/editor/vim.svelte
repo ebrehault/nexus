@@ -3,14 +3,30 @@
     import { VimWasm, checkBrowserCompatibility } from '/db/my-app/node_modules/vim-wasm/vimwasm.js';
     import { compile } from '/db/my-app/node_modules/svelte/compiler.mjs';
     import { onMount } from 'svelte';
-    import { saveFile } from '../api.js';
-    import { createEventDispatcher } from 'svelte';
+    import { derived } from 'svelte/store';
+    import { saveFile, EditorStore } from './editor.js';
+    import { createEventDispatcher, onDestroy } from 'svelte';
     import AFButton from '../ui/button.svelte';
     let error;
     let warnings = [];
+    let vim;
+    let pathname = location.pathname.replace('/@edit', '');
+
+    $: if (!vim && $EditorStore.dirs.length > 0) {
+        initVim();
+    }
+
     $: hasError = !!error || warnings.length > 0;
     $: if (hasError) {
         updateErrors();
+    }
+    $: if (vim) {
+        const _pathname = location.pathname.replace('/@edit', '');
+        if (_pathname !== pathname) {
+            const enc = new TextEncoder()
+            vim.dropFile(_pathname.slice(1), enc.encode(context));
+            pathname = _pathname;
+        }
     }
     function discardErrors() {
         error = undefined;
@@ -23,15 +39,10 @@
 
 	const dispatch = createEventDispatcher();
 
-    onMount(() => {
-        initVim();
-    });
-
     function initVim() {
         console.log(`Wheels on fire,\nRolling down the road.\nBest notify my next of kin\nThis wheel shall explode!\n\n`);
         
         const RE = new RegExp(/from "(.+\/svelte(\/\w+){0,1})";/g);
-        const pathname = location.pathname.replace('/@edit', '');
         const filename = pathname.split('/').pop();
         const isSvelte = filename.endsWith('.svelte');
     
@@ -41,7 +52,7 @@
         }
     
         const screenCanvasElement = document.getElementById('vim-canvas');
-        const vim = new VimWasm({
+        vim = new VimWasm({
             canvas: screenCanvasElement,
             input: document.getElementById('vim-input'),
             workerScriptPath: '/db/my-app/node_modules/vim-wasm/vim.js',
@@ -124,10 +135,11 @@
         vim.start({
             // cmdArgs: ['/test.svelte', '-c', 'set number\nset filetype=html'],
             cmdArgs: [pathname, '-c', options.join('\n')],
-            dirs: folder.reduce((all, dir, index) => {
-                all.push(folder.slice(0, index).join('/'));
-                return all;
-            }, []).slice(2),
+            dirs: $EditorStore.dirs,
+            // dirs: folder.reduce((all, dir, index) => {
+            //     all.push(folder.slice(0, index).join('/'));
+            //     return all;
+            // }, []).slice(2),
             // fetchFiles: { [location.pathname]: 'http://localhost:8080/db/my-app/views/component/render.js' },
             files: {
                 [pathname]: context,

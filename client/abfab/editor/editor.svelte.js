@@ -5,6 +5,7 @@ import {
 	attr,
 	binding_callbacks,
 	check_outros,
+	component_subscribe,
 	create_component,
 	destroy_component,
 	detach,
@@ -16,6 +17,7 @@ import {
 	noop,
 	safe_not_equal,
 	space,
+	toggle_class,
 	transition_in,
 	transition_out
 } from "/db/my-app/node_modules/svelte/internal/index.mjs";
@@ -24,16 +26,19 @@ import VimEditor from "./vim.svelte";
 import Viewer from "./viewer.svelte";
 import AFButton from "../ui/button.svelte";
 import Toolbar from "./toolbar.svelte";
+import Navigation from "./navigation.svelte";
+import { showNavigation, loadTree } from "./editor.js";
+import { onMount } from "/db/my-app/node_modules/svelte/index.mjs";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-z6ft2h-style";
-	style.textContent = "ul.svelte-z6ft2h.svelte-z6ft2h{list-style-type:none;margin:0;padding:0;text-align:center}header.svelte-z6ft2h.svelte-z6ft2h{height:2em;display:flex;align-items:center}header.svelte-z6ft2h img.svelte-z6ft2h{height:2em;padding:0.2em;margin-left:0.2em}header.svelte-z6ft2h ul.svelte-z6ft2h{margin-left:auto;margin-right:1em;display:flex}main.svelte-z6ft2h.svelte-z6ft2h{display:flex}.editor-container.svelte-z6ft2h.svelte-z6ft2h{display:flex;flex-direction:column;height:calc(100vh - 2.5em);width:calc(100vw - 3.5em);margin:0px;padding:0px;overflow:hidden}.editor-container.half.svelte-z6ft2h.svelte-z6ft2h{width:50vw}";
+	style.id = "svelte-dt76zw-style";
+	style.textContent = "ul.svelte-dt76zw.svelte-dt76zw{list-style-type:none;margin:0;padding:0;text-align:center}header.svelte-dt76zw.svelte-dt76zw{height:2em;display:flex;align-items:center}header.svelte-dt76zw img.svelte-dt76zw{height:2em;padding:0.2em;margin-left:0.2em}header.svelte-dt76zw ul.svelte-dt76zw{margin-left:auto;margin-right:1em;display:flex}main.svelte-dt76zw.svelte-dt76zw{display:flex}.editor-container.svelte-dt76zw.svelte-dt76zw{display:flex;flex-direction:column;height:calc(100vh - 2.5em);width:calc(100vw - 3.5em);margin:0px;padding:0px;overflow:hidden}.editor-container.half.svelte-dt76zw.svelte-dt76zw{width:50vw}.editor-container.with-nav.svelte-dt76zw.svelte-dt76zw{width:calc(100vw - 14em)}.editor-container.half.with-nav.svelte-dt76zw.svelte-dt76zw{width:calc(50vw - 10em)}";
 	append(document.head, style);
 }
 
-// (32:8) {#if play}
-function create_if_block_1(ctx) {
+// (37:8) {#if play}
+function create_if_block_2(ctx) {
 	let li;
 	let afbutton;
 	let current;
@@ -47,7 +52,7 @@ function create_if_block_1(ctx) {
 			}
 		});
 
-	afbutton.$on("click", /*refreshViewer*/ ctx[5]);
+	afbutton.$on("click", /*refreshViewer*/ ctx[6]);
 
 	return {
 		c() {
@@ -76,13 +81,42 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (49:4) {#if play}
+// (51:4) {#if $showNavigation}
+function create_if_block_1(ctx) {
+	let navigation;
+	let current;
+	navigation = new Navigation({});
+
+	return {
+		c() {
+			create_component(navigation.$$.fragment);
+		},
+		m(target, anchor) {
+			mount_component(navigation, target, anchor);
+			current = true;
+		},
+		i(local) {
+			if (current) return;
+			transition_in(navigation.$$.fragment, local);
+			current = true;
+		},
+		o(local) {
+			transition_out(navigation.$$.fragment, local);
+			current = false;
+		},
+		d(detaching) {
+			destroy_component(navigation, detaching);
+		}
+	};
+}
+
+// (57:4) {#if play}
 function create_if_block(ctx) {
 	let viewer_1;
 	let current;
 	let viewer_1_props = { componentPath: /*componentPath*/ ctx[2] };
 	viewer_1 = new Viewer({ props: viewer_1_props });
-	/*viewer_1_binding*/ ctx[6](viewer_1);
+	/*viewer_1_binding*/ ctx[7](viewer_1);
 
 	return {
 		c() {
@@ -107,7 +141,7 @@ function create_if_block(ctx) {
 			current = false;
 		},
 		d(detaching) {
-			/*viewer_1_binding*/ ctx[6](null);
+			/*viewer_1_binding*/ ctx[7](null);
 			destroy_component(viewer_1, detaching);
 		}
 	};
@@ -128,12 +162,13 @@ function create_fragment(ctx) {
 	let main;
 	let toolbar;
 	let t4;
+	let t5;
 	let div;
 	let vimeditor;
 	let div_class_value;
-	let t5;
+	let t6;
 	let current;
-	let if_block0 = /*play*/ ctx[1] && create_if_block_1(ctx);
+	let if_block0 = /*play*/ ctx[1] && create_if_block_2(ctx);
 
 	afbutton = new AFButton({
 			props: {
@@ -146,11 +181,12 @@ function create_fragment(ctx) {
 			}
 		});
 
-	afbutton.$on("click", /*togglePlay*/ ctx[4]);
+	afbutton.$on("click", /*togglePlay*/ ctx[5]);
 	toolbar = new Toolbar({});
+	let if_block1 = /*$showNavigation*/ ctx[4] && create_if_block_1(ctx);
 	vimeditor = new VimEditor({ props: { context: /*context*/ ctx[0] } });
-	vimeditor.$on("save", /*refreshViewer*/ ctx[5]);
-	let if_block1 = /*play*/ ctx[1] && create_if_block(ctx);
+	vimeditor.$on("save", /*refreshViewer*/ ctx[6]);
+	let if_block2 = /*play*/ ctx[1] && create_if_block(ctx);
 
 	return {
 		c() {
@@ -168,19 +204,22 @@ function create_fragment(ctx) {
 			main = element("main");
 			create_component(toolbar.$$.fragment);
 			t4 = space();
+			if (if_block1) if_block1.c();
+			t5 = space();
 			div = element("div");
 			create_component(vimeditor.$$.fragment);
-			t5 = space();
-			if (if_block1) if_block1.c();
+			t6 = space();
+			if (if_block2) if_block2.c();
 			attr(link, "rel", "stylesheet");
 			attr(link, "href", "/db/my-app/abfab/pastanaga/pastanaga.css");
 			if (img.src !== (img_src_value = "/db/my-app/abfab/abfab.svg")) attr(img, "src", img_src_value);
 			attr(img, "alt", "AbFab logo");
-			attr(img, "class", "svelte-z6ft2h");
-			attr(ul, "class", "svelte-z6ft2h");
-			attr(header, "class", "svelte-z6ft2h");
-			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-z6ft2h");
-			attr(main, "class", "svelte-z6ft2h");
+			attr(img, "class", "svelte-dt76zw");
+			attr(ul, "class", "svelte-dt76zw");
+			attr(header, "class", "svelte-dt76zw");
+			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-dt76zw");
+			toggle_class(div, "with-nav", /*$showNavigation*/ ctx[4]);
+			attr(main, "class", "svelte-dt76zw");
 		},
 		m(target, anchor) {
 			append(document.head, link);
@@ -197,10 +236,12 @@ function create_fragment(ctx) {
 			insert(target, main, anchor);
 			mount_component(toolbar, main, null);
 			append(main, t4);
+			if (if_block1) if_block1.m(main, null);
+			append(main, t5);
 			append(main, div);
 			mount_component(vimeditor, div, null);
-			append(main, t5);
-			if (if_block1) if_block1.m(main, null);
+			append(main, t6);
+			if (if_block2) if_block2.m(main, null);
 			current = true;
 		},
 		p(ctx, [dirty]) {
@@ -212,7 +253,7 @@ function create_fragment(ctx) {
 						transition_in(if_block0, 1);
 					}
 				} else {
-					if_block0 = create_if_block_1(ctx);
+					if_block0 = create_if_block_2(ctx);
 					if_block0.c();
 					transition_in(if_block0, 1);
 					if_block0.m(ul, t2);
@@ -230,26 +271,17 @@ function create_fragment(ctx) {
 			const afbutton_changes = {};
 			if (dirty & /*play*/ 2) afbutton_changes.active = /*play*/ ctx[1];
 			afbutton.$set(afbutton_changes);
-			const vimeditor_changes = {};
-			if (dirty & /*context*/ 1) vimeditor_changes.context = /*context*/ ctx[0];
-			vimeditor.$set(vimeditor_changes);
 
-			if (!current || dirty & /*play*/ 2 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-z6ft2h")) {
-				attr(div, "class", div_class_value);
-			}
-
-			if (/*play*/ ctx[1]) {
+			if (/*$showNavigation*/ ctx[4]) {
 				if (if_block1) {
-					if_block1.p(ctx, dirty);
-
-					if (dirty & /*play*/ 2) {
+					if (dirty & /*$showNavigation*/ 16) {
 						transition_in(if_block1, 1);
 					}
 				} else {
-					if_block1 = create_if_block(ctx);
+					if_block1 = create_if_block_1(ctx);
 					if_block1.c();
 					transition_in(if_block1, 1);
-					if_block1.m(main, null);
+					if_block1.m(main, t5);
 				}
 			} else if (if_block1) {
 				group_outros();
@@ -260,22 +292,59 @@ function create_fragment(ctx) {
 
 				check_outros();
 			}
+
+			const vimeditor_changes = {};
+			if (dirty & /*context*/ 1) vimeditor_changes.context = /*context*/ ctx[0];
+			vimeditor.$set(vimeditor_changes);
+
+			if (!current || dirty & /*play*/ 2 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-dt76zw")) {
+				attr(div, "class", div_class_value);
+			}
+
+			if (dirty & /*play, $showNavigation*/ 18) {
+				toggle_class(div, "with-nav", /*$showNavigation*/ ctx[4]);
+			}
+
+			if (/*play*/ ctx[1]) {
+				if (if_block2) {
+					if_block2.p(ctx, dirty);
+
+					if (dirty & /*play*/ 2) {
+						transition_in(if_block2, 1);
+					}
+				} else {
+					if_block2 = create_if_block(ctx);
+					if_block2.c();
+					transition_in(if_block2, 1);
+					if_block2.m(main, null);
+				}
+			} else if (if_block2) {
+				group_outros();
+
+				transition_out(if_block2, 1, 1, () => {
+					if_block2 = null;
+				});
+
+				check_outros();
+			}
 		},
 		i(local) {
 			if (current) return;
 			transition_in(if_block0);
 			transition_in(afbutton.$$.fragment, local);
 			transition_in(toolbar.$$.fragment, local);
-			transition_in(vimeditor.$$.fragment, local);
 			transition_in(if_block1);
+			transition_in(vimeditor.$$.fragment, local);
+			transition_in(if_block2);
 			current = true;
 		},
 		o(local) {
 			transition_out(if_block0);
 			transition_out(afbutton.$$.fragment, local);
 			transition_out(toolbar.$$.fragment, local);
-			transition_out(vimeditor.$$.fragment, local);
 			transition_out(if_block1);
+			transition_out(vimeditor.$$.fragment, local);
+			transition_out(if_block2);
 			current = false;
 		},
 		d(detaching) {
@@ -287,13 +356,16 @@ function create_fragment(ctx) {
 			if (detaching) detach(t3);
 			if (detaching) detach(main);
 			destroy_component(toolbar);
-			destroy_component(vimeditor);
 			if (if_block1) if_block1.d();
+			destroy_component(vimeditor);
+			if (if_block2) if_block2.d();
 		}
 	};
 }
 
 function instance($$self, $$props, $$invalidate) {
+	let $showNavigation;
+	component_subscribe($$self, showNavigation, $$value => $$invalidate(4, $showNavigation = $$value));
 	let { context } = $$props;
 	let play = false;
 	let componentPath;
@@ -311,6 +383,8 @@ function instance($$self, $$props, $$invalidate) {
 		}
 	}
 
+	onMount(() => loadTree());
+
 	function viewer_1_binding($$value) {
 		binding_callbacks[$$value ? "unshift" : "push"](() => {
 			viewer = $$value;
@@ -327,6 +401,7 @@ function instance($$self, $$props, $$invalidate) {
 		play,
 		componentPath,
 		viewer,
+		$showNavigation,
 		togglePlay,
 		refreshViewer,
 		viewer_1_binding
@@ -336,7 +411,7 @@ function instance($$self, $$props, $$invalidate) {
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document.getElementById("svelte-z6ft2h-style")) add_css();
+		if (!document.getElementById("svelte-dt76zw-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, { context: 0 });
 	}
 }

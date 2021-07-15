@@ -21,7 +21,8 @@ import {
 } from "/db/my-app/node_modules/svelte/internal/index.mjs";
 
 import AFButton from "/db/my-app/abfab/ui/button.svelte";
-import { AbFabStore } from "/db/my-app/abfab/api.js";
+import { AbFabStore } from "../core.js";
+import { EditorStore } from "./editor.js";
 import { clickOutside } from "/db/my-app/abfab/ui/clickOutside.js";
 
 function add_css() {
@@ -31,7 +32,7 @@ function add_css() {
 	append(document.head, style);
 }
 
-// (29:12) {#if showMore}
+// (40:12) {#if showMore}
 function create_if_block(ctx) {
 	let div1;
 	let div0;
@@ -53,9 +54,9 @@ function create_if_block(ctx) {
 
 			if (!mounted) {
 				dispose = [
-					listen(div0, "click", /*logout*/ ctx[1]),
+					listen(div0, "click", /*logout*/ ctx[2]),
 					action_destroyer(clickOutside_action = clickOutside.call(null, div1)),
-					listen(div1, "clickoutside", /*clickoutside_handler*/ ctx[3])
+					listen(div1, "clickoutside", /*clickoutside_handler*/ ctx[5])
 				];
 
 				mounted = true;
@@ -82,43 +83,32 @@ function create_fragment(ctx) {
 	let li2;
 	let afbutton2;
 	let t2;
-	let li3;
-	let afbutton3;
-	let t3;
 	let current;
 
 	afbutton0 = new AFButton({
 			props: {
 				kind: "primary",
 				aspect: "basic",
-				icon: "components",
-				label: "Components",
+				icon: "folder",
+				label: "Explore",
 				size: "small",
-				active: true
+				active: /*showNavigation*/ ctx[1]
 			}
 		});
+
+	afbutton0.$on("click", /*toggleNavigation*/ ctx[3]);
 
 	afbutton1 = new AFButton({
 			props: {
 				kind: "primary",
 				aspect: "basic",
-				icon: "globe",
-				label: "Data",
+				icon: "search",
+				label: "Search",
 				size: "small"
 			}
 		});
 
 	afbutton2 = new AFButton({
-			props: {
-				kind: "primary",
-				aspect: "basic",
-				icon: "libraries",
-				label: "Libraries",
-				size: "small"
-			}
-		});
-
-	afbutton3 = new AFButton({
 			props: {
 				kind: "primary",
 				aspect: "basic",
@@ -128,7 +118,7 @@ function create_fragment(ctx) {
 			}
 		});
 
-	afbutton3.$on("click", /*click_handler*/ ctx[2]);
+	afbutton2.$on("click", /*click_handler*/ ctx[4]);
 	let if_block = /*showMore*/ ctx[0] && create_if_block(ctx);
 
 	return {
@@ -144,14 +134,10 @@ function create_fragment(ctx) {
 			li2 = element("li");
 			create_component(afbutton2.$$.fragment);
 			t2 = space();
-			li3 = element("li");
-			create_component(afbutton3.$$.fragment);
-			t3 = space();
 			if (if_block) if_block.c();
 			attr(li0, "class", "svelte-145vp0j");
 			attr(li1, "class", "svelte-145vp0j");
-			attr(li2, "class", "svelte-145vp0j");
-			attr(li3, "class", "more-button svelte-145vp0j");
+			attr(li2, "class", "more-button svelte-145vp0j");
 			attr(ul, "class", "svelte-145vp0j");
 			attr(nav, "class", "svelte-145vp0j");
 		},
@@ -166,21 +152,22 @@ function create_fragment(ctx) {
 			append(ul, t1);
 			append(ul, li2);
 			mount_component(afbutton2, li2, null);
-			append(ul, t2);
-			append(ul, li3);
-			mount_component(afbutton3, li3, null);
-			append(li3, t3);
-			if (if_block) if_block.m(li3, null);
+			append(li2, t2);
+			if (if_block) if_block.m(li2, null);
 			current = true;
 		},
 		p(ctx, [dirty]) {
+			const afbutton0_changes = {};
+			if (dirty & /*showNavigation*/ 2) afbutton0_changes.active = /*showNavigation*/ ctx[1];
+			afbutton0.$set(afbutton0_changes);
+
 			if (/*showMore*/ ctx[0]) {
 				if (if_block) {
 					if_block.p(ctx, dirty);
 				} else {
 					if_block = create_if_block(ctx);
 					if_block.c();
-					if_block.m(li3, null);
+					if_block.m(li2, null);
 				}
 			} else if (if_block) {
 				if_block.d(1);
@@ -192,14 +179,12 @@ function create_fragment(ctx) {
 			transition_in(afbutton0.$$.fragment, local);
 			transition_in(afbutton1.$$.fragment, local);
 			transition_in(afbutton2.$$.fragment, local);
-			transition_in(afbutton3.$$.fragment, local);
 			current = true;
 		},
 		o(local) {
 			transition_out(afbutton0.$$.fragment, local);
 			transition_out(afbutton1.$$.fragment, local);
 			transition_out(afbutton2.$$.fragment, local);
-			transition_out(afbutton3.$$.fragment, local);
 			current = false;
 		},
 		d(detaching) {
@@ -207,7 +192,6 @@ function create_fragment(ctx) {
 			destroy_component(afbutton0);
 			destroy_component(afbutton1);
 			destroy_component(afbutton2);
-			destroy_component(afbutton3);
 			if (if_block) if_block.d();
 		}
 	};
@@ -215,14 +199,32 @@ function create_fragment(ctx) {
 
 function instance($$self, $$props, $$invalidate) {
 	let showMore = false;
+	let showNavigation = false;
 
 	function logout() {
 		AbFabStore.update(state => ({ ...state, logged: false }));
 	}
 
+	function toggleNavigation() {
+		EditorStore.update(state => {
+			$$invalidate(1, showNavigation = !state.showNavigation);
+			return { ...state, showNavigation };
+		});
+
+		window.dispatchEvent(new Event("resize"));
+	}
+
 	const click_handler = () => $$invalidate(0, showMore = !showMore);
 	const clickoutside_handler = () => $$invalidate(0, showMore = false);
-	return [showMore, logout, click_handler, clickoutside_handler];
+
+	return [
+		showMore,
+		showNavigation,
+		logout,
+		toggleNavigation,
+		click_handler,
+		clickoutside_handler
+	];
 }
 
 class Component extends SvelteComponent {

@@ -3,6 +3,9 @@
     import Viewer from './viewer.svelte';
     import AFButton from '../ui/button.svelte';
     import Toolbar from './toolbar.svelte';
+    import Navigation from './navigation.svelte';
+    import { showNavigation, loadTree } from './editor.js';
+    import { onMount } from 'svelte';
     
     export let context;
     
@@ -21,6 +24,8 @@
             viewer.refresh();
         }
     }
+
+    onMount(() => loadTree());
 </script>
 
 <svelte:head>
@@ -43,7 +48,10 @@
 </header>
 <main>
     <Toolbar></Toolbar>
-    <div class="editor-container {play ? 'half' : ''}">
+    {#if $showNavigation}
+    <Navigation></Navigation>
+    {/if}
+    <div class="editor-container {play ? 'half' : ''}" class:with-nav={$showNavigation}>
         <VimEditor context={context} on:save={refreshViewer}></VimEditor>
     </div>
     {#if play}
@@ -86,5 +94,11 @@
     }
     .editor-container.half {
         width: 50vw;
+    }
+    .editor-container.with-nav {
+        width: calc(100vw - 14em);
+    }
+    .editor-container.half.with-nav {
+        width: calc(50vw - 10em);
     }
 </style>
