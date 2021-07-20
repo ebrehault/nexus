@@ -1,5 +1,5 @@
-import { writable, derived, get } from '/db/my-app/node_modules/svelte/store';
-import { AbFabStore } from '/db/my-app/abfab/core.js';
+import { writable, derived, get } from '/node_modules/svelte/store';
+import { AbFabStore } from '/abfab/core.js';
 
 export const EditorStore = writable({
     tree: [],
@@ -9,14 +9,14 @@ export const EditorStore = writable({
 
 export const loadTree = async () => {
     const auth = { Authorization: 'Bearer ' + localStorage.getItem('auth') };
-    const response = await fetch('/db/my-app/@tree', { method: 'GET', headers: { ...auth } });
+    const response = await fetch('/@tree', { method: 'GET', headers: { ...auth } });
     if (response.ok) {
         const currentLocation = window.location.pathname.replace('/@edit', '');
         const tree = await response.json();
-        const dirs = ['/db', '/db/my-app'];
+        const dirs = [];
         const mapTree = (item) => {
             if (item.type === 'Directory') {
-                dirs.push(`/db/my-app${item.path}`);
+                dirs.push(item.path);
             }
             return {
                 name: item.path.split('/').pop(),
@@ -25,7 +25,7 @@ export const loadTree = async () => {
                 children: !!item.children
                     ? item.children.sort((a, b) => a.path.localeCompare(b.path)).map(mapTree)
                     : undefined,
-                expanded: currentLocation.startsWith(`/db/my-app${item.path}`),
+                expanded: currentLocation.startsWith(`${item.path}`),
             };
         };
         EditorStore.update((state) => ({ ...state, tree: tree.map(mapTree) }));
@@ -98,6 +98,6 @@ export function saveFile(filepath, body) {
 function redirectToLogin() {
     AbFabStore.update((state) => ({
         ...state,
-        location: `/db/my-app/abfab/login/login.svelte?from=${window.location.pathname}`,
+        location: `/abfab/login/login.svelte?from=${window.location.pathname}`,
     }));
 }

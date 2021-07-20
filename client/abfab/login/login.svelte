@@ -1,11 +1,11 @@
 <script>
-    import AFInput from '/db/my-app/abfab/ui/input.svelte';
-    import AFButton from '/db/my-app/abfab/ui/button.svelte';
+    import AFInput from '/abfab/ui/input.svelte';
+    import AFButton from '/abfab/ui/button.svelte';
     let username;
     let password;
     let error = '';
     const urlParams = new URLSearchParams(window.location.search);
-    const redirect = urlParams.get('from') || '/db/my-app/abfab';
+    const redirect = urlParams.get('from') || '/abfab';
 
     const login = async () => {
         error = '';
@@ -13,7 +13,7 @@
             username,
             password,
         });
-        const response = await fetch('/db/my-app/@login', {
+        const response = await fetch('/@login', {
             body,
             method: 'POST',
             headers: {
@@ -31,7 +31,7 @@
     }
 </script>
 <svelte:head>
-    <link rel="stylesheet" href="/db/my-app/abfab/pastanaga/pastanaga.css">
+    <link rel="stylesheet" href="/abfab/pastanaga/pastanaga.css">
 </svelte:head>
 <main>
     <img src="../abfab.svg">

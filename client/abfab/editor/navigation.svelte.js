@@ -17,7 +17,7 @@ import {
 	safe_not_equal,
 	transition_in,
 	transition_out
-} from "/db/my-app/node_modules/svelte/internal/index.mjs";
+} from "/node_modules/svelte/internal/index.mjs";
 
 import { EditorStore } from "./editor.js";
 import NavItem from "./navigation.item.svelte";

@@ -24,7 +24,7 @@ import {
 	transition_in,
 	transition_out,
 	xlink_attr
-} from "/db/my-app/node_modules/svelte/internal/index.mjs";
+} from "/node_modules/svelte/internal/index.mjs";
 
 import { updateTreeItem } from "./editor.js";
 
@@ -41,7 +41,7 @@ function create_else_block(ctx) {
 	return {
 		c() {
 			pa_icon = element("pa-icon");
-			pa_icon.innerHTML = `<svg class="pa-small"><use xlink:href="/db/my-app/abfab/pastanaga/icons.svg#file"></use></svg>`;
+			pa_icon.innerHTML = `<svg class="pa-small"><use xlink:href="/abfab/pastanaga/icons.svg#file"></use></svg>`;
 		},
 		m(target, anchor) {
 			insert(target, pa_icon, anchor);
@@ -68,7 +68,7 @@ function create_if_block_1(ctx) {
 			svg = svg_element("svg");
 			use = svg_element("use");
 
-			xlink_attr(use, "xlink:href", use_xlink_href_value = "/db/my-app/abfab/pastanaga/icons.svg#" + (/*item*/ ctx[0].expanded
+			xlink_attr(use, "xlink:href", use_xlink_href_value = "/abfab/pastanaga/icons.svg#" + (/*item*/ ctx[0].expanded
 			? "chevron-down"
 			: "chevron-right"));
 
@@ -85,7 +85,7 @@ function create_if_block_1(ctx) {
 			}
 		},
 		p(ctx, dirty) {
-			if (dirty & /*item*/ 1 && use_xlink_href_value !== (use_xlink_href_value = "/db/my-app/abfab/pastanaga/icons.svg#" + (/*item*/ ctx[0].expanded
+			if (dirty & /*item*/ 1 && use_xlink_href_value !== (use_xlink_href_value = "/abfab/pastanaga/icons.svg#" + (/*item*/ ctx[0].expanded
 			? "chevron-down"
 			: "chevron-right"))) {
 				xlink_attr(use, "xlink:href", use_xlink_href_value);
@@ -250,7 +250,7 @@ function create_fragment(ctx) {
 			t2 = space();
 			if (if_block1) if_block1.c();
 			if_block1_anchor = empty();
-			attr(a, "href", a_href_value = `/db/my-app${/*item*/ ctx[0].path}/@edit`);
+			attr(a, "href", a_href_value = `${/*item*/ ctx[0].path}/@edit`);
 		},
 		m(target, anchor) {
 			if_block0.m(target, anchor);
@@ -277,7 +277,7 @@ function create_fragment(ctx) {
 
 			if ((!current || dirty & /*item*/ 1) && t1_value !== (t1_value = /*item*/ ctx[0].name + "")) set_data(t1, t1_value);
 
-			if (!current || dirty & /*item*/ 1 && a_href_value !== (a_href_value = `/db/my-app${/*item*/ ctx[0].path}/@edit`)) {
+			if (!current || dirty & /*item*/ 1 && a_href_value !== (a_href_value = `${/*item*/ ctx[0].path}/@edit`)) {
 				attr(a, "href", a_href_value);
 			}
 

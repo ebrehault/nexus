@@ -1,9 +1,7 @@
 <script>
     export let context;
-    import { VimWasm, checkBrowserCompatibility } from '/db/my-app/node_modules/vim-wasm/vimwasm.js';
-    import { compile } from '/db/my-app/node_modules/svelte/compiler.mjs';
-    import { onMount } from 'svelte';
-    import { derived } from 'svelte/store';
+    import { VimWasm, checkBrowserCompatibility } from '/node_modules/vim-wasm/vimwasm.js';
+    import { compile } from '/node_modules/svelte/compiler.mjs';
     import { saveFile, EditorStore } from './editor.js';
     import { createEventDispatcher, onDestroy } from 'svelte';
     import AFButton from '../ui/button.svelte';
@@ -55,7 +53,7 @@
         vim = new VimWasm({
             canvas: screenCanvasElement,
             input: document.getElementById('vim-input'),
-            workerScriptPath: '/db/my-app/node_modules/vim-wasm/vim.js',
+            workerScriptPath: '/node_modules/vim-wasm/vim.js',
         });
     
         // Handle drag and drop
@@ -89,7 +87,7 @@
         };
     
         vim.onFileExport = (fullpath, contents) => {
-            const ABFAB_ROOT = '/db/my-app';
+            const ABFAB_ROOT = '';
             let js = '';
             if (isSvelte) {
                 try {
@@ -140,7 +138,7 @@
             //     all.push(folder.slice(0, index).join('/'));
             //     return all;
             // }, []).slice(2),
-            // fetchFiles: { [location.pathname]: 'http://localhost:8080/db/my-app/views/component/render.js' },
+            // fetchFiles: { [location.pathname]: 'http://localhost:8080/views/component/render.js' },
             files: {
                 [pathname]: context,
             //     '/test.svelte': '<h1>hello, world!</h1>',

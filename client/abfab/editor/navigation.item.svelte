@@ -9,17 +9,17 @@
 {#if item.type === 'Directory' }
 <pa-icon>
     <svg class="pa-small" on:click={toggle}>
-        <use xlink:href="/db/my-app/abfab/pastanaga/icons.svg#{item.expanded ? 'chevron-down' : 'chevron-right'}"></use>
+        <use xlink:href="/abfab/pastanaga/icons.svg#{item.expanded ? 'chevron-down' : 'chevron-right'}"></use>
     </svg>
 </pa-icon>
 {:else}
 <pa-icon>
     <svg class="pa-small">
-        <use xlink:href="/db/my-app/abfab/pastanaga/icons.svg#file"></use>
+        <use xlink:href="/abfab/pastanaga/icons.svg#file"></use>
     </svg>
 </pa-icon>
 {/if}
-<a href={`/db/my-app${item.path}/@edit`}>{item.name}</a>
+<a href={`${item.path}/@edit`}>{item.name}</a>
 {#if item.children && item.expanded }
 <ul>
     {#each item.children as item}

@@ -1,5 +1,5 @@
 <script>
-    import { AbFabStore } from '/db/my-app/abfab/core.js';
+    import { AbFabStore } from '/abfab/core.js';
     import { onDestroy } from 'svelte';
     import { derived } from 'svelte/store';
 
@@ -46,14 +46,14 @@
         if (path.endsWith('/@edit')) {
             const response = await fetch(`${path.replace('/@edit', '')}?raw=true`, {headers: { ...auth }});
             const code = await response.text();
-            const module = await import(`/db/my-app/abfab/editor/editor.svelte`);
+            const module = await import(`/abfab/editor/editor.svelte`);
             context = code;
             component = module.default;
         } else {
             const response = await fetch(`${path}/@default`, {headers: { ...auth }});
             const fullObject = await response.json();
             if (fullObject['@type'] === 'Content') {
-                const module = await import(`/db/my-app${fullObject.view}`);
+                const module = await import(`${fullObject.view}`);
                 component = module.default;
                 context = fullObject.data;
             } else {
@@ -81,7 +81,7 @@
     subscriptions.push(_logged.subscribe(isLogged => {
 		if (!isLogged) {
             localStorage.removeItem('auth');
-            navigate('/db/my-app/abfab/login/login.svelte');
+            navigate('/abfab/login/login.svelte');
         }
 	}));
 

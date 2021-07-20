@@ -32,7 +32,7 @@ def wrap_component(request, js_component, path_to_content, type='json'):
 <html lang="en">
 <script type="module">
     import Component from '{component}';
-    import Main from '/db/my-app/abfab/main.svelte.js';
+    import Main from '/abfab/main.svelte.js';
     {get_context}
     const component = new Main({{
         target: document.body,
@@ -41,7 +41,7 @@ def wrap_component(request, js_component, path_to_content, type='json'):
     export default component;
 </script>
 </html>
-""".format(component=urlparse(get_object_url(js_component)).path, get_context=get_context)
+""".format(component=get_content_path(js_component), get_context=get_context)
 
 @configure.service(context=IFile, method='GET',
                    permission='guillotina.Public', allow_access=True)
@@ -55,7 +55,7 @@ async def get_file(context, request):
     return await view_source(context, request)
 
 async def get_index(context, request):
-    path = urlparse(get_object_url(context)).path + '/'
+    path = get_content_path(context) + '/'
     entrypoint = context.module or context.main
     if entrypoint and entrypoint.startswith('./'):
         entrypoint = entrypoint[2:]

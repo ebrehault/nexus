@@ -17,7 +17,7 @@ import {
 	space,
 	text,
 	toggle_class
-} from "/db/my-app/node_modules/svelte/internal/index.mjs";
+} from "/node_modules/svelte/internal/index.mjs";
 
 function create_if_block(ctx) {
 	let small;

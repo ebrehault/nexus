@@ -12,7 +12,7 @@ import {
 	set_data,
 	space,
 	text
-} from "/db/my-app/node_modules/svelte/internal/index.mjs";
+} from "/node_modules/svelte/internal/index.mjs";
 
 function create_fragment(ctx) {
 	let h1;

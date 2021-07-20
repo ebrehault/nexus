@@ -17,10 +17,10 @@ import {
 	space,
 	transition_in,
 	transition_out
-} from "/db/my-app/node_modules/svelte/internal/index.mjs";
+} from "/node_modules/svelte/internal/index.mjs";
 
-import AFInput from "/db/my-app/abfab/ui/input.svelte";
-import AFTextarea from "/db/my-app/abfab/ui/textarea.svelte";
+import AFInput from "/abfab/ui/input.svelte";
+import AFTextarea from "/abfab/ui/textarea.svelte";
 
 function add_css() {
 	var style = element("style");
@@ -170,7 +170,7 @@ function instance($$self, $$props, $$invalidate) {
 		const timestamp = new Date().toISOString();
 
 		if (contentPath) {
-			$$invalidate(0, path = `${contentPath}?view=${componentPath.replace("/db/my-app", "")}&time=${timestamp}`);
+			$$invalidate(0, path = `${contentPath}?view=${componentPath}&time=${timestamp}`);
 		} else if (jsonData) {
 			displayData(jsonData, timestamp);
 		} else {

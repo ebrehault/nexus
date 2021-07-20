@@ -29,10 +29,10 @@
 </script>
 
 <svelte:head>
-    <link rel="stylesheet" href="/db/my-app/abfab/pastanaga/pastanaga.css">
+    <link rel="stylesheet" href="/abfab/pastanaga/pastanaga.css">
 </svelte:head>
 <header>
-    <img src="/db/my-app/abfab/abfab.svg" alt="AbFab logo" />
+    <img src="/abfab/abfab.svg" alt="AbFab logo" />
     <ul>
         {#if play}
         <li>

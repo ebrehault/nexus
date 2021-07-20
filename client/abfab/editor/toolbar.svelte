@@ -1,8 +1,8 @@
 <script>
-    import AFButton from '/db/my-app/abfab/ui/button.svelte';
+    import AFButton from '/abfab/ui/button.svelte';
     import {AbFabStore} from '../core.js';
     import {EditorStore} from './editor.js';
-    import { clickOutside } from '/db/my-app/abfab/ui/clickOutside.js';
+    import { clickOutside } from '/abfab/ui/clickOutside.js';
 
     let showMore = false;
     let showNavigation = false;

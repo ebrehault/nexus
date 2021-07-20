@@ -1,6 +1,6 @@
 <script>
-    import AFInput from '/db/my-app/abfab/ui/input.svelte';
-    import AFTextarea from '/db/my-app/abfab/ui/textarea.svelte';
+    import AFInput from '/abfab/ui/input.svelte';
+    import AFTextarea from '/abfab/ui/textarea.svelte';
 
     export let componentPath;
     let path = componentPath;
@@ -22,7 +22,7 @@
     export function refresh() {
         const timestamp = new Date().toISOString();
         if (contentPath) {
-            path = `${contentPath}?view=${componentPath.replace('/db/my-app', '')}&time=${timestamp}`;
+            path = `${contentPath}?view=${componentPath}&time=${timestamp}`;
         } else if (jsonData) {
             displayData(jsonData, timestamp);
         } else {

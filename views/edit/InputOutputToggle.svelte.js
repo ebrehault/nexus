@@ -13,7 +13,7 @@ import {
 	set_style,
 	space,
 	toggle_class
-} from "/db/my-app/node_modules/svelte/internal/index.mjs";
+} from "/node_modules/svelte/internal/index.mjs";
 
 function add_css() {
 	var style = element("style");

@@ -23,20 +23,18 @@ import {
 	toggle_class,
 	transition_in,
 	transition_out
-} from "/db/my-app/node_modules/svelte/internal/index.mjs";
+} from "/node_modules/svelte/internal/index.mjs";
 
 const { document: document_1 } = globals;
 
 import {
 	VimWasm,
 	checkBrowserCompatibility
-} from "/db/my-app/node_modules/vim-wasm/vimwasm.js";
+} from "/node_modules/vim-wasm/vimwasm.js";
 
-import { compile } from "/db/my-app/node_modules/svelte/compiler.mjs";
-import { onMount } from "/db/my-app/node_modules/svelte/index.mjs";
-import { derived } from "/db/my-app/node_modules/svelte/store/index.mjs";
+import { compile } from "/node_modules/svelte/compiler.mjs";
 import { saveFile, EditorStore } from "./editor.js";
-import { createEventDispatcher, onDestroy } from "/db/my-app/node_modules/svelte/index.mjs";
+import { createEventDispatcher, onDestroy } from "/node_modules/svelte/index.mjs";
 import AFButton from "../ui/button.svelte";
 
 function add_css() {
@@ -52,7 +50,7 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (221:0) {#if hasError }
+// (219:0) {#if hasError }
 function create_if_block(ctx) {
 	let div1;
 	let span;
@@ -168,7 +166,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (228:8) {#if error}
+// (226:8) {#if error}
 function create_if_block_1(ctx) {
 	let div;
 	let t0_value = /*error*/ ctx[0].message + "";
@@ -202,7 +200,7 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (229:8) {#each warnings as warning}
+// (227:8) {#each warnings as warning}
 function create_each_block(ctx) {
 	let div;
 	let t0_value = /*warning*/ ctx[10].message + "";
@@ -354,7 +352,7 @@ function instance($$self, $$props, $$invalidate) {
 		$$invalidate(5, vim = new VimWasm({
 				canvas: screenCanvasElement,
 				input: document.getElementById("vim-input"),
-				workerScriptPath: "/db/my-app/node_modules/vim-wasm/vim.js"
+				workerScriptPath: "/node_modules/vim-wasm/vim.js"
 			}));
 
 		// Handle drag and drop
@@ -398,7 +396,7 @@ function instance($$self, $$props, $$invalidate) {
 		$$invalidate(
 			5,
 			vim.onFileExport = (fullpath, contents) => {
-				const ABFAB_ROOT = "/db/my-app";
+				const ABFAB_ROOT = "";
 				let js = "";
 
 				if (isSvelte) {
@@ -457,7 +455,7 @@ function instance($$self, $$props, $$invalidate) {
 			//     all.push(folder.slice(0, index).join('/'));
 			//     return all;
 			// }, []).slice(2),
-			// fetchFiles: { [location.pathname]: 'http://localhost:8080/db/my-app/views/component/render.js' },
+			// fetchFiles: { [location.pathname]: 'http://localhost:8080/views/component/render.js' },
 			files: { [pathname]: context }, //     '/test.svelte': '<h1>hello, world!</h1>',
 			//     // '/.vim/vimrc': 'set number\nset noexpandtab\nau BufRead,BufNewFile *.svelte set filetype=html',
 			

@@ -13,11 +13,11 @@ import {
 	safe_not_equal,
 	transition_in,
 	transition_out
-} from "/db/my-app/node_modules/svelte/internal/index.mjs";
+} from "/node_modules/svelte/internal/index.mjs";
 
-import { AbFabStore } from "/db/my-app/abfab/core.js";
-import { onDestroy } from "/db/my-app/node_modules/svelte/index.mjs";
-import { derived } from "/db/my-app/node_modules/svelte/store/index.mjs";
+import { AbFabStore } from "/abfab/core.js";
+import { onDestroy } from "/node_modules/svelte/index.mjs";
+import { derived } from "/node_modules/svelte/store/index.mjs";
 
 function create_fragment(ctx) {
 	let switch_instance;
@@ -142,7 +142,7 @@ function instance($$self, $$props, $$invalidate) {
 		if (path.endsWith("/@edit")) {
 			const response = await fetch(`${path.replace("/@edit", "")}?raw=true`, { headers: { ...auth } });
 			const code = await response.text();
-			const module = await import(`/db/my-app/abfab/editor/editor.svelte`);
+			const module = await import(`/abfab/editor/editor.svelte`);
 			$$invalidate(1, context = code);
 			$$invalidate(0, component = module.default);
 		} else {
@@ -150,7 +150,7 @@ function instance($$self, $$props, $$invalidate) {
 			const fullObject = await response.json();
 
 			if (fullObject["@type"] === "Content") {
-				const module = await import(`/db/my-app${fullObject.view}`);
+				const module = await import(`${fullObject.view}`);
 				$$invalidate(0, component = module.default);
 				$$invalidate(1, context = fullObject.data);
 			} else {
@@ -182,7 +182,7 @@ function instance($$self, $$props, $$invalidate) {
 	subscriptions.push(_logged.subscribe(isLogged => {
 		if (!isLogged) {
 			localStorage.removeItem("auth");
-			navigate("/db/my-app/abfab/login/login.svelte");
+			navigate("/abfab/login/login.svelte");
 		}
 	}));
 

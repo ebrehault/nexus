@@ -16,7 +16,7 @@
         {#if icon}
         <pa-icon>
             <svg class="pa-{size}">
-                <use xlink:href="/db/my-app/abfab/pastanaga/icons.svg#{icon}"></use>
+                <use xlink:href="/abfab/pastanaga/icons.svg#{icon}"></use>
             </svg>
         </pa-icon>
         {/if}

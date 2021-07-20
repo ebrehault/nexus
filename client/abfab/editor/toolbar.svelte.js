@@ -18,12 +18,12 @@ import {
 	space,
 	transition_in,
 	transition_out
-} from "/db/my-app/node_modules/svelte/internal/index.mjs";
+} from "/node_modules/svelte/internal/index.mjs";
 
-import AFButton from "/db/my-app/abfab/ui/button.svelte";
+import AFButton from "/abfab/ui/button.svelte";
 import { AbFabStore } from "../core.js";
 import { EditorStore } from "./editor.js";
-import { clickOutside } from "/db/my-app/abfab/ui/clickOutside.js";
+import { clickOutside } from "/abfab/ui/clickOutside.js";
 
 function add_css() {
 	var style = element("style");
