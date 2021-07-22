@@ -8,6 +8,19 @@
     import { onMount } from 'svelte';
     
     export let context;
+    let _context = '';
+    let type;
+    $: {
+        try {
+            const obj = JSON.parse(context);
+            type = obj.type;
+            _context = type === 'Content' ? JSON.stringify(obj.data) : context;
+            console.log(obj, _context);
+        } catch (e) {
+            type = 'File';
+            _context = context;
+        }
+    }
     
     let play = false;
     let componentPath;
@@ -52,7 +65,7 @@
     <Navigation></Navigation>
     {/if}
     <div class="editor-container {play ? 'half' : ''}" class:with-nav={$showNavigation}>
-        <VimEditor context={context} on:save={refreshViewer}></VimEditor>
+        <VimEditor context={_context} {type} on:save={refreshViewer}></VimEditor>
     </div>
     {#if play}
     <Viewer bind:this={viewer} componentPath={componentPath}></Viewer>

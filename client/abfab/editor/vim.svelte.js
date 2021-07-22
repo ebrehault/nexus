@@ -46,11 +46,11 @@ function add_css() {
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[10] = list[i];
+	child_ctx[11] = list[i];
 	return child_ctx;
 }
 
-// (219:0) {#if hasError }
+// (220:0) {#if hasError }
 function create_if_block(ctx) {
 	let div1;
 	let span;
@@ -166,7 +166,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (226:8) {#if error}
+// (227:8) {#if error}
 function create_if_block_1(ctx) {
 	let div;
 	let t0_value = /*error*/ ctx[0].message + "";
@@ -200,14 +200,14 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (227:8) {#each warnings as warning}
+// (228:8) {#each warnings as warning}
 function create_each_block(ctx) {
 	let div;
-	let t0_value = /*warning*/ ctx[10].message + "";
+	let t0_value = /*warning*/ ctx[11].message + "";
 	let t0;
 	let t1;
 	let code;
-	let t2_value = /*warning*/ ctx[10].frame + "";
+	let t2_value = /*warning*/ ctx[11].frame + "";
 	let t2;
 	let t3;
 
@@ -231,8 +231,8 @@ function create_each_block(ctx) {
 			append(div, t3);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*warnings*/ 2 && t0_value !== (t0_value = /*warning*/ ctx[10].message + "")) set_data(t0, t0_value);
-			if (dirty & /*warnings*/ 2 && t2_value !== (t2_value = /*warning*/ ctx[10].frame + "")) set_data(t2, t2_value);
+			if (dirty & /*warnings*/ 2 && t0_value !== (t0_value = /*warning*/ ctx[11].message + "")) set_data(t0, t0_value);
+			if (dirty & /*warnings*/ 2 && t2_value !== (t2_value = /*warning*/ ctx[11].frame + "")) set_data(t2, t2_value);
 		},
 		d(detaching) {
 			if (detaching) detach(div);
@@ -321,8 +321,9 @@ function updateErrors() {
 function instance($$self, $$props, $$invalidate) {
 	let hasError;
 	let $EditorStore;
-	component_subscribe($$self, EditorStore, $$value => $$invalidate(7, $EditorStore = $$value));
+	component_subscribe($$self, EditorStore, $$value => $$invalidate(8, $EditorStore = $$value));
 	let { context } = $$props;
+	let { type } = $$props;
 	let error;
 	let warnings = [];
 	let vim;
@@ -349,7 +350,7 @@ function instance($$self, $$props, $$invalidate) {
 
 		const screenCanvasElement = document.getElementById("vim-canvas");
 
-		$$invalidate(5, vim = new VimWasm({
+		$$invalidate(6, vim = new VimWasm({
 				canvas: screenCanvasElement,
 				input: document.getElementById("vim-input"),
 				workerScriptPath: "/node_modules/vim-wasm/vim.js"
@@ -386,7 +387,7 @@ function instance($$self, $$props, $$invalidate) {
 		);
 
 		$$invalidate(
-			5,
+			6,
 			vim.onVimExit = status => {
 				alert(`Vim exited with status ${status}`);
 			},
@@ -394,7 +395,7 @@ function instance($$self, $$props, $$invalidate) {
 		);
 
 		$$invalidate(
-			5,
+			6,
 			vim.onFileExport = (fullpath, contents) => {
 				const ABFAB_ROOT = "";
 				let js = "";
@@ -422,10 +423,10 @@ function instance($$self, $$props, $$invalidate) {
 				}
 
 				if (!error) {
-					saveFile(fullpath, contents).then(() => {
+					saveFile(fullpath, type, contents).then(() => {
 						if (isSvelte) {
 							const jsFilePath = fullpath + ".js";
-							saveFile(jsFilePath, js.code.replace(RE, "from \"$1/index.mjs\";")).then(() => dispatch("save", { file: fullpath }));
+							saveFile(jsFilePath, "File", js.code.replace(RE, "from \"$1/index.mjs\";")).then(() => dispatch("save", { file: fullpath }));
 						} else {
 							dispatch("save", { file: fullpath });
 						}
@@ -435,9 +436,9 @@ function instance($$self, $$props, $$invalidate) {
 			vim
 		);
 
-		$$invalidate(5, vim.readClipboard = navigator.clipboard.readText, vim);
-		$$invalidate(5, vim.onWriteClipboard = navigator.clipboard.writeText, vim);
-		$$invalidate(5, vim.onError = console.error, vim);
+		$$invalidate(6, vim.readClipboard = navigator.clipboard.readText, vim);
+		$$invalidate(6, vim.onWriteClipboard = navigator.clipboard.writeText, vim);
+		$$invalidate(6, vim.onError = console.error, vim);
 		const options = ["set number"];
 
 		if (isSvelte) {
@@ -464,10 +465,11 @@ function instance($$self, $$props, $$invalidate) {
 
 	$$self.$$set = $$props => {
 		if ("context" in $$props) $$invalidate(4, context = $$props.context);
+		if ("type" in $$props) $$invalidate(5, type = $$props.type);
 	};
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*vim, $EditorStore*/ 160) {
+		if ($$self.$$.dirty & /*vim, $EditorStore*/ 320) {
 			$: if (!vim && $EditorStore.dirs.length > 0) {
 				initVim();
 			}
@@ -483,27 +485,37 @@ function instance($$self, $$props, $$invalidate) {
 			}
 		}
 
-		if ($$self.$$.dirty & /*vim, pathname, context*/ 112) {
+		if ($$self.$$.dirty & /*vim, pathname, context*/ 208) {
 			$: if (vim) {
 				const _pathname = location.pathname.replace("/@edit", "");
 
 				if (_pathname !== pathname) {
 					const enc = new TextEncoder();
 					vim.dropFile(_pathname.slice(1), enc.encode(context));
-					$$invalidate(6, pathname = _pathname);
+					$$invalidate(7, pathname = _pathname);
 				}
 			}
 		}
 	};
 
-	return [error, warnings, hasError, discardErrors, context, vim, pathname, $EditorStore];
+	return [
+		error,
+		warnings,
+		hasError,
+		discardErrors,
+		context,
+		type,
+		vim,
+		pathname,
+		$EditorStore
+	];
 }
 
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
 		if (!document_1.getElementById("svelte-e1luf6-style")) add_css();
-		init(this, options, instance, create_fragment, safe_not_equal, { context: 4 });
+		init(this, options, instance, create_fragment, safe_not_equal, { context: 4, type: 5 });
 	}
 }
 

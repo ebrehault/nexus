@@ -55,7 +55,7 @@ export const updateTreeItem = (item) => {
 
 export const showNavigation = derived(EditorStore, (state) => state.showNavigation);
 
-export function saveFile(filepath, body) {
+export function saveFile(filepath, type, content) {
     const path = filepath.split('/');
     const filename = path.pop();
     const container = path.join('/');
@@ -65,39 +65,51 @@ export function saveFile(filepath, body) {
             if (res.status === 401) {
                 redirectToLogin();
             }
+            const body = {
+                '@type': type,
+                id: filename,
+            };
+            if (type === 'Content') {
+                const decoder = new TextDecoder('utf-8');
+                body.data = JSON.parse(decoder.decode(content));
+            }
             return fetch(res.status === 404 ? container : filepath, {
-                method: res.status === 404 ? 'POST' : 'PUT',
+                method: res.status === 404 ? 'POST' : 'PATCH',
                 headers: {
                     ...auth,
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    '@type': 'File',
-                    id: filename,
-                }),
+                body: JSON.stringify(body),
             });
         })
         .then((res) => {
             if (res.status === 401) {
                 redirectToLogin();
             }
-            return fetch(filepath + '/@upload/file', {
-                method: 'PATCH',
-                headers: {
-                    ...auth,
-                    Accept: 'application/json',
-                    'Content-Type': 'application/octet-stream',
-                    'X-UPLOAD-FILENAME': filename,
-                },
-                body,
-            });
+            if (type === 'File') {
+                return fetch(filepath + '/@upload/file', {
+                    method: 'PATCH',
+                    headers: {
+                        ...auth,
+                        Accept: 'application/json',
+                        'Content-Type': 'application/octet-stream',
+                        'X-UPLOAD-FILENAME': filename,
+                    },
+                    body: content,
+                });
+            }
         });
 }
 
+let redirecting = false;
+
 function redirectToLogin() {
-    AbFabStore.update((state) => ({
-        ...state,
-        location: `/abfab/login/login.svelte?from=${window.location.pathname}`,
-    }));
+    if (!redirecting) {
+        AbFabStore.update((state) => ({
+            ...state,
+            location: `/abfab/login/login.svelte?from=${window.location.pathname}`,
+        }));
+        redirecting = true;
+    }
 }

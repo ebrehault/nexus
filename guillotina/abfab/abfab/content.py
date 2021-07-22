@@ -2,6 +2,10 @@ from guillotina import configure, content, schema
 from guillotina.interfaces import IFolder, IItem
 from guillotina.events import IObjectAddedEvent
 from mimetypes import guess_type
+from zope.interface import implementer, Interface
+
+class IAbFabEditable(Interface):
+    pass
 
 class IDirectory(IFolder):
     main = schema.Text()
@@ -15,7 +19,6 @@ class IDirectory(IFolder):
 class Directory(content.Folder):
     pass
 
-
 class IFile(IItem):
     content_type = schema.Text()
 
@@ -25,6 +28,7 @@ class IFile(IItem):
     globally_addable=False,
     behaviors=["guillotina.behaviors.attachment.IAttachment"],
 )
+@implementer(IAbFabEditable)
 class File(content.Item):
     pass
 
@@ -44,5 +48,6 @@ class IContent(IItem):
     schema=IContent,
     globally_addable=True,
 )
+@implementer(IAbFabEditable)
 class Content(content.Item):
     pass

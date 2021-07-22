@@ -5,7 +5,7 @@ from guillotina.api.content import DefaultGET
 from guillotina.response import HTTPFound
 from guillotina.interfaces import IFileManager, IContainer
 from guillotina.utils import get_current_container, navigate_to, get_object_url, get_content_path
-from abfab.content import IFile, IDirectory, IContent
+from abfab.content import IFile, IDirectory, IContent, IAbFabEditable
 from urllib.parse import urlparse
 
 async def get_object_by_path(path):
@@ -95,11 +95,16 @@ async def get_view_or_data(context, request):
     else:
         return context.data
 
-@configure.service(context=IFile, method='GET', name='@edit',
+@configure.service(context=IAbFabEditable, method='GET', name='@edit',
                    permission='guillotina.Public', allow_access=True)
 async def run_editor(context, request):
     editor_view = await get_object_by_path('/abfab/editor/editor.svelte')
-    return wrap_component(request, editor_view, '.?raw=true', 'text')
+    return wrap_component(request, editor_view, './@edit-data', 'text')
+
+@configure.service(context=IFile, method='GET', name='@edit-data',
+                   permission='guillotina.Public', allow_access=True)
+async def get_editable_file(context, request):
+    return await view_source(context, request)
 
 @configure.service(context=IDirectory, method='GET', name='@allfiles',
                    permission='guillotina.Public', allow_access=True)
@@ -129,12 +134,22 @@ async def get_tree(context, request, depth=3):
         children.append(data)
     return children
 
-@configure.service(context=IContent, method='GET', name='@default',
+@configure.service(context=IContent, method='GET', name='@basic',
                    permission='guillotina.ViewContent', allow_access=True)
-@configure.service(context=IDirectory, method='GET', name='@default',
+@configure.service(context=IContent, method='GET', name='@edit-data',
                    permission='guillotina.Public', allow_access=True)
-@configure.service(context=IFile, method='GET', name='@default',
+async def get_content_basic(context, request):
+    return {
+        "type": context.type_name,
+        "path": get_content_path(context),
+        "view": context.view,
+        "data": context.data,
+    }
+
+
+@configure.service(context=IDirectory, method='GET', name='@basic',
                    permission='guillotina.Public', allow_access=True)
-async def get_default(context, request):
-    get = DefaultGET(context, request)
-    return await get()
+@configure.service(context=IAbFabEditable, method='GET', name='@basic',
+                   permission='guillotina.Public', allow_access=True)
+async def get_basic(context, request):
+    return {"type": context.type_name, "path": get_content_path(context)}

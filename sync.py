@@ -109,7 +109,7 @@ def delete_remote(path):
 
 def download_file(obj, root):
     res = requests.get(
-        obj['url'] + "?raw=true",
+        obj['url'] + "/@edit-data",
         auth=AUTH)
     with open(os.path.join(root, obj['path'][1:]), 'wb') as f:
         f.write(res.content)

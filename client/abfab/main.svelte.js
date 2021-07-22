@@ -140,21 +140,21 @@ function instance($$self, $$props, $$invalidate) {
 		};
 
 		if (path.endsWith("/@edit")) {
-			const response = await fetch(`${path.replace("/@edit", "")}?raw=true`, { headers: { ...auth } });
+			const response = await fetch(path.replace("/@edit", "/@edit-data"), { headers: { ...auth } });
 			const code = await response.text();
 			const module = await import(`/abfab/editor/editor.svelte`);
 			$$invalidate(1, context = code);
 			$$invalidate(0, component = module.default);
 		} else {
-			const response = await fetch(`${path}/@default`, { headers: { ...auth } });
-			const fullObject = await response.json();
+			const response = await fetch(`${path}/@basic`, { headers: { ...auth } });
+			const basicData = await response.json();
 
-			if (fullObject["@type"] === "Content") {
-				const module = await import(`${fullObject.view}`);
+			if (basicData.type === "Content") {
+				const module = await import(`${basicData.view}`);
 				$$invalidate(0, component = module.default);
-				$$invalidate(1, context = fullObject.data);
+				$$invalidate(1, context = basicData.data);
 			} else {
-				const module = await import(fullObject["@id"]);
+				const module = await import(basicData.path);
 				$$invalidate(0, component = module.default);
 
 				if (query) {

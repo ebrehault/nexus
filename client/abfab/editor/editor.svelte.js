@@ -37,7 +37,7 @@ function add_css() {
 	append(document.head, style);
 }
 
-// (37:8) {#if play}
+// (50:8) {#if play}
 function create_if_block_2(ctx) {
 	let li;
 	let afbutton;
@@ -52,7 +52,7 @@ function create_if_block_2(ctx) {
 			}
 		});
 
-	afbutton.$on("click", /*refreshViewer*/ ctx[6]);
+	afbutton.$on("click", /*refreshViewer*/ ctx[7]);
 
 	return {
 		c() {
@@ -81,7 +81,7 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (51:4) {#if $showNavigation}
+// (64:4) {#if $showNavigation}
 function create_if_block_1(ctx) {
 	let navigation;
 	let current;
@@ -110,13 +110,13 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (57:4) {#if play}
+// (70:4) {#if play}
 function create_if_block(ctx) {
 	let viewer_1;
 	let current;
-	let viewer_1_props = { componentPath: /*componentPath*/ ctx[2] };
+	let viewer_1_props = { componentPath: /*componentPath*/ ctx[3] };
 	viewer_1 = new Viewer({ props: viewer_1_props });
-	/*viewer_1_binding*/ ctx[7](viewer_1);
+	/*viewer_1_binding*/ ctx[9](viewer_1);
 
 	return {
 		c() {
@@ -128,7 +128,7 @@ function create_if_block(ctx) {
 		},
 		p(ctx, dirty) {
 			const viewer_1_changes = {};
-			if (dirty & /*componentPath*/ 4) viewer_1_changes.componentPath = /*componentPath*/ ctx[2];
+			if (dirty & /*componentPath*/ 8) viewer_1_changes.componentPath = /*componentPath*/ ctx[3];
 			viewer_1.$set(viewer_1_changes);
 		},
 		i(local) {
@@ -141,7 +141,7 @@ function create_if_block(ctx) {
 			current = false;
 		},
 		d(detaching) {
-			/*viewer_1_binding*/ ctx[7](null);
+			/*viewer_1_binding*/ ctx[9](null);
 			destroy_component(viewer_1, detaching);
 		}
 	};
@@ -168,7 +168,7 @@ function create_fragment(ctx) {
 	let div_class_value;
 	let t6;
 	let current;
-	let if_block0 = /*play*/ ctx[1] && create_if_block_2(ctx);
+	let if_block0 = /*play*/ ctx[2] && create_if_block_2(ctx);
 
 	afbutton = new AFButton({
 			props: {
@@ -177,16 +177,23 @@ function create_fragment(ctx) {
 				icon: "play",
 				label: "Play",
 				size: "small",
-				active: /*play*/ ctx[1]
+				active: /*play*/ ctx[2]
 			}
 		});
 
-	afbutton.$on("click", /*togglePlay*/ ctx[5]);
+	afbutton.$on("click", /*togglePlay*/ ctx[6]);
 	toolbar = new Toolbar({});
-	let if_block1 = /*$showNavigation*/ ctx[4] && create_if_block_1(ctx);
-	vimeditor = new VimEditor({ props: { context: /*context*/ ctx[0] } });
-	vimeditor.$on("save", /*refreshViewer*/ ctx[6]);
-	let if_block2 = /*play*/ ctx[1] && create_if_block(ctx);
+	let if_block1 = /*$showNavigation*/ ctx[5] && create_if_block_1(ctx);
+
+	vimeditor = new VimEditor({
+			props: {
+				context: /*_context*/ ctx[0],
+				type: /*type*/ ctx[1]
+			}
+		});
+
+	vimeditor.$on("save", /*refreshViewer*/ ctx[7]);
+	let if_block2 = /*play*/ ctx[2] && create_if_block(ctx);
 
 	return {
 		c() {
@@ -217,8 +224,8 @@ function create_fragment(ctx) {
 			attr(img, "class", "svelte-dt76zw");
 			attr(ul, "class", "svelte-dt76zw");
 			attr(header, "class", "svelte-dt76zw");
-			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-dt76zw");
-			toggle_class(div, "with-nav", /*$showNavigation*/ ctx[4]);
+			attr(div, "class", div_class_value = "editor-container " + (/*play*/ ctx[2] ? "half" : "") + " svelte-dt76zw");
+			toggle_class(div, "with-nav", /*$showNavigation*/ ctx[5]);
 			attr(main, "class", "svelte-dt76zw");
 		},
 		m(target, anchor) {
@@ -245,11 +252,11 @@ function create_fragment(ctx) {
 			current = true;
 		},
 		p(ctx, [dirty]) {
-			if (/*play*/ ctx[1]) {
+			if (/*play*/ ctx[2]) {
 				if (if_block0) {
 					if_block0.p(ctx, dirty);
 
-					if (dirty & /*play*/ 2) {
+					if (dirty & /*play*/ 4) {
 						transition_in(if_block0, 1);
 					}
 				} else {
@@ -269,12 +276,12 @@ function create_fragment(ctx) {
 			}
 
 			const afbutton_changes = {};
-			if (dirty & /*play*/ 2) afbutton_changes.active = /*play*/ ctx[1];
+			if (dirty & /*play*/ 4) afbutton_changes.active = /*play*/ ctx[2];
 			afbutton.$set(afbutton_changes);
 
-			if (/*$showNavigation*/ ctx[4]) {
+			if (/*$showNavigation*/ ctx[5]) {
 				if (if_block1) {
-					if (dirty & /*$showNavigation*/ 16) {
+					if (dirty & /*$showNavigation*/ 32) {
 						transition_in(if_block1, 1);
 					}
 				} else {
@@ -294,22 +301,23 @@ function create_fragment(ctx) {
 			}
 
 			const vimeditor_changes = {};
-			if (dirty & /*context*/ 1) vimeditor_changes.context = /*context*/ ctx[0];
+			if (dirty & /*_context*/ 1) vimeditor_changes.context = /*_context*/ ctx[0];
+			if (dirty & /*type*/ 2) vimeditor_changes.type = /*type*/ ctx[1];
 			vimeditor.$set(vimeditor_changes);
 
-			if (!current || dirty & /*play*/ 2 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[1] ? "half" : "") + " svelte-dt76zw")) {
+			if (!current || dirty & /*play*/ 4 && div_class_value !== (div_class_value = "editor-container " + (/*play*/ ctx[2] ? "half" : "") + " svelte-dt76zw")) {
 				attr(div, "class", div_class_value);
 			}
 
-			if (dirty & /*play, $showNavigation*/ 18) {
-				toggle_class(div, "with-nav", /*$showNavigation*/ ctx[4]);
+			if (dirty & /*play, $showNavigation*/ 36) {
+				toggle_class(div, "with-nav", /*$showNavigation*/ ctx[5]);
 			}
 
-			if (/*play*/ ctx[1]) {
+			if (/*play*/ ctx[2]) {
 				if (if_block2) {
 					if_block2.p(ctx, dirty);
 
-					if (dirty & /*play*/ 2) {
+					if (dirty & /*play*/ 4) {
 						transition_in(if_block2, 1);
 					}
 				} else {
@@ -365,15 +373,17 @@ function create_fragment(ctx) {
 
 function instance($$self, $$props, $$invalidate) {
 	let $showNavigation;
-	component_subscribe($$self, showNavigation, $$value => $$invalidate(4, $showNavigation = $$value));
+	component_subscribe($$self, showNavigation, $$value => $$invalidate(5, $showNavigation = $$value));
 	let { context } = $$props;
+	let _context = "";
+	let type;
 	let play = false;
 	let componentPath;
 	let viewer;
 
 	function togglePlay() {
-		$$invalidate(2, componentPath = location.pathname.replace("/@edit", ""));
-		$$invalidate(1, play = !play);
+		$$invalidate(3, componentPath = location.pathname.replace("/@edit", ""));
+		$$invalidate(2, play = !play);
 		window.dispatchEvent(new Event("resize"));
 	}
 
@@ -388,22 +398,40 @@ function instance($$self, $$props, $$invalidate) {
 	function viewer_1_binding($$value) {
 		binding_callbacks[$$value ? "unshift" : "push"](() => {
 			viewer = $$value;
-			$$invalidate(3, viewer);
+			$$invalidate(4, viewer);
 		});
 	}
 
 	$$self.$$set = $$props => {
-		if ("context" in $$props) $$invalidate(0, context = $$props.context);
+		if ("context" in $$props) $$invalidate(8, context = $$props.context);
+	};
+
+	$$self.$$.update = () => {
+		if ($$self.$$.dirty & /*context, type, _context*/ 259) {
+			$: {
+				try {
+					const obj = JSON.parse(context);
+					$$invalidate(1, type = obj.type);
+					$$invalidate(0, _context = type === "Content" ? JSON.stringify(obj.data) : context);
+					console.log(obj, _context);
+				} catch(e) {
+					$$invalidate(1, type = "File");
+					$$invalidate(0, _context = context);
+				}
+			}
+		}
 	};
 
 	return [
-		context,
+		_context,
+		type,
 		play,
 		componentPath,
 		viewer,
 		$showNavigation,
 		togglePlay,
 		refreshViewer,
+		context,
 		viewer_1_binding
 	];
 }
@@ -412,7 +440,7 @@ class Component extends SvelteComponent {
 	constructor(options) {
 		super();
 		if (!document.getElementById("svelte-dt76zw-style")) add_css();
-		init(this, options, instance, create_fragment, safe_not_equal, { context: 0 });
+		init(this, options, instance, create_fragment, safe_not_equal, { context: 8 });
 	}
 }
 

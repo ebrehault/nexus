@@ -1,5 +1,6 @@
 <script>
     export let context;
+    export let type;
     import { VimWasm, checkBrowserCompatibility } from '/node_modules/vim-wasm/vimwasm.js';
     import { compile } from '/node_modules/svelte/compiler.mjs';
     import { saveFile, EditorStore } from './editor.js';
@@ -108,10 +109,10 @@
                 }
             }
             if (!error) {
-                saveFile(fullpath, contents).then(() => {
+                saveFile(fullpath, type, contents).then(() => {
                     if (isSvelte) {
                         const jsFilePath = fullpath + '.js';
-                        saveFile(jsFilePath, js.code.replace(RE, 'from "$1/index.mjs";'))
+                        saveFile(jsFilePath, 'File', js.code.replace(RE, 'from "$1/index.mjs";'))
                             .then(() => dispatch('save', {file: fullpath}));
                     } else {
                         dispatch('save', {file: fullpath});

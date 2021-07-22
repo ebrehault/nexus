@@ -44,20 +44,20 @@
         const [path, query] = href.split('?');
         const auth = { Authorization: 'Bearer ' + localStorage.getItem('auth') };
         if (path.endsWith('/@edit')) {
-            const response = await fetch(`${path.replace('/@edit', '')}?raw=true`, {headers: { ...auth }});
+            const response = await fetch(path.replace('/@edit', '/@edit-data'), {headers: { ...auth }});
             const code = await response.text();
             const module = await import(`/abfab/editor/editor.svelte`);
             context = code;
             component = module.default;
         } else {
-            const response = await fetch(`${path}/@default`, {headers: { ...auth }});
-            const fullObject = await response.json();
-            if (fullObject['@type'] === 'Content') {
-                const module = await import(`${fullObject.view}`);
+            const response = await fetch(`${path}/@basic`, {headers: { ...auth }});
+            const basicData = await response.json();
+            if (basicData.type === 'Content') {
+                const module = await import(`${basicData.view}`);
                 component = module.default;
-                context = fullObject.data;
+                context = basicData.data;
             } else {
-                const module = await import(fullObject['@id']);
+                const module = await import(basicData.path);
                 component = module.default;
                 if (query) {
                     const queryContext = query.split('context=')[1];
