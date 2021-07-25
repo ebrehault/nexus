@@ -23,11 +23,11 @@ import {
     toggle_class,
     transition_in,
     transition_out,
-} from '/node_modules/svelte/internal';
+} from '/~/node_modules/svelte/internal';
 
 const { document: document_1 } = globals;
-import Repl from '/node_modules/sveltejs/svelte-repl';
-import { onMount } from '/node_modules/svelte';
+import Repl from '/~/node_modules/sveltejs/svelte-repl';
+import { onMount } from '/~/node_modules/svelte';
 
 // import { process_example } from '../../utils/examples';
 import InputOutputToggle from './InputOutputToggle.svelte';

@@ -13,11 +13,11 @@ import {
 	safe_not_equal,
 	transition_in,
 	transition_out
-} from "/node_modules/svelte/internal/index.mjs";
+} from "/~/node_modules/svelte/internal/index.mjs";
 
-import { AbFabStore } from "/abfab/core.js";
-import { onDestroy } from "/node_modules/svelte/index.mjs";
-import { derived } from "/node_modules/svelte/store/index.mjs";
+import { AbFabStore } from "/~/abfab/core.js";
+import { onDestroy } from "/~/node_modules/svelte/index.mjs";
+import { derived } from "/~/node_modules/svelte/store/index.mjs";
 
 function create_fragment(ctx) {
 	let switch_instance;
@@ -95,6 +95,10 @@ function find_anchor(node) {
 	return node;
 }
 
+function get_import_path(path) {
+	return path.startsWith("/") ? `/~/${path.slice(1)}` : path;
+}
+
 function instance($$self, $$props, $$invalidate) {
 	let { component } = $$props;
 	let { context } = $$props;
@@ -142,7 +146,7 @@ function instance($$self, $$props, $$invalidate) {
 		if (path.endsWith("/@edit")) {
 			const response = await fetch(path.replace("/@edit", "/@edit-data"), { headers: { ...auth } });
 			const code = await response.text();
-			const module = await import(`/abfab/editor/editor.svelte`);
+			const module = await import(`/~/abfab/editor/editor.svelte`);
 			$$invalidate(1, context = code);
 			$$invalidate(0, component = module.default);
 		} else {
@@ -150,11 +154,11 @@ function instance($$self, $$props, $$invalidate) {
 			const basicData = await response.json();
 
 			if (basicData.type === "Content") {
-				const module = await import(`${basicData.view}`);
+				const module = await import(get_import_path(basicData.view));
 				$$invalidate(0, component = module.default);
 				$$invalidate(1, context = basicData.data);
 			} else {
-				const module = await import(basicData.path);
+				const module = await import(get_import_path(basicData.path));
 				$$invalidate(0, component = module.default);
 
 				if (query) {
@@ -182,7 +186,7 @@ function instance($$self, $$props, $$invalidate) {
 	subscriptions.push(_logged.subscribe(isLogged => {
 		if (!isLogged) {
 			localStorage.removeItem("auth");
-			navigate("/abfab/login/login.svelte");
+			navigate("/~/abfab/login/login.svelte");
 		}
 	}));
 

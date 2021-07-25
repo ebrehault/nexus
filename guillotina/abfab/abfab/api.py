@@ -22,6 +22,7 @@ async def view_source(context, request):
 def wrap_component(request, js_component, path_to_content, type='json'):
     get_context = ""
     if path_to_content:
+        path_to_content = (path_to_content.startswith('/') and "/~" + path_to_content) or path_to_content
         get_context = """let response = await fetch('{path_to_content}');
     let context = await response.{type}();
     """.format(path_to_content=path_to_content, type=type)
@@ -31,8 +32,8 @@ def wrap_component(request, js_component, path_to_content, type='json'):
     return """<!DOCTYPE html>
 <html lang="en">
 <script type="module">
-    import Component from '{component}';
-    import Main from '/abfab/main.svelte.js';
+    import Component from '/~{component}';
+    import Main from '/~/abfab/main.svelte.js';
     {get_context}
     const component = new Main({{
         target: document.body,
@@ -55,7 +56,7 @@ async def get_file(context, request):
     return await view_source(context, request)
 
 async def get_index(context, request):
-    path = get_content_path(context) + '/'
+    path = context.id + '/'
     entrypoint = context.module or context.main
     if entrypoint and entrypoint.startswith('./'):
         entrypoint = entrypoint[2:]
@@ -146,10 +147,19 @@ async def get_content_basic(context, request):
         "data": context.data,
     }
 
-
 @configure.service(context=IDirectory, method='GET', name='@basic',
                    permission='guillotina.Public', allow_access=True)
-@configure.service(context=IAbFabEditable, method='GET', name='@basic',
+@configure.service(context=IFile, method='GET', name='@basic',
                    permission='guillotina.Public', allow_access=True)
 async def get_basic(context, request):
     return {"type": context.type_name, "path": get_content_path(context)}
+
+@configure.service(context=IDirectory, method='GET', name='@default',
+                   permission='guillotina.Public', allow_access=True)
+@configure.service(context=IContent, method='GET', name='@default',
+                   permission='guillotina.ViewContent', allow_access=True)
+@configure.service(context=IFile, method='GET', name='@default',
+                   permission='guillotina.ViewContent', allow_access=True)
+async def get_default(context, request):
+    get = DefaultGET(context, request)
+    return await get()

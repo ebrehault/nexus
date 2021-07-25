@@ -20,7 +20,7 @@ import {
 	toggle_class,
 	transition_in,
 	transition_out
-} from "/node_modules/svelte/internal/index.mjs";
+} from "/~/node_modules/svelte/internal/index.mjs";
 
 import VimEditor from "./vim.svelte";
 import Viewer from "./viewer.svelte";
@@ -28,7 +28,7 @@ import AFButton from "../ui/button.svelte";
 import Toolbar from "./toolbar.svelte";
 import Navigation from "./navigation.svelte";
 import { showNavigation, loadTree } from "./editor.js";
-import { onMount } from "/node_modules/svelte/index.mjs";
+import { onMount } from "/~/node_modules/svelte/index.mjs";
 
 function add_css() {
 	var style = element("style");
@@ -218,8 +218,8 @@ function create_fragment(ctx) {
 			t6 = space();
 			if (if_block2) if_block2.c();
 			attr(link, "rel", "stylesheet");
-			attr(link, "href", "/abfab/pastanaga/pastanaga.css");
-			if (img.src !== (img_src_value = "/abfab/abfab.svg")) attr(img, "src", img_src_value);
+			attr(link, "href", "/~/abfab/pastanaga/pastanaga.css");
+			if (img.src !== (img_src_value = "/~/abfab/abfab.svg")) attr(img, "src", img_src_value);
 			attr(img, "alt", "AbFab logo");
 			attr(img, "class", "svelte-dt76zw");
 			attr(ul, "class", "svelte-dt76zw");

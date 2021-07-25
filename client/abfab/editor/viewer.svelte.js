@@ -17,10 +17,10 @@ import {
 	space,
 	transition_in,
 	transition_out
-} from "/node_modules/svelte/internal/index.mjs";
+} from "/~/node_modules/svelte/internal/index.mjs";
 
-import AFInput from "/abfab/ui/input.svelte";
-import AFTextarea from "/abfab/ui/textarea.svelte";
+import AFInput from "/~/abfab/ui/input.svelte";
+import AFTextarea from "/~/abfab/ui/textarea.svelte";
 
 function add_css() {
 	var style = element("style");
@@ -150,7 +150,12 @@ function create_fragment(ctx) {
 
 function instance($$self, $$props, $$invalidate) {
 	let { componentPath } = $$props;
-	let path = componentPath;
+
+	const _componentPath = componentPath.startsWith("/")
+	? `/~${componentPath}`
+	: componentPath;
+
+	let path = _componentPath;
 	let contentPath = "";
 	let dataError = false;
 	let jsonData = "";
@@ -159,7 +164,7 @@ function instance($$self, $$props, $$invalidate) {
 	function displayData(value, timestamp) {
 		try {
 			const data = JSON.stringify(JSON.parse(value));
-			$$invalidate(0, path = `${componentPath}?time=${timestamp}&context=${data}`);
+			$$invalidate(0, path = `${_componentPath}?time=${timestamp}&context=${data}`);
 			$$invalidate(2, dataError = false);
 		} catch(e) {
 			$$invalidate(2, dataError = true);
@@ -170,11 +175,11 @@ function instance($$self, $$props, $$invalidate) {
 		const timestamp = new Date().toISOString();
 
 		if (contentPath) {
-			$$invalidate(0, path = `${contentPath}?view=${componentPath}&time=${timestamp}`);
+			$$invalidate(0, path = `${contentPath}?view=${_componentPath}&time=${timestamp}`);
 		} else if (jsonData) {
 			displayData(jsonData, timestamp);
 		} else {
-			$$invalidate(0, path = `${componentPath}?time=${timestamp}`);
+			$$invalidate(0, path = `${_componentPath}?time=${timestamp}`);
 		}
 	}
 

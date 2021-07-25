@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const args = process.argv.slice(2);
 const source = args[0];
-const ABFAB_ROOT = '';
+const ABFAB_ROOT = '/~';
 const RE = new RegExp(/from "(.+\/svelte(\/\w+){0,1})";/g);
 
 fs.readFile(source, 'utf8', (err, data) => {

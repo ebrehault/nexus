@@ -9,13 +9,13 @@
 {#if item.type === 'Directory' }
 <pa-icon>
     <svg class="pa-small" on:click={toggle}>
-        <use xlink:href="/abfab/pastanaga/icons.svg#{item.expanded ? 'chevron-down' : 'chevron-right'}"></use>
+        <use xlink:href="/~/abfab/pastanaga/icons.svg#{item.expanded ? 'chevron-down' : 'chevron-right'}"></use>
     </svg>
 </pa-icon>
 {:else}
 <pa-icon>
     <svg class="pa-small">
-        <use xlink:href="/abfab/pastanaga/icons.svg#file"></use>
+        <use xlink:href="/~/abfab/pastanaga/icons.svg#file"></use>
     </svg>
 </pa-icon>
 {/if}

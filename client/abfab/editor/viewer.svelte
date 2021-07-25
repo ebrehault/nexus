@@ -1,9 +1,10 @@
 <script>
-    import AFInput from '/abfab/ui/input.svelte';
-    import AFTextarea from '/abfab/ui/textarea.svelte';
+    import AFInput from '/~/abfab/ui/input.svelte';
+    import AFTextarea from '/~/abfab/ui/textarea.svelte';
 
     export let componentPath;
-    let path = componentPath;
+    const _componentPath = componentPath.startsWith('/') ? `/~${componentPath}` : componentPath;
+    let path = _componentPath;
     let contentPath = '';
     let dataError = false;
 	let jsonData = '';
@@ -12,7 +13,7 @@
     function displayData(value, timestamp) {
         try {
             const data = JSON.stringify(JSON.parse(value));
-            path = `${componentPath}?time=${timestamp}&context=${data}`;
+            path = `${_componentPath}?time=${timestamp}&context=${data}`;
 			dataError = false;
         } catch(e) {
             dataError = true;
@@ -22,11 +23,11 @@
     export function refresh() {
         const timestamp = new Date().toISOString();
         if (contentPath) {
-            path = `${contentPath}?view=${componentPath}&time=${timestamp}`;
+            path = `${contentPath}?view=${_componentPath}&time=${timestamp}`;
         } else if (jsonData) {
             displayData(jsonData, timestamp);
         } else {
-            path = `${componentPath}?time=${timestamp}`;
+            path = `${_componentPath}?time=${timestamp}`;
         }
     }
 </script>

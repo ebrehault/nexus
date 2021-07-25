@@ -19,10 +19,10 @@ import {
 	text,
 	transition_in,
 	transition_out
-} from "/node_modules/svelte/internal/index.mjs";
+} from "/~/node_modules/svelte/internal/index.mjs";
 
-import AFInput from "/abfab/ui/input.svelte";
-import AFButton from "/abfab/ui/button.svelte";
+import AFInput from "/~/abfab/ui/input.svelte";
+import AFButton from "/~/abfab/ui/button.svelte";
 
 function add_css() {
 	var style = element("style");
@@ -102,8 +102,8 @@ function create_fragment(ctx) {
 			t5 = space();
 			create_component(afbutton.$$.fragment);
 			attr(link, "rel", "stylesheet");
-			attr(link, "href", "/abfab/pastanaga/pastanaga.css");
-			if (img.src !== (img_src_value = "../abfab.svg")) attr(img, "src", img_src_value);
+			attr(link, "href", "/~/abfab/pastanaga/pastanaga.css");
+			if (img.src !== (img_src_value = "/~/abfab/abfab.svg")) attr(img, "src", img_src_value);
 			attr(div, "class", "message svelte-1c4lrfc");
 			attr(main, "class", "svelte-1c4lrfc");
 		},
@@ -173,13 +173,13 @@ function instance($$self, $$props, $$invalidate) {
 	let password;
 	let error = "";
 	const urlParams = new URLSearchParams(window.location.search);
-	const redirect = urlParams.get("from") || "/abfab";
+	const redirect = urlParams.get("from") || "/~/abfab";
 
 	const login = async () => {
 		$$invalidate(2, error = "");
 		const body = JSON.stringify({ username, password });
 
-		const response = await fetch("/@login", {
+		const response = await fetch("/~/@login", {
 			body,
 			method: "POST",
 			headers: {

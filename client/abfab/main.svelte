@@ -1,5 +1,5 @@
 <script>
-    import { AbFabStore } from '/abfab/core.js';
+    import { AbFabStore } from '/~/abfab/core.js';
     import { onDestroy } from 'svelte';
     import { derived } from 'svelte/store';
 
@@ -39,6 +39,9 @@
         while (node && node.nodeName.toUpperCase() !== 'A') node = node.parentNode;
         return node;
     }
+    function get_import_path(path) {
+        return path.startsWith('/') ? `/~/${path.slice(1)}` : path;
+    }
     async function navigate(href) {
         history.pushState({}, '', href);
         const [path, query] = href.split('?');
@@ -46,18 +49,18 @@
         if (path.endsWith('/@edit')) {
             const response = await fetch(path.replace('/@edit', '/@edit-data'), {headers: { ...auth }});
             const code = await response.text();
-            const module = await import(`/abfab/editor/editor.svelte`);
+            const module = await import(`/~/abfab/editor/editor.svelte`);
             context = code;
             component = module.default;
         } else {
             const response = await fetch(`${path}/@basic`, {headers: { ...auth }});
             const basicData = await response.json();
             if (basicData.type === 'Content') {
-                const module = await import(`${basicData.view}`);
+                const module = await import(get_import_path(basicData.view));
                 component = module.default;
                 context = basicData.data;
             } else {
-                const module = await import(basicData.path);
+                const module = await import(get_import_path(basicData.path));
                 component = module.default;
                 if (query) {
                     const queryContext = query.split('context=')[1];
@@ -81,7 +84,7 @@
     subscriptions.push(_logged.subscribe(isLogged => {
 		if (!isLogged) {
             localStorage.removeItem('auth');
-            navigate('/abfab/login/login.svelte');
+            navigate('/~/abfab/login/login.svelte');
         }
 	}));
 

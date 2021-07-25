@@ -17,7 +17,7 @@ import {
 	text,
 	toggle_class,
 	xlink_attr
-} from "/node_modules/svelte/internal/index.mjs";
+} from "/~/node_modules/svelte/internal/index.mjs";
 
 function create_if_block(ctx) {
 	let pa_icon;
@@ -31,7 +31,7 @@ function create_if_block(ctx) {
 			pa_icon = element("pa-icon");
 			svg = svg_element("svg");
 			use = svg_element("use");
-			xlink_attr(use, "xlink:href", use_xlink_href_value = "/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1]);
+			xlink_attr(use, "xlink:href", use_xlink_href_value = "/~/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1]);
 			attr(svg, "class", svg_class_value = "pa-" + /*size*/ ctx[2]);
 		},
 		m(target, anchor) {
@@ -40,7 +40,7 @@ function create_if_block(ctx) {
 			append(svg, use);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*icon*/ 2 && use_xlink_href_value !== (use_xlink_href_value = "/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1])) {
+			if (dirty & /*icon*/ 2 && use_xlink_href_value !== (use_xlink_href_value = "/~/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1])) {
 				xlink_attr(use, "xlink:href", use_xlink_href_value);
 			}
 

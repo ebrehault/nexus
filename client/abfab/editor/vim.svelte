@@ -1,15 +1,16 @@
 <script>
     export let context;
     export let type;
-    import { VimWasm, checkBrowserCompatibility } from '/node_modules/vim-wasm/vimwasm.js';
-    import { compile } from '/node_modules/svelte/compiler.mjs';
+    import { VimWasm, checkBrowserCompatibility } from '/~/node_modules/vim-wasm/vimwasm.js';
+    import { compile } from 'svelte/compiler.mjs';
     import { saveFile, EditorStore } from './editor.js';
     import { createEventDispatcher, onDestroy } from 'svelte';
     import AFButton from '../ui/button.svelte';
     let error;
     let warnings = [];
     let vim;
-    let pathname = location.pathname.replace('/@edit', '');
+    const currentLocation = location.pathname.replace('/~/', '/');
+    let pathname = currentLocation.replace('/@edit', '');
 
     $: if (!vim && $EditorStore.dirs.length > 0) {
         initVim();
@@ -20,7 +21,7 @@
         updateErrors();
     }
     $: if (vim) {
-        const _pathname = location.pathname.replace('/@edit', '');
+        const _pathname = currentLocation.replace('/@edit', '');
         if (_pathname !== pathname) {
             const enc = new TextEncoder()
             vim.dropFile(_pathname.slice(1), enc.encode(context));
@@ -54,7 +55,7 @@
         vim = new VimWasm({
             canvas: screenCanvasElement,
             input: document.getElementById('vim-input'),
-            workerScriptPath: '/node_modules/vim-wasm/vim.js',
+            workerScriptPath: '/~/node_modules/vim-wasm/vim.js',
         });
     
         // Handle drag and drop
@@ -88,7 +89,7 @@
         };
     
         vim.onFileExport = (fullpath, contents) => {
-            const ABFAB_ROOT = '';
+            const ABFAB_ROOT = '/~';
             let js = '';
             if (isSvelte) {
                 try {
