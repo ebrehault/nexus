@@ -21,6 +21,7 @@ import {
 
 import AFInput from "/~/abfab/ui/input.svelte";
 import AFTextarea from "/~/abfab/ui/textarea.svelte";
+import { get_root_path } from "/~/abfab/core.js";
 
 function add_css() {
 	var style = element("style");
@@ -150,11 +151,7 @@ function create_fragment(ctx) {
 
 function instance($$self, $$props, $$invalidate) {
 	let { componentPath } = $$props;
-
-	const _componentPath = componentPath.startsWith("/")
-	? `/~${componentPath}`
-	: componentPath;
-
+	const _componentPath = get_root_path(componentPath);
 	let path = _componentPath;
 	let contentPath = "";
 	let dataError = false;

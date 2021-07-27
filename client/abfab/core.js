@@ -4,5 +4,5 @@ export const AbFabStore = writable({
     logged: !!localStorage.getItem('auth'),
 });
 export function get_root_path(path) {
-    return path.startsWith('/') ? `/~/${path.slice(1)}` : path;
-};
+    return path.startsWith('/') && !path.startsWith('/~/') ? `/~/${path.slice(1)}` : path;
+}
