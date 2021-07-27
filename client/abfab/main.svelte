@@ -1,5 +1,5 @@
 <script>
-    import { AbFabStore } from '/~/abfab/core.js';
+    import { AbFabStore, get_root_path} from '/~/abfab/core.js';
     import { onDestroy } from 'svelte';
     import { derived } from 'svelte/store';
 
@@ -39,9 +39,6 @@
         while (node && node.nodeName.toUpperCase() !== 'A') node = node.parentNode;
         return node;
     }
-    function get_import_path(path) {
-        return path.startsWith('/') ? `/~/${path.slice(1)}` : path;
-    }
     async function navigate(href) {
         history.pushState({}, '', href);
         const [path, query] = href.split('?');
@@ -56,11 +53,11 @@
             const response = await fetch(`${path}/@basic`, {headers: { ...auth }});
             const basicData = await response.json();
             if (basicData.type === 'Content') {
-                const module = await import(get_import_path(basicData.view));
+                const module = await import(get_root_path(basicData.view));
                 component = module.default;
                 context = basicData.data;
             } else {
-                const module = await import(get_import_path(basicData.path));
+                const module = await import(get_root_path(basicData.path));
                 component = module.default;
                 if (query) {
                     const queryContext = query.split('context=')[1];

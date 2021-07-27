@@ -4,13 +4,12 @@
     import { VimWasm, checkBrowserCompatibility } from '/~/node_modules/vim-wasm/vimwasm.js';
     import { compile } from 'svelte/compiler.mjs';
     import { saveFile, EditorStore } from './editor.js';
-    import { createEventDispatcher, onDestroy } from 'svelte';
+    import { createEventDispatcher } from 'svelte';
     import AFButton from '../ui/button.svelte';
     let error;
     let warnings = [];
     let vim;
-    const currentLocation = location.pathname.replace('/~/', '/');
-    let pathname = currentLocation.replace('/@edit', '');
+    let pathname = location.pathname.replace('/~/', '/').replace('/@edit', '');
 
     $: if (!vim && $EditorStore.dirs.length > 0) {
         initVim();
@@ -21,7 +20,7 @@
         updateErrors();
     }
     $: if (vim) {
-        const _pathname = currentLocation.replace('/@edit', '');
+        const _pathname = location.pathname.replace('/~/', '/').replace('/@edit', '');
         if (_pathname !== pathname) {
             const enc = new TextEncoder()
             vim.dropFile(_pathname.slice(1), enc.encode(context));

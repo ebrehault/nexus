@@ -136,7 +136,7 @@ async def get_tree(context, request, depth=3):
     return children
 
 @configure.service(context=IContent, method='GET', name='@basic',
-                   permission='guillotina.ViewContent', allow_access=True)
+                   permission='guillotina.Public', allow_access=True)
 @configure.service(context=IContent, method='GET', name='@edit-data',
                    permission='guillotina.Public', allow_access=True)
 async def get_content_basic(context, request):

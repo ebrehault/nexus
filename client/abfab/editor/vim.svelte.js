@@ -34,7 +34,7 @@ import {
 
 import { compile } from "/~/node_modules/svelte/compiler.mjs";
 import { saveFile, EditorStore } from "./editor.js";
-import { createEventDispatcher, onDestroy } from "/~/node_modules/svelte/index.mjs";
+import { createEventDispatcher } from "/~/node_modules/svelte/index.mjs";
 import AFButton from "../ui/button.svelte";
 
 function add_css() {
@@ -46,11 +46,11 @@ function add_css() {
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[12] = list[i];
+	child_ctx[11] = list[i];
 	return child_ctx;
 }
 
-// (221:0) {#if hasError }
+// (220:0) {#if hasError }
 function create_if_block(ctx) {
 	let div1;
 	let span;
@@ -166,7 +166,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (228:8) {#if error}
+// (227:8) {#if error}
 function create_if_block_1(ctx) {
 	let div;
 	let t0_value = /*error*/ ctx[0].message + "";
@@ -200,14 +200,14 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (229:8) {#each warnings as warning}
+// (228:8) {#each warnings as warning}
 function create_each_block(ctx) {
 	let div;
-	let t0_value = /*warning*/ ctx[12].message + "";
+	let t0_value = /*warning*/ ctx[11].message + "";
 	let t0;
 	let t1;
 	let code;
-	let t2_value = /*warning*/ ctx[12].frame + "";
+	let t2_value = /*warning*/ ctx[11].frame + "";
 	let t2;
 	let t3;
 
@@ -231,8 +231,8 @@ function create_each_block(ctx) {
 			append(div, t3);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*warnings*/ 2 && t0_value !== (t0_value = /*warning*/ ctx[12].message + "")) set_data(t0, t0_value);
-			if (dirty & /*warnings*/ 2 && t2_value !== (t2_value = /*warning*/ ctx[12].frame + "")) set_data(t2, t2_value);
+			if (dirty & /*warnings*/ 2 && t0_value !== (t0_value = /*warning*/ ctx[11].message + "")) set_data(t0, t0_value);
+			if (dirty & /*warnings*/ 2 && t2_value !== (t2_value = /*warning*/ ctx[11].frame + "")) set_data(t2, t2_value);
 		},
 		d(detaching) {
 			if (detaching) detach(div);
@@ -327,8 +327,7 @@ function instance($$self, $$props, $$invalidate) {
 	let error;
 	let warnings = [];
 	let vim;
-	const currentLocation = location.pathname.replace("/~/", "/");
-	let pathname = currentLocation.replace("/@edit", "");
+	let pathname = location.pathname.replace("/~/", "/").replace("/@edit", "");
 
 	function discardErrors() {
 		$$invalidate(0, error = undefined);
@@ -488,7 +487,7 @@ function instance($$self, $$props, $$invalidate) {
 
 		if ($$self.$$.dirty & /*vim, pathname, context*/ 208) {
 			$: if (vim) {
-				const _pathname = currentLocation.replace("/@edit", "");
+				const _pathname = location.pathname.replace("/~/", "/").replace("/@edit", "");
 
 				if (_pathname !== pathname) {
 					const enc = new TextEncoder();

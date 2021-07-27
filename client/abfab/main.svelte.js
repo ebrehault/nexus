@@ -15,7 +15,7 @@ import {
 	transition_out
 } from "/~/node_modules/svelte/internal/index.mjs";
 
-import { AbFabStore } from "/~/abfab/core.js";
+import { AbFabStore, get_root_path } from "/~/abfab/core.js";
 import { onDestroy } from "/~/node_modules/svelte/index.mjs";
 import { derived } from "/~/node_modules/svelte/store/index.mjs";
 
@@ -95,10 +95,6 @@ function find_anchor(node) {
 	return node;
 }
 
-function get_import_path(path) {
-	return path.startsWith("/") ? `/~/${path.slice(1)}` : path;
-}
-
 function instance($$self, $$props, $$invalidate) {
 	let { component } = $$props;
 	let { context } = $$props;
@@ -154,11 +150,11 @@ function instance($$self, $$props, $$invalidate) {
 			const basicData = await response.json();
 
 			if (basicData.type === "Content") {
-				const module = await import(get_import_path(basicData.view));
+				const module = await import(get_root_path(basicData.view));
 				$$invalidate(0, component = module.default);
 				$$invalidate(1, context = basicData.data);
 			} else {
-				const module = await import(get_import_path(basicData.path));
+				const module = await import(get_root_path(basicData.path));
 				$$invalidate(0, component = module.default);
 
 				if (query) {

@@ -1,5 +1,5 @@
 import { writable, derived, get } from '/~/node_modules/svelte/store';
-import { AbFabStore } from '/~/abfab/core.js';
+import { AbFabStore, get_root_path } from '/~/abfab/core.js';
 
 export const EditorStore = writable({
     tree: [],
@@ -18,14 +18,15 @@ export const loadTree = async () => {
             if (item.type === 'Directory') {
                 dirs.push(item.path);
             }
+            const itemPath = get_root_path(item.path);
             return {
                 name: item.path.split('/').pop(),
-                path: item.path,
+                path: itemPath,
                 type: item.type,
                 children: !!item.children
                     ? item.children.sort((a, b) => a.path.localeCompare(b.path)).map(mapTree)
                     : undefined,
-                expanded: currentLocation.startsWith(`${item.path}`),
+                expanded: currentLocation.startsWith(itemPath),
             };
         };
         EditorStore.update((state) => ({ ...state, tree: tree.map(mapTree) }));
