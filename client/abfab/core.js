@@ -6,3 +6,6 @@ export const AbFabStore = writable({
 export function get_root_path(path) {
     return path.startsWith('/') && !path.startsWith('/~/') ? `/~/${path.slice(1)}` : path;
 }
+export function get_core_path(path) {
+    return path.replace('/~/', '');
+}
