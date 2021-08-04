@@ -1,30 +1,40 @@
 <script>
     import VimEditor from './vim.svelte';
+    import CodeMirrorEditor from './codemirror.svelte';
     import Viewer from './viewer.svelte';
     import AFButton from '../ui/button.svelte';
     import Toolbar from './toolbar.svelte';
     import Navigation from './navigation.svelte';
-    import { showNavigation, loadTree } from './editor.js';
+    import { showNavigation, loadTree, saveFile } from './editor.js';
     import { onMount } from 'svelte';
-    
+    import { compile } from 'svelte/compiler.mjs';
+
     export let context;
+
     let _context = '';
+    let error;
+    let warnings = [];
     let type;
+    let useVim = localStorage.getItem('useVim') ? true : false;
+    const RE = new RegExp(/from "(.+\/svelte(\/\w+){0,1})";/g);        
+    let play = false;
+    let componentPath;
+    let viewer;
+
     $: {
         try {
             const obj = JSON.parse(context);
             type = obj.type;
             _context = type === 'Content' ? JSON.stringify(obj.data) : context;
-            console.log(obj, _context);
         } catch (e) {
             type = 'File';
             _context = context;
         }
     }
-    
-    let play = false;
-    let componentPath;
-    let viewer;
+    $: hasError = !!error || warnings.length > 0;
+    $: if (hasError) {
+        updateErrors();
+    }
 
     function togglePlay() {
         componentPath = location.pathname.replace('/@edit', '');
@@ -32,13 +42,61 @@
         window.dispatchEvent(new Event('resize'));
     }
     
+    function save(event) {
+        const source = event.detail;
+        const ABFAB_ROOT = '/~';
+        let js = '';
+        const pathname = location.pathname.replace('/~/', '/').replace('/@edit', '');
+        const isSvelte = pathname.endsWith('.svelte');
+        if (isSvelte) {
+            try {
+                const result = compile(source, {
+                    sveltePath: ABFAB_ROOT + '/node_modules/svelte',
+                });
+                error = undefined;
+                js = result.js;
+                const warningsFixed = result.warnings.length === 0 && warnings.length > 0;
+                warnings = result.warnings;
+                if (warningsFixed) {
+                    updateErrors();
+                }
+            } catch (e) {
+                error = e;
+            }
+        }
+        if (!error) {
+            saveFile(pathname, type, source).then(() => {
+                if (isSvelte) {
+                    const jsFilePath = pathname + '.js';
+                    saveFile(jsFilePath, 'File', js.code.replace(RE, 'from "$1/index.mjs";'))
+                        .then(() => refreshViewer());
+                } else {
+                    refreshViewer();
+                }
+            });
+        }
+    }
+
+    function discardErrors() {
+        error = undefined;
+        warnings = [];
+        updateErrors();
+    }
+
+    function updateErrors() {
+        window.dispatchEvent(new Event('resize'));
+    }
+
     function refreshViewer() {
         if (viewer) {
             viewer.refresh();
         }
     }
 
-    onMount(() => loadTree());
+    onMount(() => {
+        console.log(`Wheels on fire,\nRolling down the road.\nBest notify my next of kin\nThis wheel shall explode!\n\n`);
+        loadTree();
+    });
 </script>
 
 <svelte:head>
@@ -64,8 +122,31 @@
     {#if $showNavigation}
     <Navigation></Navigation>
     {/if}
-    <div class="editor-container {play ? 'half' : ''}" class:with-nav={$showNavigation}>
-        <VimEditor context={_context} {type} on:save={refreshViewer}></VimEditor>
+    <div class="editor-container {play ? 'half' : ''}" class:with-nav={$showNavigation} class:has-error={hasError}>
+        <div class="editor">
+            {#if useVim}
+            <VimEditor context={_context} {type} on:save={save}></VimEditor>
+            {:else}
+            <CodeMirrorEditor context={_context} {type} on:save={save}></CodeMirrorEditor>
+            {/if}
+        </div>
+        {#if hasError }
+            <div class="errors-container">
+                <span class="discard-button">
+                    <AFButton aspect="solid" icon="cross" label="Discard" size="small"
+                        on:click={discardErrors}/>
+                </span>
+                <div class="errors">
+                    {#if error} <div class="error">{error.message}<code>{error.frame}</code></div>{/if}
+                    {#each warnings as warning}
+                    <div class="warning">
+                        {warning.message}
+                        <code>{warning.frame}</code>
+                    </div>
+                    {/each}
+                </div>
+            </div>
+        {/if}
     </div>
     {#if play}
     <Viewer bind:this={viewer} componentPath={componentPath}></Viewer>
@@ -105,6 +186,12 @@
         padding: 0px;
         overflow: hidden;
     }
+    .editor-container .editor {
+        height: 100%;
+    }
+    .editor-container.has-error .editor {
+        height: 80%;
+    }
     .editor-container.half {
         width: 50vw;
     }
@@ -113,5 +200,38 @@
     }
     .editor-container.half.with-nav {
         width: calc(50vw - 10em);
+    }
+    .errors-container {
+        overflow: auto;
+        position: relative;
+        z-index: 10;
+    }
+    .errors {
+        height: 100%;
+        overflow: auto;
+        font-size: var(--font-size-xs);
+    }
+    .errors div {
+        color: var(--color-accent-primary-lightest);
+        padding: 0.25em;
+    }
+    .errors .error {
+        background-color: var(--color-accent-secondary-dark);
+    }
+    .errors .warning {
+        background-color: var(--color-accent-secondary-default);
+    }
+    .errors code {
+        display: block;
+        white-space: pre-wrap;
+        padding: 0.25em;
+        margin: 0.25em;
+        color: var(--color-neutral-primary-lighter);
+    }
+    .discard-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.25em;
     }
 </style>

@@ -8,90 +8,143 @@ import {
 	element,
 	init as init_1,
 	insert,
-	listen,
 	noop,
 	safe_not_equal,
 	space
 } from "/~/node_modules/svelte/internal/index.mjs";
 
 import { onMount } from "/~/node_modules/svelte/index.mjs";
-import "/~/node_modules/codemirror/lib/codemirror.js";
+import { createEventDispatcher } from "/~/node_modules/svelte/index.mjs";
+
+function add_css() {
+	var style = element("style");
+	style.id = "svelte-9uor91-style";
+	style.textContent = "textarea.svelte-9uor91{display:none}.CodeMirror{width:calc(100vw - 16px);height:calc(100vh - 16px) !important}";
+	append(document.head, style);
+}
 
 function create_fragment(ctx) {
 	let textarea_1;
-	let t0;
-	let button;
-	let t2;
-	let link;
-	let mounted;
-	let dispose;
+	let t;
+	let link0;
+	let link1;
 
 	return {
 		c() {
 			textarea_1 = element("textarea");
-			t0 = space();
-			button = element("button");
-			button.textContent = "Init";
-			t2 = space();
-			link = element("link");
-			attr(link, "rel", "stylesheet");
-			attr(link, "href", "/~/node_modules/codemirror/lib/codemirror.css");
+			t = space();
+			link0 = element("link");
+			link1 = element("link");
+			attr(textarea_1, "class", "svelte-9uor91");
+			attr(link0, "rel", "stylesheet");
+			attr(link0, "href", "/~/node_modules/codemirror/lib/codemirror.css");
+			attr(link1, "rel", "stylesheet");
+			attr(link1, "href", "/~/node_modules/codemirror/theme/blackboard.css");
 		},
 		m(target, anchor) {
 			insert(target, textarea_1, anchor);
-			/*textarea_1_binding*/ ctx[2](textarea_1);
-			insert(target, t0, anchor);
-			insert(target, button, anchor);
-			insert(target, t2, anchor);
-			append(document.head, link);
-
-			if (!mounted) {
-				dispose = listen(button, "click", /*init*/ ctx[1]);
-				mounted = true;
-			}
+			/*textarea_1_binding*/ ctx[3](textarea_1);
+			insert(target, t, anchor);
+			append(document.head, link0);
+			append(document.head, link1);
 		},
 		p: noop,
 		i: noop,
 		o: noop,
 		d(detaching) {
 			if (detaching) detach(textarea_1);
-			/*textarea_1_binding*/ ctx[2](null);
-			if (detaching) detach(t0);
-			if (detaching) detach(button);
-			if (detaching) detach(t2);
-			detach(link);
-			mounted = false;
-			dispose();
+			/*textarea_1_binding*/ ctx[3](null);
+			if (detaching) detach(t);
+			detach(link0);
+			detach(link1);
 		}
 	};
 }
 
+let mode = "svelte";
+
+async function loadPlugins() {
+	await import("/~/node_modules/codemirror/addon/mode/simple.js");
+	await import("/~/node_modules/codemirror/addon/mode/multiplex.js");
+	await import("/~/node_modules/codemirror/mode/javascript/javascript.js");
+	await import("/~/node_modules/codemirror/mode/handlebars/handlebars.js");
+	await import("/~/node_modules/codemirror/mode/htmlmixed/htmlmixed.js");
+	await import("/~/node_modules/codemirror/mode/xml/xml.js");
+	await import("/~/node_modules/codemirror/mode/css/css.js");
+	await import("/~/node_modules/codemirror/mode/markdown/markdown.js");
+	await import("/~/node_modules/codemirror/addon/edit/closebrackets.js");
+	await import("/~/node_modules/codemirror/addon/edit/closetag.js");
+	await import("/~/node_modules/codemirror/addon/edit/continuelist.js");
+	await import("/~/node_modules/codemirror/addon/comment/comment.js");
+	await import("/~/node_modules/codemirror/addon/fold/foldcode.js");
+	await import("/~/node_modules/codemirror/addon/fold/foldgutter.js");
+	await import("/~/node_modules/codemirror/addon/fold/brace-fold.js");
+	await import("/~/node_modules/codemirror/addon/fold/xml-fold.js");
+	await import("/~/node_modules/codemirror/addon/fold/indent-fold.js");
+	await import("/~/node_modules/codemirror/addon/fold/markdown-fold.js");
+	await import("/~/node_modules/codemirror/addon/fold/comment-fold.js");
+}
+
 function instance($$self, $$props, $$invalidate) {
+	let { context } = $$props;
 	let textarea;
 	let codeMirror;
+	const dispatch = createEventDispatcher();
 
-	// onMount(() => init());
+	function saveFile(value) {
+		dispatch("save", value);
+	}
+
+	onMount(async () => {
+		if (!window.CodeMirror) {
+			await import("/~/node_modules/codemirror/lib/codemirror.js");
+			await loadPlugins();
+			init();
+		}
+	});
+
 	function init() {
-		import("/~/node_modules/codemirror/mode/javascript/javascript.js");
+		const modes = {
+			js: { name: "javascript", json: false },
+			json: { name: "javascript", json: true },
+			svelte: { name: "handlebars", base: "text/html" },
+			md: { name: "markdown" }
+		};
 
-		// import('/~/node_modules/codemirror/mode/handlebars/handlebars.js');
-		import("/~/node_modules/codemirror/mode/htmlmixed/htmlmixed.js");
+		const opts = {
+			lineNumbers: true,
+			lineWrapping: true,
+			indentWithTabs: true,
+			indentUnit: 2,
+			tabSize: 2,
+			value: "",
+			mode: modes[mode] || { name: mode },
+			autoCloseBrackets: true,
+			autoCloseTags: true,
+			extraKeys: {
+				"Enter": "newlineAndIndentContinueMarkdownList",
+				"Ctrl-/": "toggleComment",
+				"Cmd-/": "toggleComment",
+				"Ctrl-Q"(cm) {
+					cm.foldCode(cm.getCursor());
+				},
+				"Cmd-Q"(cm) {
+					cm.foldCode(cm.getCursor());
+				},
+				"Ctrl-S"(cm) {
+					saveFile(cm.getValue());
+				},
+				"Cmd-S"(cm) {
+					saveFile(cm.getValue());
+				}
+			},
+			foldGutter: true,
+			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+			theme: "blackboard"
+		};
 
-		import("/~/node_modules/codemirror/mode/xml/xml.js");
-		import("/~/node_modules/codemirror/mode/css/css.js");
-		import("/~/node_modules/codemirror/mode/markdown/markdown.js");
-		import("/~/node_modules/codemirror/addon/edit/closebrackets.js");
-		import("/~/node_modules/codemirror/addon/edit/closetag.js");
-		import("/~/node_modules/codemirror/addon/edit/continuelist.js");
-		import("/~/node_modules/codemirror/addon/comment/comment.js");
-		import("/~/node_modules/codemirror/addon/fold/foldcode.js");
-		import("/~/node_modules/codemirror/addon/fold/foldgutter.js");
-		import("/~/node_modules/codemirror/addon/fold/brace-fold.js");
-		import("/~/node_modules/codemirror/addon/fold/xml-fold.js");
-		import("/~/node_modules/codemirror/addon/fold/indent-fold.js");
-		import("/~/node_modules/codemirror/addon/fold/markdown-fold.js");
-		import("/~/node_modules/codemirror/addon/fold/comment-fold.js");
-		codeMirror = CodeMirror.fromTextArea(textarea);
+		$$invalidate(2, codeMirror = CodeMirror.fromTextArea(textarea, opts));
+		codeMirror.setValue(context);
 	}
 
 	
@@ -103,13 +156,26 @@ function instance($$self, $$props, $$invalidate) {
 		});
 	}
 
-	return [textarea, init, textarea_1_binding];
+	$$self.$$set = $$props => {
+		if ("context" in $$props) $$invalidate(1, context = $$props.context);
+	};
+
+	$$self.$$.update = () => {
+		if ($$self.$$.dirty & /*codeMirror, context*/ 6) {
+			$: if (codeMirror) {
+				codeMirror.setValue(context);
+			}
+		}
+	};
+
+	return [textarea, context, codeMirror, textarea_1_binding];
 }
 
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		init_1(this, options, instance, create_fragment, safe_not_equal, {});
+		if (!document.getElementById("svelte-9uor91-style")) add_css();
+		init_1(this, options, instance, create_fragment, safe_not_equal, { context: 1 });
 	}
 }
 

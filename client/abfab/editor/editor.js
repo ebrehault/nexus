@@ -72,8 +72,7 @@ export function saveFile(filepath, type, content) {
                 id: filename,
             };
             if (type === 'Content') {
-                const decoder = new TextDecoder('utf-8');
-                body.data = JSON.parse(decoder.decode(content));
+                body.data = JSON.parse(content);
             }
             return fetch(res.status === 404 ? container : filepath, {
                 method: res.status === 404 ? 'POST' : 'PATCH',

@@ -12,10 +12,11 @@ import {
 	insert,
 	listen,
 	mount_component,
-	noop,
 	run_all,
 	safe_not_equal,
+	set_data,
 	space,
+	text,
 	transition_in,
 	transition_out
 } from "/~/node_modules/svelte/internal/index.mjs";
@@ -27,44 +28,61 @@ import { clickOutside } from "/~/abfab/ui/clickOutside.js";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-145vp0j-style";
-	style.textContent = "nav.svelte-145vp0j.svelte-145vp0j{width:3em}ul.svelte-145vp0j.svelte-145vp0j{list-style-type:none;margin:0;padding:0;text-align:center;display:flex;flex-direction:column;height:100%}li.svelte-145vp0j.svelte-145vp0j{padding:1em 0}.more-button.svelte-145vp0j.svelte-145vp0j{margin-top:auto}.menu.svelte-145vp0j.svelte-145vp0j{position:absolute;bottom:3em;left:0.5em;width:7em;background-color:var(--color-neutral-primary-lightest);z-index:400;box-shadow:0 1px 0.5rem rgb(2 19 34 / 12%), 0 0 0.25rem rgb(2 19 34 / 10%);border-radius:.125rem}.menu.svelte-145vp0j div.svelte-145vp0j{padding:0.25em 1em;cursor:pointer}";
+	style.id = "svelte-rpfqp6-style";
+	style.textContent = "nav.svelte-rpfqp6.svelte-rpfqp6{width:3em}ul.svelte-rpfqp6.svelte-rpfqp6{list-style-type:none;margin:0;padding:0;text-align:center;display:flex;flex-direction:column;height:100%}li.svelte-rpfqp6.svelte-rpfqp6{padding:1em 0}.more-button.svelte-rpfqp6.svelte-rpfqp6{margin-top:auto}.menu.svelte-rpfqp6.svelte-rpfqp6{position:absolute;bottom:3em;left:0.5em;width:10em;background-color:var(--color-neutral-primary-lightest);z-index:400;box-shadow:0 1px 0.5rem rgb(2 19 34 / 12%), 0 0 0.25rem rgb(2 19 34 / 10%);border-radius:.125rem;text-align:left}.menu.svelte-rpfqp6 div.svelte-rpfqp6{padding:0.25em 1em;cursor:pointer}";
 	append(document.head, style);
 }
 
-// (40:12) {#if showMore}
+// (51:12) {#if showMore}
 function create_if_block(ctx) {
-	let div1;
+	let div2;
 	let div0;
+	let t1;
+	let div1;
+	let t2;
+	let t3_value = (/*useVim*/ ctx[2] ? "CodeMirror" : "Vim") + "";
+	let t3;
 	let clickOutside_action;
 	let mounted;
 	let dispose;
 
 	return {
 		c() {
-			div1 = element("div");
+			div2 = element("div");
 			div0 = element("div");
 			div0.textContent = "Log out";
-			attr(div0, "class", "svelte-145vp0j");
-			attr(div1, "class", "menu svelte-145vp0j");
+			t1 = space();
+			div1 = element("div");
+			t2 = text("Use ");
+			t3 = text(t3_value);
+			attr(div0, "class", "svelte-rpfqp6");
+			attr(div1, "class", "svelte-rpfqp6");
+			attr(div2, "class", "menu svelte-rpfqp6");
 		},
 		m(target, anchor) {
-			insert(target, div1, anchor);
-			append(div1, div0);
+			insert(target, div2, anchor);
+			append(div2, div0);
+			append(div2, t1);
+			append(div2, div1);
+			append(div1, t2);
+			append(div1, t3);
 
 			if (!mounted) {
 				dispose = [
-					listen(div0, "click", /*logout*/ ctx[2]),
-					action_destroyer(clickOutside_action = clickOutside.call(null, div1)),
-					listen(div1, "clickoutside", /*clickoutside_handler*/ ctx[5])
+					listen(div0, "click", /*logout*/ ctx[3]),
+					listen(div1, "click", /*toggleVim*/ ctx[4]),
+					action_destroyer(clickOutside_action = clickOutside.call(null, div2)),
+					listen(div2, "clickoutside", /*clickoutside_handler*/ ctx[7])
 				];
 
 				mounted = true;
 			}
 		},
-		p: noop,
+		p(ctx, dirty) {
+			if (dirty & /*useVim*/ 4 && t3_value !== (t3_value = (/*useVim*/ ctx[2] ? "CodeMirror" : "Vim") + "")) set_data(t3, t3_value);
+		},
 		d(detaching) {
-			if (detaching) detach(div1);
+			if (detaching) detach(div2);
 			mounted = false;
 			run_all(dispose);
 		}
@@ -96,7 +114,7 @@ function create_fragment(ctx) {
 			}
 		});
 
-	afbutton0.$on("click", /*toggleNavigation*/ ctx[3]);
+	afbutton0.$on("click", /*toggleNavigation*/ ctx[5]);
 
 	afbutton1 = new AFButton({
 			props: {
@@ -118,7 +136,7 @@ function create_fragment(ctx) {
 			}
 		});
 
-	afbutton2.$on("click", /*click_handler*/ ctx[4]);
+	afbutton2.$on("click", /*click_handler*/ ctx[6]);
 	let if_block = /*showMore*/ ctx[0] && create_if_block(ctx);
 
 	return {
@@ -135,11 +153,11 @@ function create_fragment(ctx) {
 			create_component(afbutton2.$$.fragment);
 			t2 = space();
 			if (if_block) if_block.c();
-			attr(li0, "class", "svelte-145vp0j");
-			attr(li1, "class", "svelte-145vp0j");
-			attr(li2, "class", "more-button svelte-145vp0j");
-			attr(ul, "class", "svelte-145vp0j");
-			attr(nav, "class", "svelte-145vp0j");
+			attr(li0, "class", "svelte-rpfqp6");
+			attr(li1, "class", "svelte-rpfqp6");
+			attr(li2, "class", "more-button svelte-rpfqp6");
+			attr(ul, "class", "svelte-rpfqp6");
+			attr(nav, "class", "svelte-rpfqp6");
 		},
 		m(target, anchor) {
 			insert(target, nav, anchor);
@@ -200,9 +218,22 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let showMore = false;
 	let showNavigation = false;
+	let useVim = localStorage.getItem("useVim") ? true : false;
 
 	function logout() {
 		AbFabStore.update(state => ({ ...state, logged: false }));
+	}
+
+	function toggleVim() {
+		$$invalidate(2, useVim = !useVim);
+
+		if (useVim) {
+			localStorage.setItem("useVim", "true");
+		} else {
+			localStorage.removeItem("useVim");
+		}
+
+		$$invalidate(0, showMore = false);
 	}
 
 	function toggleNavigation() {
@@ -220,7 +251,9 @@ function instance($$self, $$props, $$invalidate) {
 	return [
 		showMore,
 		showNavigation,
+		useVim,
 		logout,
+		toggleVim,
 		toggleNavigation,
 		click_handler,
 		clickoutside_handler
@@ -230,7 +263,7 @@ function instance($$self, $$props, $$invalidate) {
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document.getElementById("svelte-145vp0j-style")) add_css();
+		if (!document.getElementById("svelte-rpfqp6-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, {});
 	}
 }

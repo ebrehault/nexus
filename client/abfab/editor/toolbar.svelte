@@ -6,12 +6,23 @@
 
     let showMore = false;
     let showNavigation = false;
+    let useVim = localStorage.getItem('useVim') ? true : false;
 
     function logout() {
         AbFabStore.update((state) => ({
             ...state,
             logged: false,
         }))
+    }
+
+    function toggleVim() {
+        useVim = !useVim;
+        if (useVim) {
+            localStorage.setItem('useVim', 'true');
+        } else {
+            localStorage.removeItem('useVim');
+        }
+        showMore = false;
     }
 
     function toggleNavigation() {
@@ -42,6 +53,9 @@
                 <div on:click={logout}>
                     Log out
                 </div>
+                <div on:click={toggleVim}>
+                    Use {useVim ? 'CodeMirror' : 'Vim'}
+                </div>
             </div>
             {/if}
         </li>
@@ -70,11 +84,12 @@
         position: absolute;
         bottom: 3em;
         left: 0.5em;
-        width: 7em;
+        width: 10em;
         background-color: var(--color-neutral-primary-lightest);
         z-index: 400;
         box-shadow: 0 1px 0.5rem rgb(2 19 34 / 12%), 0 0 0.25rem rgb(2 19 34 / 10%);
         border-radius: .125rem;
+        text-align: left;
     }
     .menu div {
         padding: 0.25em 1em;
