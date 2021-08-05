@@ -21,12 +21,13 @@ import {
 	space,
 	svg_element,
 	text,
+	toggle_class,
 	transition_in,
 	transition_out,
 	xlink_attr
 } from "/~/node_modules/svelte/internal/index.mjs";
 
-import { updateTreeItem } from "./editor.js";
+import { getTreeItem, updateTreeItem } from "./editor.js";
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
@@ -34,7 +35,7 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (15:0) {:else}
+// (23:0) {:else}
 function create_else_block(ctx) {
 	let pa_icon;
 
@@ -53,7 +54,7 @@ function create_else_block(ctx) {
 	};
 }
 
-// (9:0) {#if item.type === 'Directory' }
+// (17:0) {#if item.type === 'Directory' }
 function create_if_block_1(ctx) {
 	let pa_icon;
 	let svg;
@@ -99,7 +100,7 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (23:0) {#if item.children && item.expanded }
+// (31:0) {#if item.children && item.expanded }
 function create_if_block(ctx) {
 	let ul;
 	let current;
@@ -184,7 +185,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (25:4) {#each item.children as item}
+// (33:4) {#each item.children as item}
 function create_each_block(ctx) {
 	let li;
 	let component;
@@ -231,6 +232,8 @@ function create_fragment(ctx) {
 	let t2;
 	let if_block1_anchor;
 	let current;
+	let mounted;
+	let dispose;
 
 	function select_block_type(ctx, dirty) {
 		if (/*item*/ ctx[0].type === "Directory") return create_if_block_1;
@@ -251,6 +254,7 @@ function create_fragment(ctx) {
 			if (if_block1) if_block1.c();
 			if_block1_anchor = empty();
 			attr(a, "href", a_href_value = `${/*item*/ ctx[0].path}/@edit`);
+			toggle_class(a, "selected", /*item*/ ctx[0].selected);
 		},
 		m(target, anchor) {
 			if_block0.m(target, anchor);
@@ -261,6 +265,11 @@ function create_fragment(ctx) {
 			if (if_block1) if_block1.m(target, anchor);
 			insert(target, if_block1_anchor, anchor);
 			current = true;
+
+			if (!mounted) {
+				dispose = listen(a, "click", /*click*/ ctx[2]);
+				mounted = true;
+			}
 		},
 		p(ctx, [dirty]) {
 			if (current_block_type === (current_block_type = select_block_type(ctx, dirty)) && if_block0) {
@@ -279,6 +288,10 @@ function create_fragment(ctx) {
 
 			if (!current || dirty & /*item*/ 1 && a_href_value !== (a_href_value = `${/*item*/ ctx[0].path}/@edit`)) {
 				attr(a, "href", a_href_value);
+			}
+
+			if (dirty & /*item*/ 1) {
+				toggle_class(a, "selected", /*item*/ ctx[0].selected);
 			}
 
 			if (/*item*/ ctx[0].children && /*item*/ ctx[0].expanded) {
@@ -320,6 +333,8 @@ function create_fragment(ctx) {
 			if (detaching) detach(t2);
 			if (if_block1) if_block1.d(detaching);
 			if (detaching) detach(if_block1_anchor);
+			mounted = false;
+			dispose();
 		}
 	};
 }
@@ -331,11 +346,21 @@ function instance($$self, $$props, $$invalidate) {
 		updateTreeItem({ ...item, expanded: !item.expanded });
 	};
 
+	const click = () => {
+		const currentSelected = getTreeItem(window.location.pathname.replace("/@edit", ""));
+
+		if (currentSelected) {
+			updateTreeItem({ ...currentSelected, selected: false });
+		}
+
+		updateTreeItem({ ...item, selected: true });
+	};
+
 	$$self.$$set = $$props => {
 		if ("item" in $$props) $$invalidate(0, item = $$props.item);
 	};
 
-	return [item, toggle];
+	return [item, toggle, click];
 }
 
 class Component extends SvelteComponent {

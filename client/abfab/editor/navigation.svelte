@@ -1,26 +1,36 @@
 <script>
     import { EditorStore } from './editor.js';
     import NavItem from './navigation.item.svelte';
+    import AFButton from '../ui/button.svelte';
 </script>
-<nav>
-    <ul>
-        {#each $EditorStore.tree as item}
-        <li class="level-1"><NavItem {item}></NavItem></li>
-        {/each}
+<div class="navigation">
+    <ul class="toolbar">
+        <li><AFButton kind="primary" aspect="basic" icon="plus" label="Add" size="small"/></li>
+        <li><AFButton kind="primary" aspect="basic" icon="trash" label="Remove" size="small"/></li>
     </ul>
-</nav>
+    <nav>
+        <ul>
+            {#each $EditorStore.tree as item}
+            <li class="level-1"><NavItem {item}></NavItem></li>
+            {/each}
+        </ul>
+    </nav>
+</div>
 <style>
-    nav {
+    .navigation {
         width: 12em;
         background-color: var(--color-neutral-primary-lighter);
-        padding: 0.5em 0.5em 0.5em 0;
+        padding: 0.5em 0.5em 0 0;
+    }
+    nav {
+        height: calc(100vh - 72px);
         overflow: auto;
-        height: calc(100vh - 40px);
         font-size: var(--font-size-s);
     }
     nav :global(ul) {
         list-style-type: none;
-        padding-left: 0.5em;
+        padding: 0 0 0 0.5em;
+        margin: 0;
     }
     nav :global(svg) {
         fill: var(--color-neutral-secondary-light);
@@ -33,5 +43,17 @@
     }
     nav :global(a) {
         color: var(--color-neutral-secondary-default);
+    }
+    nav :global(a.selected) {
+        background-color: var(--color-neutral-secondary-lighter);
+    }
+    .toolbar {
+    list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: right;
+    }
+    .toolbar li {
+        display: inline-block;
     }
 </style>

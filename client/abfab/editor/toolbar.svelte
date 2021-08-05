@@ -75,7 +75,7 @@
         height: 100%;
     }
     li {
-        padding: 1em 0;
+        padding: 0.5em 0;
     }
     .more-button {
         margin-top: auto;

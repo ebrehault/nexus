@@ -27,6 +27,7 @@ export const loadTree = async () => {
                     ? item.children.sort((a, b) => a.path.localeCompare(b.path)).map(mapTree)
                     : undefined,
                 expanded: currentLocation.startsWith(itemPath),
+                selected: currentLocation === itemPath,
             };
         };
         EditorStore.update((state) => ({ ...state, tree: tree.map(mapTree) }));
@@ -40,7 +41,7 @@ const _updateTreeItem = (item, target) => {
     } else if (target.path.startsWith(item.path)) {
         return {
             ...item,
-            children: item.children
+            children: (item.children || [])
                 .sort((a, b) => a.path.localeCompare(b.path))
                 .map((child) => _updateTreeItem(child, target)),
         };
@@ -49,9 +50,26 @@ const _updateTreeItem = (item, target) => {
     }
 };
 
-export const updateTreeItem = (item) => {
-    const tree = get(EditorStore).tree.map((i) => _updateTreeItem(i, item));
+export const updateTreeItem = (target) => {
+    const tree = get(EditorStore).tree.map((i) => _updateTreeItem(i, target));
     EditorStore.update((state) => ({ ...state, tree }));
+};
+
+export const getTreeItem = (path, tree) => {
+    if (!tree) {
+        tree = get(EditorStore).tree;
+    }
+    const exactMatch = tree.find((item) => path === item.path);
+    if (exactMatch) {
+        return exactMatch;
+    } else {
+        const match = tree.find((item) => path.startsWith(item.path));
+        if (!match) {
+            return match;
+        } else {
+            return getTreeItem(path, match.children || []);
+        }
+    }
 };
 
 export const showNavigation = derived(EditorStore, (state) => state.showNavigation);

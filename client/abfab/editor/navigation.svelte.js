@@ -15,17 +15,19 @@ import {
 	insert,
 	mount_component,
 	safe_not_equal,
+	space,
 	transition_in,
 	transition_out
 } from "/~/node_modules/svelte/internal/index.mjs";
 
 import { EditorStore } from "./editor.js";
 import NavItem from "./navigation.item.svelte";
+import AFButton from "../ui/button.svelte";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-14tl1o1-style";
-	style.textContent = "nav.svelte-14tl1o1{width:12em;background-color:var(--color-neutral-primary-lighter);padding:0.5em 0.5em 0.5em 0;overflow:auto;height:calc(100vh - 40px);font-size:var(--font-size-s)}nav.svelte-14tl1o1 ul{list-style-type:none;padding-left:0.5em}nav.svelte-14tl1o1 svg{fill:var(--color-neutral-secondary-light);cursor:hand}nav.svelte-14tl1o1 ul li:not(.level-1){border-left:1px solid var(--color-neutral-secondary-lighter);padding-left:0.5em;white-space:nowrap}nav.svelte-14tl1o1 a{color:var(--color-neutral-secondary-default)}";
+	style.id = "svelte-2clf1z-style";
+	style.textContent = ".navigation.svelte-2clf1z.svelte-2clf1z{width:12em;background-color:var(--color-neutral-primary-lighter);padding:0.5em 0.5em 0 0}nav.svelte-2clf1z.svelte-2clf1z{height:calc(100vh - 72px);overflow:auto;font-size:var(--font-size-s)}nav.svelte-2clf1z ul{list-style-type:none;padding:0 0 0 0.5em;margin:0}nav.svelte-2clf1z svg{fill:var(--color-neutral-secondary-light);cursor:hand}nav.svelte-2clf1z ul li:not(.level-1){border-left:1px solid var(--color-neutral-secondary-lighter);padding-left:0.5em;white-space:nowrap}nav.svelte-2clf1z a{color:var(--color-neutral-secondary-default)}nav.svelte-2clf1z a.selected{background-color:var(--color-neutral-secondary-lighter)}.toolbar.svelte-2clf1z.svelte-2clf1z{list-style:none;padding:0;margin:0;text-align:right}.toolbar.svelte-2clf1z li.svelte-2clf1z{display:inline-block}";
 	append(document.head, style);
 }
 
@@ -35,7 +37,7 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (7:8) {#each $EditorStore.tree as item}
+// (13:12) {#each $EditorStore.tree as item}
 function create_each_block(ctx) {
 	let li;
 	let navitem;
@@ -75,9 +77,38 @@ function create_each_block(ctx) {
 }
 
 function create_fragment(ctx) {
+	let div;
+	let ul0;
+	let li0;
+	let afbutton0;
+	let t0;
+	let li1;
+	let afbutton1;
+	let t1;
 	let nav;
-	let ul;
+	let ul1;
 	let current;
+
+	afbutton0 = new AFButton({
+			props: {
+				kind: "primary",
+				aspect: "basic",
+				icon: "plus",
+				label: "Add",
+				size: "small"
+			}
+		});
+
+	afbutton1 = new AFButton({
+			props: {
+				kind: "primary",
+				aspect: "basic",
+				icon: "trash",
+				label: "Remove",
+				size: "small"
+			}
+		});
+
 	let each_value = /*$EditorStore*/ ctx[0].tree;
 	let each_blocks = [];
 
@@ -91,21 +122,41 @@ function create_fragment(ctx) {
 
 	return {
 		c() {
+			div = element("div");
+			ul0 = element("ul");
+			li0 = element("li");
+			create_component(afbutton0.$$.fragment);
+			t0 = space();
+			li1 = element("li");
+			create_component(afbutton1.$$.fragment);
+			t1 = space();
 			nav = element("nav");
-			ul = element("ul");
+			ul1 = element("ul");
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].c();
 			}
 
-			attr(nav, "class", "svelte-14tl1o1");
+			attr(li0, "class", "svelte-2clf1z");
+			attr(li1, "class", "svelte-2clf1z");
+			attr(ul0, "class", "toolbar svelte-2clf1z");
+			attr(nav, "class", "svelte-2clf1z");
+			attr(div, "class", "navigation svelte-2clf1z");
 		},
 		m(target, anchor) {
-			insert(target, nav, anchor);
-			append(nav, ul);
+			insert(target, div, anchor);
+			append(div, ul0);
+			append(ul0, li0);
+			mount_component(afbutton0, li0, null);
+			append(ul0, t0);
+			append(ul0, li1);
+			mount_component(afbutton1, li1, null);
+			append(div, t1);
+			append(div, nav);
+			append(nav, ul1);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(ul, null);
+				each_blocks[i].m(ul1, null);
 			}
 
 			current = true;
@@ -125,7 +176,7 @@ function create_fragment(ctx) {
 						each_blocks[i] = create_each_block(child_ctx);
 						each_blocks[i].c();
 						transition_in(each_blocks[i], 1);
-						each_blocks[i].m(ul, null);
+						each_blocks[i].m(ul1, null);
 					}
 				}
 
@@ -140,6 +191,8 @@ function create_fragment(ctx) {
 		},
 		i(local) {
 			if (current) return;
+			transition_in(afbutton0.$$.fragment, local);
+			transition_in(afbutton1.$$.fragment, local);
 
 			for (let i = 0; i < each_value.length; i += 1) {
 				transition_in(each_blocks[i]);
@@ -148,6 +201,8 @@ function create_fragment(ctx) {
 			current = true;
 		},
 		o(local) {
+			transition_out(afbutton0.$$.fragment, local);
+			transition_out(afbutton1.$$.fragment, local);
 			each_blocks = each_blocks.filter(Boolean);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -157,7 +212,9 @@ function create_fragment(ctx) {
 			current = false;
 		},
 		d(detaching) {
-			if (detaching) detach(nav);
+			if (detaching) detach(div);
+			destroy_component(afbutton0);
+			destroy_component(afbutton1);
 			destroy_each(each_blocks, detaching);
 		}
 	};
@@ -172,7 +229,7 @@ function instance($$self, $$props, $$invalidate) {
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document.getElementById("svelte-14tl1o1-style")) add_css();
+		if (!document.getElementById("svelte-2clf1z-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, {});
 	}
 }

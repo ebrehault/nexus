@@ -18,8 +18,8 @@ import { createEventDispatcher } from "/~/node_modules/svelte/index.mjs";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-9uor91-style";
-	style.textContent = "textarea.svelte-9uor91{display:none}.CodeMirror{width:calc(100vw - 16px);height:calc(100vh - 16px) !important}";
+	style.id = "svelte-11exmak-style";
+	style.textContent = "textarea.svelte-11exmak{display:none}.CodeMirror{width:100%;height:calc(100vh - 40px) !important}";
 	append(document.head, style);
 }
 
@@ -35,7 +35,7 @@ function create_fragment(ctx) {
 			t = space();
 			link0 = element("link");
 			link1 = element("link");
-			attr(textarea_1, "class", "svelte-9uor91");
+			attr(textarea_1, "class", "svelte-11exmak");
 			attr(link0, "rel", "stylesheet");
 			attr(link0, "href", "/~/node_modules/codemirror/lib/codemirror.css");
 			attr(link1, "rel", "stylesheet");
@@ -116,9 +116,9 @@ function instance($$self, $$props, $$invalidate) {
 		const opts = {
 			lineNumbers: true,
 			lineWrapping: true,
-			indentWithTabs: true,
-			indentUnit: 2,
-			tabSize: 2,
+			indentWithTabs: false,
+			indentUnit: 4,
+			tabSize: 4,
 			value: "",
 			autoCloseBrackets: true,
 			autoCloseTags: true,
@@ -187,7 +187,7 @@ function instance($$self, $$props, $$invalidate) {
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document.getElementById("svelte-9uor91-style")) add_css();
+		if (!document.getElementById("svelte-11exmak-style")) add_css();
 		init_1(this, options, instance, create_fragment, safe_not_equal, { context: 1, saveFile: 2 });
 	}
 

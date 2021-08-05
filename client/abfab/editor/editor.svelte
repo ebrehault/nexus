@@ -209,7 +209,7 @@
         width: 50vw;
     }
     .editor-container.with-nav {
-        width: calc(100vw - 14em);
+        width: calc(100vw - 250px);
     }
     .editor-container.half.with-nav {
         width: calc(50vw - 10em);

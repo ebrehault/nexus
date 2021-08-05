@@ -1,10 +1,18 @@
 <script>
-    import { updateTreeItem } from './editor.js'
+    import { getTreeItem, updateTreeItem } from './editor.js'
     export let item;
 
     const toggle = () => {
         updateTreeItem({...item, expanded: !item.expanded});
     };
+
+    const click = () => {
+        const currentSelected = getTreeItem(window.location.pathname.replace('/@edit', ''));
+        if (currentSelected) {
+            updateTreeItem({...currentSelected, selected: false});
+        }
+        updateTreeItem({...item, selected: true});
+    }
 </script>
 {#if item.type === 'Directory' }
 <pa-icon>
@@ -19,7 +27,7 @@
     </svg>
 </pa-icon>
 {/if}
-<a href={`${item.path}/@edit`}>{item.name}</a>
+<a href={`${item.path}/@edit`} class:selected={item.selected} on:click={click}>{item.name}</a>
 {#if item.children && item.expanded }
 <ul>
     {#each item.children as item}

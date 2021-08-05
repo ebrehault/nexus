@@ -71,9 +71,9 @@
         const opts = {
 			lineNumbers: true,
 			lineWrapping: true,
-			indentWithTabs: true,
-			indentUnit: 2,
-			tabSize: 2,
+			indentWithTabs: false,
+			indentUnit: 4,
+			tabSize: 4,
 			value: '',
 			autoCloseBrackets: true,
 			autoCloseTags: true,
@@ -120,7 +120,7 @@
         display: none;
     }
     :global(.CodeMirror) {
-        width: calc(100vw - 16px);
-        height: calc(100vh - 16px) !important;
+        width: 100%;
+        height: calc(100vh - 40px) !important;
     }
 </style>
