@@ -1,6 +1,6 @@
 <script>
     export let context;
-    export let type;
+
     import { VimWasm, checkBrowserCompatibility } from '/~/node_modules/vim-wasm/vimwasm.js';
     import { EditorStore } from './editor.js';
     import { createEventDispatcher } from 'svelte';

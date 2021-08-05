@@ -3,12 +3,32 @@
     import { createEventDispatcher } from 'svelte';
 
     export let context;
+
     let textarea;
     let codeMirror;
-    let mode = 'svelte';
     const dispatch = createEventDispatcher();
+    const modes = {
+        js: {
+            name: 'javascript',
+            json: false
+        },
+        json: {
+            name: 'javascript',
+            json: true
+        },
+        svelte: {
+            name: 'handlebars',
+            base: 'text/html'
+        },
+        md: {
+            name: 'markdown'
+        }
+    };
 
-    function saveFile(value) {
+    export function saveFile(value) {
+        if (!value) {
+            value = codeMirror.getValue();
+        }
         dispatch('save', value);
     }
 
@@ -44,27 +64,10 @@
 
     $: if (codeMirror) {
         codeMirror.setValue(context);
+        setMode();
     }
     
     function init() {
-        const modes = {
-            js: {
-                name: 'javascript',
-                json: false
-            },
-            json: {
-                name: 'javascript',
-                json: true
-            },
-            svelte: {
-                name: 'handlebars',
-                base: 'text/html'
-            },
-            md: {
-                name: 'markdown'
-            }
-        };
-
         const opts = {
 			lineNumbers: true,
 			lineWrapping: true,
@@ -72,9 +75,6 @@
 			indentUnit: 2,
 			tabSize: 2,
 			value: '',
-			mode: modes[mode] || {
-				name: mode
-			},
 			autoCloseBrackets: true,
 			autoCloseTags: true,
             extraKeys: {
@@ -101,7 +101,14 @@
 
         codeMirror = CodeMirror.fromTextArea(textarea, opts);
         codeMirror.setValue(context);
+        setMode();
     };
+
+    function setMode() {
+        const filename = location.pathname.replace('/@edit', '').split('/').pop();
+        const mode = filename.includes('.') ? filename.split('.').pop() : 'json';
+        codeMirror.setOption('mode', modes[mode] || { name: mode });
+    }
 </script>
 <textarea bind:this={textarea}></textarea>
 <svelte:head>

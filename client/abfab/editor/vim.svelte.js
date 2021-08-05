@@ -57,9 +57,8 @@ function create_fragment(ctx) {
 
 function instance($$self, $$props, $$invalidate) {
 	let $EditorStore;
-	component_subscribe($$self, EditorStore, $$value => $$invalidate(4, $EditorStore = $$value));
+	component_subscribe($$self, EditorStore, $$value => $$invalidate(3, $EditorStore = $$value));
 	let { context } = $$props;
-	let { type } = $$props;
 	let vim;
 	let pathname = location.pathname.replace("/~/", "/").replace("/@edit", "");
 	const dispatch = createEventDispatcher();
@@ -75,7 +74,7 @@ function instance($$self, $$props, $$invalidate) {
 
 		const screenCanvasElement = document.getElementById("vim-canvas");
 
-		$$invalidate(2, vim = new VimWasm({
+		$$invalidate(1, vim = new VimWasm({
 				canvas: screenCanvasElement,
 				input: document.getElementById("vim-input"),
 				workerScriptPath: "/~/node_modules/vim-wasm/vim.js"
@@ -112,7 +111,7 @@ function instance($$self, $$props, $$invalidate) {
 		);
 
 		$$invalidate(
-			2,
+			1,
 			vim.onVimExit = status => {
 				alert(`Vim exited with status ${status}`);
 			},
@@ -120,7 +119,7 @@ function instance($$self, $$props, $$invalidate) {
 		);
 
 		$$invalidate(
-			2,
+			1,
 			vim.onFileExport = (fullpath, contents) => {
 				const decoder = new TextDecoder("utf-8");
 				const source = decoder.decode(contents);
@@ -129,9 +128,9 @@ function instance($$self, $$props, $$invalidate) {
 			vim
 		);
 
-		$$invalidate(2, vim.readClipboard = navigator.clipboard.readText, vim);
-		$$invalidate(2, vim.onWriteClipboard = navigator.clipboard.writeText, vim);
-		$$invalidate(2, vim.onError = console.error, vim);
+		$$invalidate(1, vim.readClipboard = navigator.clipboard.readText, vim);
+		$$invalidate(1, vim.onWriteClipboard = navigator.clipboard.writeText, vim);
+		$$invalidate(1, vim.onError = console.error, vim);
 		const options = ["set number"];
 
 		if (isSvelte) {
@@ -149,11 +148,10 @@ function instance($$self, $$props, $$invalidate) {
 
 	$$self.$$set = $$props => {
 		if ("context" in $$props) $$invalidate(0, context = $$props.context);
-		if ("type" in $$props) $$invalidate(1, type = $$props.type);
 	};
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*vim, $EditorStore*/ 20) {
+		if ($$self.$$.dirty & /*vim, $EditorStore*/ 10) {
 			$: if (!vim && $EditorStore.dirs.length > 0) {
 				try {
 					initVim();
@@ -163,27 +161,27 @@ function instance($$self, $$props, $$invalidate) {
 			}
 		}
 
-		if ($$self.$$.dirty & /*vim, pathname, context*/ 13) {
+		if ($$self.$$.dirty & /*vim, pathname, context*/ 7) {
 			$: if (vim) {
 				const _pathname = location.pathname.replace("/~/", "/").replace("/@edit", "");
 
 				if (_pathname !== pathname) {
 					const enc = new TextEncoder();
 					vim.dropFile(_pathname.slice(1), enc.encode(context));
-					$$invalidate(3, pathname = _pathname);
+					$$invalidate(2, pathname = _pathname);
 				}
 			}
 		}
 	};
 
-	return [context, type, vim, pathname, $EditorStore];
+	return [context, vim, pathname, $EditorStore];
 }
 
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
 		if (!document_1.getElementById("svelte-1oxn4tw-style")) add_css();
-		init(this, options, instance, create_fragment, safe_not_equal, { context: 0, type: 1 });
+		init(this, options, instance, create_fragment, safe_not_equal, { context: 0 });
 	}
 }
 

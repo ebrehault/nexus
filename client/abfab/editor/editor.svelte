@@ -20,6 +20,7 @@
     let play = false;
     let componentPath;
     let viewer;
+    let codemirror;
 
     $: {
         try {
@@ -40,6 +41,12 @@
         componentPath = location.pathname.replace('/@edit', '');
         play = !play;
         window.dispatchEvent(new Event('resize'));
+    }
+
+    function triggerSave() {
+        if (codemirror) {
+            codemirror.saveFile();
+        }
     }
     
     function save(event) {
@@ -105,6 +112,12 @@
 <header>
     <img src="/~/abfab/abfab.svg" alt="AbFab logo" />
     <ul>
+        {#if !useVim}
+        <li>
+            <AFButton kind="primary" aspect="basic" icon="check" label="Save" size="small"
+                on:click={triggerSave}/>
+        </li>
+        {/if}
         {#if play}
         <li>
             <AFButton aspect="basic" icon="refresh" label="Refresh" size="small"
@@ -127,7 +140,7 @@
             {#if useVim}
             <VimEditor context={_context} {type} on:save={save}></VimEditor>
             {:else}
-            <CodeMirrorEditor context={_context} {type} on:save={save}></CodeMirrorEditor>
+            <CodeMirrorEditor bind:this={codemirror} context={_context} {type} on:save={save}></CodeMirrorEditor>
             {/if}
         </div>
         {#if hasError }

@@ -43,7 +43,7 @@ function create_fragment(ctx) {
 		},
 		m(target, anchor) {
 			insert(target, textarea_1, anchor);
-			/*textarea_1_binding*/ ctx[3](textarea_1);
+			/*textarea_1_binding*/ ctx[4](textarea_1);
 			insert(target, t, anchor);
 			append(document.head, link0);
 			append(document.head, link1);
@@ -53,15 +53,13 @@ function create_fragment(ctx) {
 		o: noop,
 		d(detaching) {
 			if (detaching) detach(textarea_1);
-			/*textarea_1_binding*/ ctx[3](null);
+			/*textarea_1_binding*/ ctx[4](null);
 			if (detaching) detach(t);
 			detach(link0);
 			detach(link1);
 		}
 	};
 }
-
-let mode = "svelte";
 
 async function loadPlugins() {
 	await import("/~/node_modules/codemirror/addon/mode/simple.js");
@@ -91,7 +89,18 @@ function instance($$self, $$props, $$invalidate) {
 	let codeMirror;
 	const dispatch = createEventDispatcher();
 
+	const modes = {
+		js: { name: "javascript", json: false },
+		json: { name: "javascript", json: true },
+		svelte: { name: "handlebars", base: "text/html" },
+		md: { name: "markdown" }
+	};
+
 	function saveFile(value) {
+		if (!value) {
+			value = codeMirror.getValue();
+		}
+
 		dispatch("save", value);
 	}
 
@@ -104,13 +113,6 @@ function instance($$self, $$props, $$invalidate) {
 	});
 
 	function init() {
-		const modes = {
-			js: { name: "javascript", json: false },
-			json: { name: "javascript", json: true },
-			svelte: { name: "handlebars", base: "text/html" },
-			md: { name: "markdown" }
-		};
-
 		const opts = {
 			lineNumbers: true,
 			lineWrapping: true,
@@ -118,7 +120,6 @@ function instance($$self, $$props, $$invalidate) {
 			indentUnit: 2,
 			tabSize: 2,
 			value: "",
-			mode: modes[mode] || { name: mode },
 			autoCloseBrackets: true,
 			autoCloseTags: true,
 			extraKeys: {
@@ -143,11 +144,22 @@ function instance($$self, $$props, $$invalidate) {
 			theme: "blackboard"
 		};
 
-		$$invalidate(2, codeMirror = CodeMirror.fromTextArea(textarea, opts));
+		$$invalidate(3, codeMirror = CodeMirror.fromTextArea(textarea, opts));
 		codeMirror.setValue(context);
+		setMode();
 	}
 
 	
+
+	function setMode() {
+		const filename = location.pathname.replace("/@edit", "").split("/").pop();
+
+		const mode = filename.includes(".")
+		? filename.split(".").pop()
+		: "json";
+
+		codeMirror.setOption("mode", modes[mode] || { name: mode });
+	}
 
 	function textarea_1_binding($$value) {
 		binding_callbacks[$$value ? "unshift" : "push"](() => {
@@ -161,21 +173,26 @@ function instance($$self, $$props, $$invalidate) {
 	};
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*codeMirror, context*/ 6) {
+		if ($$self.$$.dirty & /*codeMirror, context*/ 10) {
 			$: if (codeMirror) {
 				codeMirror.setValue(context);
+				setMode();
 			}
 		}
 	};
 
-	return [textarea, context, codeMirror, textarea_1_binding];
+	return [textarea, context, saveFile, codeMirror, textarea_1_binding];
 }
 
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
 		if (!document.getElementById("svelte-9uor91-style")) add_css();
-		init_1(this, options, instance, create_fragment, safe_not_equal, { context: 1 });
+		init_1(this, options, instance, create_fragment, safe_not_equal, { context: 1, saveFile: 2 });
+	}
+
+	get saveFile() {
+		return this.$$.ctx[2];
 	}
 }
 
