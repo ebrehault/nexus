@@ -1,10 +1,10 @@
 <script>
     import AFInput from '/~/abfab/ui/input.svelte';
     import AFTextarea from '/~/abfab/ui/textarea.svelte';
-    import { get_root_path, get_core_path} from '/~/abfab/core.js';
+    import { getRealPath, getCorePath} from '/~/abfab/core.js';
 
     export let componentPath;
-    const _componentPath = get_root_path(componentPath);
+    const _componentPath = getRealPath(componentPath);
     let path = _componentPath;
     let contentPath = '';
     let dataError = false;
@@ -24,7 +24,7 @@
     export function refresh() {
         const timestamp = new Date().toISOString();
         if (contentPath) {
-            path = `${contentPath}?view=${get_core_path(_componentPath)}&time=${timestamp}`;
+            path = `${contentPath}?view=${getCorePath(_componentPath)}&time=${timestamp}`;
         } else if (jsonData) {
             displayData(jsonData, timestamp);
         } else {

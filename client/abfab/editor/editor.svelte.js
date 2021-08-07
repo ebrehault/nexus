@@ -48,7 +48,7 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (115:8) {#if !useVim}
+// (112:8) {#if !useVim}
 function create_if_block_6(ctx) {
 	let li;
 	let afbutton;
@@ -64,7 +64,7 @@ function create_if_block_6(ctx) {
 			}
 		});
 
-	afbutton.$on("click", /*triggerSave*/ ctx[12]);
+	afbutton.$on("click", /*triggerSave*/ ctx[11]);
 
 	return {
 		c() {
@@ -93,7 +93,7 @@ function create_if_block_6(ctx) {
 	};
 }
 
-// (121:8) {#if play}
+// (118:8) {#if play}
 function create_if_block_5(ctx) {
 	let li;
 	let afbutton;
@@ -108,7 +108,7 @@ function create_if_block_5(ctx) {
 			}
 		});
 
-	afbutton.$on("click", /*refreshViewer*/ ctx[15]);
+	afbutton.$on("click", /*refreshViewer*/ ctx[14]);
 
 	return {
 		c() {
@@ -137,7 +137,7 @@ function create_if_block_5(ctx) {
 	};
 }
 
-// (135:4) {#if $showNavigation}
+// (132:4) {#if $showNavigation}
 function create_if_block_4(ctx) {
 	let navigation;
 	let current;
@@ -166,19 +166,14 @@ function create_if_block_4(ctx) {
 	};
 }
 
-// (142:12) {:else}
+// (139:12) {:else}
 function create_else_block(ctx) {
 	let codemirroreditor;
 	let current;
-
-	let codemirroreditor_props = {
-		context: /*_context*/ ctx[4],
-		type: /*type*/ ctx[2]
-	};
-
+	let codemirroreditor_props = { context: /*_context*/ ctx[3] };
 	codemirroreditor = new CodeMirrorEditor({ props: codemirroreditor_props });
 	/*codemirroreditor_binding*/ ctx[17](codemirroreditor);
-	codemirroreditor.$on("save", /*save*/ ctx[13]);
+	codemirroreditor.$on("save", /*save*/ ctx[12]);
 
 	return {
 		c() {
@@ -190,8 +185,7 @@ function create_else_block(ctx) {
 		},
 		p(ctx, dirty) {
 			const codemirroreditor_changes = {};
-			if (dirty & /*_context*/ 16) codemirroreditor_changes.context = /*_context*/ ctx[4];
-			if (dirty & /*type*/ 4) codemirroreditor_changes.type = /*type*/ ctx[2];
+			if (dirty & /*_context*/ 8) codemirroreditor_changes.context = /*_context*/ ctx[3];
 			codemirroreditor.$set(codemirroreditor_changes);
 		},
 		i(local) {
@@ -210,19 +204,12 @@ function create_else_block(ctx) {
 	};
 }
 
-// (140:12) {#if useVim}
+// (137:12) {#if useVim}
 function create_if_block_3(ctx) {
 	let vimeditor;
 	let current;
-
-	vimeditor = new VimEditor({
-			props: {
-				context: /*_context*/ ctx[4],
-				type: /*type*/ ctx[2]
-			}
-		});
-
-	vimeditor.$on("save", /*save*/ ctx[13]);
+	vimeditor = new VimEditor({ props: { context: /*_context*/ ctx[3] } });
+	vimeditor.$on("save", /*save*/ ctx[12]);
 
 	return {
 		c() {
@@ -234,8 +221,7 @@ function create_if_block_3(ctx) {
 		},
 		p(ctx, dirty) {
 			const vimeditor_changes = {};
-			if (dirty & /*_context*/ 16) vimeditor_changes.context = /*_context*/ ctx[4];
-			if (dirty & /*type*/ 4) vimeditor_changes.type = /*type*/ ctx[2];
+			if (dirty & /*_context*/ 8) vimeditor_changes.context = /*_context*/ ctx[3];
 			vimeditor.$set(vimeditor_changes);
 		},
 		i(local) {
@@ -253,7 +239,7 @@ function create_if_block_3(ctx) {
 	};
 }
 
-// (146:8) {#if hasError }
+// (143:8) {#if hasError }
 function create_if_block_1(ctx) {
 	let div1;
 	let span;
@@ -272,7 +258,7 @@ function create_if_block_1(ctx) {
 			}
 		});
 
-	afbutton.$on("click", /*discardErrors*/ ctx[14]);
+	afbutton.$on("click", /*discardErrors*/ ctx[13]);
 	let if_block = /*error*/ ctx[0] && create_if_block_2(ctx);
 	let each_value = /*warnings*/ ctx[1];
 	let each_blocks = [];
@@ -369,7 +355,7 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (153:20) {#if error}
+// (150:20) {#if error}
 function create_if_block_2(ctx) {
 	let div;
 	let t0_value = /*error*/ ctx[0].message + "";
@@ -403,7 +389,7 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (154:20) {#each warnings as warning}
+// (151:20) {#each warnings as warning}
 function create_each_block(ctx) {
 	let div;
 	let t0_value = /*warning*/ ctx[20].message + "";
@@ -443,11 +429,11 @@ function create_each_block(ctx) {
 	};
 }
 
-// (164:4) {#if play}
+// (161:4) {#if play}
 function create_if_block(ctx) {
 	let viewer_1;
 	let current;
-	let viewer_1_props = { componentPath: /*componentPath*/ ctx[6] };
+	let viewer_1_props = { componentPath: /*componentPath*/ ctx[5] };
 	viewer_1 = new Viewer({ props: viewer_1_props });
 	/*viewer_1_binding*/ ctx[18](viewer_1);
 
@@ -461,7 +447,7 @@ function create_if_block(ctx) {
 		},
 		p(ctx, dirty) {
 			const viewer_1_changes = {};
-			if (dirty & /*componentPath*/ 64) viewer_1_changes.componentPath = /*componentPath*/ ctx[6];
+			if (dirty & /*componentPath*/ 32) viewer_1_changes.componentPath = /*componentPath*/ ctx[5];
 			viewer_1.$set(viewer_1_changes);
 		},
 		i(local) {
@@ -505,8 +491,8 @@ function create_fragment(ctx) {
 	let div1_class_value;
 	let t8;
 	let current;
-	let if_block0 = !/*useVim*/ ctx[10] && create_if_block_6(ctx);
-	let if_block1 = /*play*/ ctx[5] && create_if_block_5(ctx);
+	let if_block0 = !/*useVim*/ ctx[9] && create_if_block_6(ctx);
+	let if_block1 = /*play*/ ctx[4] && create_if_block_5(ctx);
 
 	afbutton = new AFButton({
 			props: {
@@ -515,25 +501,25 @@ function create_fragment(ctx) {
 				icon: "play",
 				label: "Play",
 				size: "small",
-				active: /*play*/ ctx[5]
+				active: /*play*/ ctx[4]
 			}
 		});
 
-	afbutton.$on("click", /*togglePlay*/ ctx[11]);
+	afbutton.$on("click", /*togglePlay*/ ctx[10]);
 	toolbar = new Toolbar({});
-	let if_block2 = /*$showNavigation*/ ctx[9] && create_if_block_4(ctx);
+	let if_block2 = /*$showNavigation*/ ctx[8] && create_if_block_4(ctx);
 	const if_block_creators = [create_if_block_3, create_else_block];
 	const if_blocks = [];
 
 	function select_block_type(ctx, dirty) {
-		if (/*useVim*/ ctx[10]) return 0;
+		if (/*useVim*/ ctx[9]) return 0;
 		return 1;
 	}
 
 	current_block_type_index = select_block_type(ctx, -1);
 	if_block3 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-	let if_block4 = /*hasError*/ ctx[3] && create_if_block_1(ctx);
-	let if_block5 = /*play*/ ctx[5] && create_if_block(ctx);
+	let if_block4 = /*hasError*/ ctx[2] && create_if_block_1(ctx);
+	let if_block5 = /*play*/ ctx[4] && create_if_block(ctx);
 
 	return {
 		c() {
@@ -570,9 +556,9 @@ function create_fragment(ctx) {
 			attr(ul, "class", "svelte-18wrgxe");
 			attr(header, "class", "svelte-18wrgxe");
 			attr(div0, "class", "editor svelte-18wrgxe");
-			attr(div1, "class", div1_class_value = "editor-container " + (/*play*/ ctx[5] ? "half" : "") + " svelte-18wrgxe");
-			toggle_class(div1, "with-nav", /*$showNavigation*/ ctx[9]);
-			toggle_class(div1, "has-error", /*hasError*/ ctx[3]);
+			attr(div1, "class", div1_class_value = "editor-container " + (/*play*/ ctx[4] ? "half" : "") + " svelte-18wrgxe");
+			toggle_class(div1, "with-nav", /*$showNavigation*/ ctx[8]);
+			toggle_class(div1, "has-error", /*hasError*/ ctx[2]);
 			attr(main, "class", "svelte-18wrgxe");
 		},
 		m(target, anchor) {
@@ -604,13 +590,13 @@ function create_fragment(ctx) {
 			current = true;
 		},
 		p(ctx, [dirty]) {
-			if (!/*useVim*/ ctx[10]) if_block0.p(ctx, dirty);
+			if (!/*useVim*/ ctx[9]) if_block0.p(ctx, dirty);
 
-			if (/*play*/ ctx[5]) {
+			if (/*play*/ ctx[4]) {
 				if (if_block1) {
 					if_block1.p(ctx, dirty);
 
-					if (dirty & /*play*/ 32) {
+					if (dirty & /*play*/ 16) {
 						transition_in(if_block1, 1);
 					}
 				} else {
@@ -630,12 +616,12 @@ function create_fragment(ctx) {
 			}
 
 			const afbutton_changes = {};
-			if (dirty & /*play*/ 32) afbutton_changes.active = /*play*/ ctx[5];
+			if (dirty & /*play*/ 16) afbutton_changes.active = /*play*/ ctx[4];
 			afbutton.$set(afbutton_changes);
 
-			if (/*$showNavigation*/ ctx[9]) {
+			if (/*$showNavigation*/ ctx[8]) {
 				if (if_block2) {
-					if (dirty & /*$showNavigation*/ 512) {
+					if (dirty & /*$showNavigation*/ 256) {
 						transition_in(if_block2, 1);
 					}
 				} else {
@@ -656,11 +642,11 @@ function create_fragment(ctx) {
 
 			if_block3.p(ctx, dirty);
 
-			if (/*hasError*/ ctx[3]) {
+			if (/*hasError*/ ctx[2]) {
 				if (if_block4) {
 					if_block4.p(ctx, dirty);
 
-					if (dirty & /*hasError*/ 8) {
+					if (dirty & /*hasError*/ 4) {
 						transition_in(if_block4, 1);
 					}
 				} else {
@@ -679,23 +665,23 @@ function create_fragment(ctx) {
 				check_outros();
 			}
 
-			if (!current || dirty & /*play*/ 32 && div1_class_value !== (div1_class_value = "editor-container " + (/*play*/ ctx[5] ? "half" : "") + " svelte-18wrgxe")) {
+			if (!current || dirty & /*play*/ 16 && div1_class_value !== (div1_class_value = "editor-container " + (/*play*/ ctx[4] ? "half" : "") + " svelte-18wrgxe")) {
 				attr(div1, "class", div1_class_value);
 			}
 
-			if (dirty & /*play, $showNavigation*/ 544) {
-				toggle_class(div1, "with-nav", /*$showNavigation*/ ctx[9]);
+			if (dirty & /*play, $showNavigation*/ 272) {
+				toggle_class(div1, "with-nav", /*$showNavigation*/ ctx[8]);
 			}
 
-			if (dirty & /*play, hasError*/ 40) {
-				toggle_class(div1, "has-error", /*hasError*/ ctx[3]);
+			if (dirty & /*play, hasError*/ 20) {
+				toggle_class(div1, "has-error", /*hasError*/ ctx[2]);
 			}
 
-			if (/*play*/ ctx[5]) {
+			if (/*play*/ ctx[4]) {
 				if (if_block5) {
 					if_block5.p(ctx, dirty);
 
-					if (dirty & /*play*/ 32) {
+					if (dirty & /*play*/ 16) {
 						transition_in(if_block5, 1);
 					}
 				} else {
@@ -762,7 +748,7 @@ function updateErrors() {
 function instance($$self, $$props, $$invalidate) {
 	let hasError;
 	let $showNavigation;
-	component_subscribe($$self, showNavigation, $$value => $$invalidate(9, $showNavigation = $$value));
+	component_subscribe($$self, showNavigation, $$value => $$invalidate(8, $showNavigation = $$value));
 	let { context } = $$props;
 	let _context = "";
 	let error;
@@ -776,8 +762,8 @@ function instance($$self, $$props, $$invalidate) {
 	let codemirror;
 
 	function togglePlay() {
-		$$invalidate(6, componentPath = location.pathname.replace("/@edit", ""));
-		$$invalidate(5, play = !play);
+		$$invalidate(5, componentPath = location.pathname.replace("/@edit", ""));
+		$$invalidate(4, play = !play);
 		window.dispatchEvent(new Event("resize"));
 	}
 
@@ -787,7 +773,7 @@ function instance($$self, $$props, $$invalidate) {
 		}
 	}
 
-	function save(event) {
+	async function save(event) {
 		const source = event.detail;
 		const ABFAB_ROOT = "/~";
 		let js = "";
@@ -814,14 +800,14 @@ function instance($$self, $$props, $$invalidate) {
 		}
 
 		if (!error) {
-			saveFile(pathname, type, source).then(() => {
-				if (isSvelte) {
-					const jsFilePath = pathname + ".js";
-					saveFile(jsFilePath, "File", js.code.replace(RE, "from \"$1/index.mjs\";")).then(() => refreshViewer());
-				} else {
-					refreshViewer();
-				}
-			});
+			await saveFile(pathname, type, source);
+
+			if (isSvelte) {
+				const jsFilePath = pathname + ".js";
+				await saveFile(jsFilePath, "File", js.code.replace(RE, "from \"$1/index.mjs\";"));
+			}
+
+			refreshViewer();
 		}
 	}
 
@@ -845,40 +831,40 @@ function instance($$self, $$props, $$invalidate) {
 	function codemirroreditor_binding($$value) {
 		binding_callbacks[$$value ? "unshift" : "push"](() => {
 			codemirror = $$value;
-			$$invalidate(8, codemirror);
+			$$invalidate(7, codemirror);
 		});
 	}
 
 	function viewer_1_binding($$value) {
 		binding_callbacks[$$value ? "unshift" : "push"](() => {
 			viewer = $$value;
-			$$invalidate(7, viewer);
+			$$invalidate(6, viewer);
 		});
 	}
 
 	$$self.$$set = $$props => {
-		if ("context" in $$props) $$invalidate(16, context = $$props.context);
+		if ("context" in $$props) $$invalidate(15, context = $$props.context);
 	};
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*context, type*/ 65540) {
+		if ($$self.$$.dirty & /*context, type*/ 98304) {
 			$: {
 				try {
 					const obj = JSON.parse(context);
-					$$invalidate(2, type = obj.type);
-					$$invalidate(4, _context = type === "Content" ? JSON.stringify(obj.data) : context);
+					$$invalidate(16, type = obj.type);
+					$$invalidate(3, _context = type === "Content" ? JSON.stringify(obj.data) : context);
 				} catch(e) {
-					$$invalidate(2, type = "File");
-					$$invalidate(4, _context = context);
+					$$invalidate(16, type = "File");
+					$$invalidate(3, _context = context);
 				}
 			}
 		}
 
 		if ($$self.$$.dirty & /*error, warnings*/ 3) {
-			$: $$invalidate(3, hasError = !!error || warnings.length > 0);
+			$: $$invalidate(2, hasError = !!error || warnings.length > 0);
 		}
 
-		if ($$self.$$.dirty & /*hasError*/ 8) {
+		if ($$self.$$.dirty & /*hasError*/ 4) {
 			$: if (hasError) {
 				updateErrors();
 			}
@@ -888,7 +874,6 @@ function instance($$self, $$props, $$invalidate) {
 	return [
 		error,
 		warnings,
-		type,
 		hasError,
 		_context,
 		play,
@@ -903,6 +888,7 @@ function instance($$self, $$props, $$invalidate) {
 		discardErrors,
 		refreshViewer,
 		context,
+		type,
 		codemirroreditor_binding,
 		viewer_1_binding
 	];
@@ -912,7 +898,7 @@ class Component extends SvelteComponent {
 	constructor(options) {
 		super();
 		if (!document.getElementById("svelte-18wrgxe-style")) add_css();
-		init(this, options, instance, create_fragment, safe_not_equal, { context: 16 });
+		init(this, options, instance, create_fragment, safe_not_equal, { context: 15 });
 	}
 }
 

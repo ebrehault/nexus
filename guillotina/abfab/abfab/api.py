@@ -156,6 +156,8 @@ async def get_basic(context, request):
 
 @configure.service(context=IDirectory, method='GET', name='@default',
                    permission='guillotina.Public', allow_access=True)
+@configure.service(context=IDirectory, method='GET', name='@edit-data',
+                   permission='guillotina.Public', allow_access=True)
 @configure.service(context=IContent, method='GET', name='@default',
                    permission='guillotina.ViewContent', allow_access=True)
 @configure.service(context=IFile, method='GET', name='@default',

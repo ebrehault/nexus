@@ -21,7 +21,7 @@ import {
 
 import AFInput from "/~/abfab/ui/input.svelte";
 import AFTextarea from "/~/abfab/ui/textarea.svelte";
-import { get_root_path, get_core_path } from "/~/abfab/core.js";
+import { getRealPath, getCorePath } from "/~/abfab/core.js";
 
 function add_css() {
 	var style = element("style");
@@ -151,7 +151,7 @@ function create_fragment(ctx) {
 
 function instance($$self, $$props, $$invalidate) {
 	let { componentPath } = $$props;
-	const _componentPath = get_root_path(componentPath);
+	const _componentPath = getRealPath(componentPath);
 	let path = _componentPath;
 	let contentPath = "";
 	let dataError = false;
@@ -172,7 +172,7 @@ function instance($$self, $$props, $$invalidate) {
 		const timestamp = new Date().toISOString();
 
 		if (contentPath) {
-			$$invalidate(0, path = `${contentPath}?view=${get_core_path(_componentPath)}&time=${timestamp}`);
+			$$invalidate(0, path = `${contentPath}?view=${getCorePath(_componentPath)}&time=${timestamp}`);
 		} else if (jsonData) {
 			displayData(jsonData, timestamp);
 		} else {

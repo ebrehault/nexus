@@ -1,6 +1,7 @@
 <script>
     import AFInput from '/~/abfab/ui/input.svelte';
     import AFButton from '/~/abfab/ui/button.svelte';
+    import { API } from '/~/abfab/core.js';
     let username;
     let password;
     let error = '';
@@ -13,14 +14,7 @@
             username,
             password,
         });
-        const response = await fetch('/~/@login', {
-            body,
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        });
+        const response = await API.post('/~/@login', body);
         if (response.status === 200) {
             const body = await response.json();
             localStorage.setItem('auth', body.token);

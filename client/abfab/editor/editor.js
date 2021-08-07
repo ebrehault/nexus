@@ -1,5 +1,5 @@
 import { writable, derived, get } from '/~/node_modules/svelte/store';
-import { AbFabStore, get_root_path } from '/~/abfab/core.js';
+import { AbFabStore, getRealPath, API } from '/~/abfab/core.js';
 
 export const EditorStore = writable({
     tree: [],
@@ -8,8 +8,7 @@ export const EditorStore = writable({
 });
 
 export const loadTree = async () => {
-    const auth = { Authorization: 'Bearer ' + localStorage.getItem('auth') };
-    const response = await fetch('/~/@tree', { method: 'GET', headers: { ...auth } });
+    const response = await API.get('/~/@tree');
     if (response.ok) {
         const currentLocation = window.location.pathname.replace('/@edit', '');
         const tree = await response.json();
@@ -18,7 +17,7 @@ export const loadTree = async () => {
             if (item.type === 'Directory') {
                 dirs.push(item.path);
             }
-            const itemPath = get_root_path(item.path);
+            const itemPath = getRealPath(item.path);
             return {
                 name: item.path.split('/').pop(),
                 path: itemPath,
@@ -79,8 +78,7 @@ export function saveFile(filepath, type, content) {
     const path = filepath.split('/');
     const filename = path.pop();
     const container = path.join('/');
-    const auth = { Authorization: 'Bearer ' + localStorage.getItem('auth') };
-    return fetch(filepath, { method: 'HEAD', headers: { ...auth } })
+    return API.head(filepath)
         .then((res) => {
             if (res.status === 401) {
                 redirectToLogin();
@@ -92,30 +90,18 @@ export function saveFile(filepath, type, content) {
             if (type === 'Content') {
                 body.data = JSON.parse(content);
             }
-            return fetch(res.status === 404 ? container : filepath, {
-                method: res.status === 404 ? 'POST' : 'PATCH',
-                headers: {
-                    ...auth,
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            });
+            return res.status === 404
+                ? API.post(container, JSON.stringify(body))
+                : API.patch(filepath, JSON.stringify(body));
         })
         .then((res) => {
             if (res.status === 401) {
                 redirectToLogin();
             }
             if (type === 'File') {
-                return fetch(filepath + '/@upload/file', {
-                    method: 'PATCH',
-                    headers: {
-                        ...auth,
-                        Accept: 'application/json',
-                        'Content-Type': 'application/octet-stream',
-                        'X-UPLOAD-FILENAME': filename,
-                    },
-                    body: content,
+                return API.patch(filepath + '/@upload/file', content, {
+                    'Content-Type': 'application/octet-stream',
+                    'X-UPLOAD-FILENAME': filename,
                 });
             }
         });

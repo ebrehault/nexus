@@ -15,7 +15,7 @@ import {
 	transition_out
 } from "/~/node_modules/svelte/internal/index.mjs";
 
-import { AbFabStore, get_root_path } from "/~/abfab/core.js";
+import { AbFabStore, getRealPath, API } from "/~/abfab/core.js";
 import { onDestroy } from "/~/node_modules/svelte/index.mjs";
 import { derived } from "/~/node_modules/svelte/store/index.mjs";
 
@@ -135,26 +135,22 @@ function instance($$self, $$props, $$invalidate) {
 		history.pushState({}, "", href);
 		const [path, query] = href.split("?");
 
-		const auth = {
-			Authorization: "Bearer " + localStorage.getItem("auth")
-		};
-
 		if (path.endsWith("/@edit")) {
-			const response = await fetch(path.replace("/@edit", "/@edit-data"), { headers: { ...auth } });
+			const response = await API.get(path.replace("/@edit", "/@edit-data"));
 			const code = await response.text();
 			const module = await import(`/~/abfab/editor/editor.svelte`);
 			$$invalidate(1, context = code);
 			$$invalidate(0, component = module.default);
 		} else {
-			const response = await fetch(`${path}/@basic`, { headers: { ...auth } });
+			const response = await API.get(`${path}/@basic`);
 			const basicData = await response.json();
 
 			if (basicData.type === "Content") {
-				const module = await import(get_root_path(basicData.view));
+				const module = await import(getRealPath(basicData.view));
 				$$invalidate(0, component = module.default);
 				$$invalidate(1, context = basicData.data);
 			} else {
-				const module = await import(get_root_path(basicData.path));
+				const module = await import(getRealPath(basicData.path));
 				$$invalidate(0, component = module.default);
 
 				if (query) {

@@ -49,7 +49,7 @@
         }
     }
     
-    function save(event) {
+    async function save(event) {
         const source = event.detail;
         const ABFAB_ROOT = '/~';
         let js = '';
@@ -72,15 +72,12 @@
             }
         }
         if (!error) {
-            saveFile(pathname, type, source).then(() => {
-                if (isSvelte) {
-                    const jsFilePath = pathname + '.js';
-                    saveFile(jsFilePath, 'File', js.code.replace(RE, 'from "$1/index.mjs";'))
-                        .then(() => refreshViewer());
-                } else {
-                    refreshViewer();
-                }
-            });
+            await saveFile(pathname, type, source)
+            if (isSvelte) {
+                const jsFilePath = pathname + '.js';
+                await saveFile(jsFilePath, 'File', js.code.replace(RE, 'from "$1/index.mjs";'))
+            }
+            refreshViewer();
         }
     }
 
@@ -138,9 +135,9 @@
     <div class="editor-container {play ? 'half' : ''}" class:with-nav={$showNavigation} class:has-error={hasError}>
         <div class="editor">
             {#if useVim}
-            <VimEditor context={_context} {type} on:save={save}></VimEditor>
+            <VimEditor context={_context} on:save={save}></VimEditor>
             {:else}
-            <CodeMirrorEditor bind:this={codemirror} context={_context} {type} on:save={save}></CodeMirrorEditor>
+            <CodeMirrorEditor bind:this={codemirror} context={_context} on:save={save}></CodeMirrorEditor>
             {/if}
         </div>
         {#if hasError }
