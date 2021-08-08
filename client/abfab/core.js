@@ -1,8 +1,11 @@
 import { writable } from '/~/node_modules/svelte/store';
 export const AbFabStore = writable({
-    location: '',
+    navigateTo: '',
     logged: !!localStorage.getItem('auth'),
 });
+export function navigateTo(path) {
+    AbFabStore.update((state) => ({ ...state, navigateTo: path }));
+}
 export function getRealPath(path) {
     return path.startsWith('/') && !path.startsWith('/~/') ? `/~/${path.slice(1)}` : path;
 }

@@ -1,12 +1,21 @@
 <script>
-    import { EditorStore } from './editor.js';
+    import { deleteFile, EditorStore } from './editor.js';
     import NavItem from './navigation.item.svelte';
     import AFButton from '../ui/button.svelte';
+    import { navigateTo } from '/~/abfab/core.js';
+
+    function deleteSelected() {
+        const path = window.location.pathname.replace('/@edit', '');
+        if (confirm(`Delete ${path}?`)) {
+            deleteFile(path);
+            navigateTo(path.split('/').slice(0, -1).join('/') + '/@edit');
+        }
+    }
 </script>
 <div class="navigation">
     <ul class="toolbar">
         <li><AFButton kind="primary" aspect="basic" icon="plus" label="Add" size="small"/></li>
-        <li><AFButton kind="primary" aspect="basic" icon="trash" label="Remove" size="small"/></li>
+        <li><AFButton kind="primary" aspect="basic" icon="trash" label="Remove" size="small" on:click={deleteSelected}/></li>
     </ul>
     <nav>
         <ul>

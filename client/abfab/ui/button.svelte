@@ -1,4 +1,5 @@
 <script>
+    import AFIcon from '/~/abfab/ui/icon.svelte';
     export let label;
     export let icon;
     export let size = 'medium'; // small, medium, large
@@ -14,11 +15,7 @@
     on:click>
     <span tabindex="-1" class="pa-button-wrapper">
         {#if icon}
-        <pa-icon>
-            <svg class="pa-{size}">
-                <use xlink:href="/~/abfab/pastanaga/icons.svg#{icon}"></use>
-            </svg>
-        </pa-icon>
+        <AFIcon {size} {icon}></AFIcon>
         {/if}
         <span class="pa-button-label" class:pa-sr-only={!!icon}>{label}</span>
     </span>

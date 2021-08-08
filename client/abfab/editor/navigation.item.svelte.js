@@ -19,15 +19,14 @@ import {
 	safe_not_equal,
 	set_data,
 	space,
-	svg_element,
 	text,
 	toggle_class,
 	transition_in,
-	transition_out,
-	xlink_attr
+	transition_out
 } from "/~/node_modules/svelte/internal/index.mjs";
 
 import { getTreeItem, updateTreeItem } from "./editor.js";
+import AFIcon from "/~/abfab/ui/icon.svelte";
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
@@ -35,72 +34,86 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (23:0) {:else}
+// (20:0) {:else}
 function create_else_block(ctx) {
-	let pa_icon;
+	let aficon;
+	let current;
+	aficon = new AFIcon({ props: { size: "small", icon: "file" } });
+	aficon.$on("click", /*toggle*/ ctx[1]);
 
 	return {
 		c() {
-			pa_icon = element("pa-icon");
-			pa_icon.innerHTML = `<svg class="pa-small"><use xlink:href="/~/abfab/pastanaga/icons.svg#file"></use></svg>`;
+			create_component(aficon.$$.fragment);
 		},
 		m(target, anchor) {
-			insert(target, pa_icon, anchor);
+			mount_component(aficon, target, anchor);
+			current = true;
 		},
 		p: noop,
+		i(local) {
+			if (current) return;
+			transition_in(aficon.$$.fragment, local);
+			current = true;
+		},
+		o(local) {
+			transition_out(aficon.$$.fragment, local);
+			current = false;
+		},
 		d(detaching) {
-			if (detaching) detach(pa_icon);
+			destroy_component(aficon, detaching);
 		}
 	};
 }
 
-// (17:0) {#if item.type === 'Directory' }
+// (18:0) {#if item.type === 'Directory' }
 function create_if_block_1(ctx) {
-	let pa_icon;
-	let svg;
-	let use;
-	let use_xlink_href_value;
-	let mounted;
-	let dispose;
+	let aficon;
+	let current;
+
+	aficon = new AFIcon({
+			props: {
+				size: "small",
+				icon: /*item*/ ctx[0].expanded
+				? "chevron-down"
+				: "chevron-right"
+			}
+		});
+
+	aficon.$on("click", /*toggle*/ ctx[1]);
 
 	return {
 		c() {
-			pa_icon = element("pa-icon");
-			svg = svg_element("svg");
-			use = svg_element("use");
-
-			xlink_attr(use, "xlink:href", use_xlink_href_value = "/~/abfab/pastanaga/icons.svg#" + (/*item*/ ctx[0].expanded
-			? "chevron-down"
-			: "chevron-right"));
-
-			attr(svg, "class", "pa-small");
+			create_component(aficon.$$.fragment);
 		},
 		m(target, anchor) {
-			insert(target, pa_icon, anchor);
-			append(pa_icon, svg);
-			append(svg, use);
-
-			if (!mounted) {
-				dispose = listen(svg, "click", /*toggle*/ ctx[1]);
-				mounted = true;
-			}
+			mount_component(aficon, target, anchor);
+			current = true;
 		},
 		p(ctx, dirty) {
-			if (dirty & /*item*/ 1 && use_xlink_href_value !== (use_xlink_href_value = "/~/abfab/pastanaga/icons.svg#" + (/*item*/ ctx[0].expanded
+			const aficon_changes = {};
+
+			if (dirty & /*item*/ 1) aficon_changes.icon = /*item*/ ctx[0].expanded
 			? "chevron-down"
-			: "chevron-right"))) {
-				xlink_attr(use, "xlink:href", use_xlink_href_value);
-			}
+			: "chevron-right";
+
+			aficon.$set(aficon_changes);
+		},
+		i(local) {
+			if (current) return;
+			transition_in(aficon.$$.fragment, local);
+			current = true;
+		},
+		o(local) {
+			transition_out(aficon.$$.fragment, local);
+			current = false;
 		},
 		d(detaching) {
-			if (detaching) detach(pa_icon);
-			mounted = false;
-			dispose();
+			destroy_component(aficon, detaching);
 		}
 	};
 }
 
-// (31:0) {#if item.children && item.expanded }
+// (24:0) {#if item.children && item.expanded }
 function create_if_block(ctx) {
 	let ul;
 	let current;
@@ -185,7 +198,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (33:4) {#each item.children as item}
+// (26:4) {#each item.children as item}
 function create_each_block(ctx) {
 	let li;
 	let component;
@@ -224,6 +237,8 @@ function create_each_block(ctx) {
 }
 
 function create_fragment(ctx) {
+	let current_block_type_index;
+	let if_block0;
 	let t0;
 	let a;
 	let t1_value = /*item*/ ctx[0].name + "";
@@ -234,14 +249,16 @@ function create_fragment(ctx) {
 	let current;
 	let mounted;
 	let dispose;
+	const if_block_creators = [create_if_block_1, create_else_block];
+	const if_blocks = [];
 
 	function select_block_type(ctx, dirty) {
-		if (/*item*/ ctx[0].type === "Directory") return create_if_block_1;
-		return create_else_block;
+		if (/*item*/ ctx[0].type === "Directory") return 0;
+		return 1;
 	}
 
-	let current_block_type = select_block_type(ctx, -1);
-	let if_block0 = current_block_type(ctx);
+	current_block_type_index = select_block_type(ctx, -1);
+	if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 	let if_block1 = /*item*/ ctx[0].children && /*item*/ ctx[0].expanded && create_if_block(ctx);
 
 	return {
@@ -257,7 +274,7 @@ function create_fragment(ctx) {
 			toggle_class(a, "selected", /*item*/ ctx[0].selected);
 		},
 		m(target, anchor) {
-			if_block0.m(target, anchor);
+			if_blocks[current_block_type_index].m(target, anchor);
 			insert(target, t0, anchor);
 			insert(target, a, anchor);
 			append(a, t1);
@@ -272,16 +289,30 @@ function create_fragment(ctx) {
 			}
 		},
 		p(ctx, [dirty]) {
-			if (current_block_type === (current_block_type = select_block_type(ctx, dirty)) && if_block0) {
-				if_block0.p(ctx, dirty);
-			} else {
-				if_block0.d(1);
-				if_block0 = current_block_type(ctx);
+			let previous_block_index = current_block_type_index;
+			current_block_type_index = select_block_type(ctx, dirty);
 
-				if (if_block0) {
+			if (current_block_type_index === previous_block_index) {
+				if_blocks[current_block_type_index].p(ctx, dirty);
+			} else {
+				group_outros();
+
+				transition_out(if_blocks[previous_block_index], 1, 1, () => {
+					if_blocks[previous_block_index] = null;
+				});
+
+				check_outros();
+				if_block0 = if_blocks[current_block_type_index];
+
+				if (!if_block0) {
+					if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 					if_block0.c();
-					if_block0.m(t0.parentNode, t0);
+				} else {
+					if_block0.p(ctx, dirty);
 				}
+
+				transition_in(if_block0, 1);
+				if_block0.m(t0.parentNode, t0);
 			}
 
 			if ((!current || dirty & /*item*/ 1) && t1_value !== (t1_value = /*item*/ ctx[0].name + "")) set_data(t1, t1_value);
@@ -319,15 +350,17 @@ function create_fragment(ctx) {
 		},
 		i(local) {
 			if (current) return;
+			transition_in(if_block0);
 			transition_in(if_block1);
 			current = true;
 		},
 		o(local) {
+			transition_out(if_block0);
 			transition_out(if_block1);
 			current = false;
 		},
 		d(detaching) {
-			if_block0.d(detaching);
+			if_blocks[current_block_type_index].d(detaching);
 			if (detaching) detach(t0);
 			if (detaching) detach(a);
 			if (detaching) detach(t2);

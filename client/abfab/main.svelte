@@ -43,6 +43,7 @@
         history.pushState({}, '', href);
         const [path, query] = href.split('?');
         if (path.endsWith('/@edit')) {
+            // TODO: move to editor.js and declare dynamically
             const response = await API.get(path.replace('/@edit', '/@edit-data'));
             const code = await response.text();
             const module = await import(`/~/abfab/editor/editor.svelte`);
@@ -69,8 +70,8 @@
     }
 
     const subscriptions = [];
-    const _location = derived(AbFabStore, (state) => state.location);
-    subscriptions.push(_location.subscribe(value => {
+    const _navigateTo = derived(AbFabStore, (state) => state.navigateTo);
+    subscriptions.push(_navigateTo.subscribe(value => {
         if(value) {
             navigate(value);
         }

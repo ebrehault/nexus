@@ -1,5 +1,5 @@
 import { writable, derived, get } from '/~/node_modules/svelte/store';
-import { AbFabStore, getRealPath, API } from '/~/abfab/core.js';
+import { getRealPath, API, navigateTo } from '/~/abfab/core.js';
 
 export const EditorStore = writable({
     tree: [],
@@ -71,6 +71,21 @@ export const getTreeItem = (path, tree) => {
     }
 };
 
+const deleteTreeItem = (path, tree) => {
+    if (!tree) {
+        tree = get(EditorStore).tree;
+    }
+    if (tree.find((item) => item.path === path)) {
+        return tree.filter((item) => item.path !== path);
+    } else if (tree.find((item) => path.startsWith(item.path))) {
+        return tree.map((item) =>
+            path.startsWith(item.path) ? { ...item, children: deleteTreeItem(path, item.children) } : item,
+        );
+    } else {
+        return tree;
+    }
+};
+
 export const showNavigation = derived(EditorStore, (state) => state.showNavigation);
 
 export function saveFile(filepath, type, content) {
@@ -107,14 +122,18 @@ export function saveFile(filepath, type, content) {
         });
 }
 
+export async function deleteFile(path) {
+    const deletion = await API.delete(path);
+    if (deletion.status === 200) {
+        EditorStore.update((state) => ({ ...state, tree: deleteTreeItem(path) }));
+    }
+}
+
 let redirecting = false;
 
 function redirectToLogin() {
     if (!redirecting) {
-        AbFabStore.update((state) => ({
-            ...state,
-            location: `/~/abfab/login/login.svelte?from=${window.location.pathname}`,
-        }));
+        navigateTo(`/~/abfab/login/login.svelte?from=${window.location.pathname}`);
         redirecting = true;
     }
 }

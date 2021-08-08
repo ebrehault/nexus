@@ -1,5 +1,6 @@
 <script>
-    import { getTreeItem, updateTreeItem } from './editor.js'
+    import { getTreeItem, updateTreeItem } from './editor.js';
+    import AFIcon from '/~/abfab/ui/icon.svelte';
     export let item;
 
     const toggle = () => {
@@ -15,17 +16,9 @@
     }
 </script>
 {#if item.type === 'Directory' }
-<pa-icon>
-    <svg class="pa-small" on:click={toggle}>
-        <use xlink:href="/~/abfab/pastanaga/icons.svg#{item.expanded ? 'chevron-down' : 'chevron-right'}"></use>
-    </svg>
-</pa-icon>
+<AFIcon size="small" on:click={toggle} icon={item.expanded ? 'chevron-down' : 'chevron-right'}></AFIcon>
 {:else}
-<pa-icon>
-    <svg class="pa-small">
-        <use xlink:href="/~/abfab/pastanaga/icons.svg#file"></use>
-    </svg>
-</pa-icon>
+<AFIcon size="small" on:click={toggle} icon="file"></AFIcon>
 {/if}
 <a href={`${item.path}/@edit`} class:selected={item.selected} on:click={click}>{item.name}</a>
 {#if item.children && item.expanded }

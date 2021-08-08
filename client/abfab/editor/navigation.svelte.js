@@ -20,9 +20,10 @@ import {
 	transition_out
 } from "/~/node_modules/svelte/internal/index.mjs";
 
-import { EditorStore } from "./editor.js";
+import { deleteFile, EditorStore } from "./editor.js";
 import NavItem from "./navigation.item.svelte";
 import AFButton from "../ui/button.svelte";
+import { navigateTo } from "/~/abfab/core.js";
 
 function add_css() {
 	var style = element("style");
@@ -33,16 +34,16 @@ function add_css() {
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[1] = list[i];
+	child_ctx[2] = list[i];
 	return child_ctx;
 }
 
-// (13:12) {#each $EditorStore.tree as item}
+// (22:12) {#each $EditorStore.tree as item}
 function create_each_block(ctx) {
 	let li;
 	let navitem;
 	let current;
-	navitem = new NavItem({ props: { item: /*item*/ ctx[1] } });
+	navitem = new NavItem({ props: { item: /*item*/ ctx[2] } });
 
 	return {
 		c() {
@@ -57,7 +58,7 @@ function create_each_block(ctx) {
 		},
 		p(ctx, dirty) {
 			const navitem_changes = {};
-			if (dirty & /*$EditorStore*/ 1) navitem_changes.item = /*item*/ ctx[1];
+			if (dirty & /*$EditorStore*/ 1) navitem_changes.item = /*item*/ ctx[2];
 			navitem.$set(navitem_changes);
 		},
 		i(local) {
@@ -109,6 +110,7 @@ function create_fragment(ctx) {
 			}
 		});
 
+	afbutton1.$on("click", /*deleteSelected*/ ctx[1]);
 	let each_value = /*$EditorStore*/ ctx[0].tree;
 	let each_blocks = [];
 
@@ -223,7 +225,17 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let $EditorStore;
 	component_subscribe($$self, EditorStore, $$value => $$invalidate(0, $EditorStore = $$value));
-	return [$EditorStore];
+
+	function deleteSelected() {
+		const path = window.location.pathname.replace("/@edit", "");
+
+		if (confirm(`Delete ${path}?`)) {
+			deleteFile(path);
+			navigateTo(path.split("/").slice(0, -1).join("/") + "/@edit");
+		}
+	}
+
+	return [$EditorStore, deleteSelected];
 }
 
 class Component extends SvelteComponent {

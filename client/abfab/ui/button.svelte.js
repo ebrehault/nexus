@@ -4,52 +4,63 @@ import {
 	append,
 	attr,
 	bubble,
+	check_outros,
+	create_component,
+	destroy_component,
 	detach,
 	element,
+	group_outros,
 	init,
 	insert,
 	listen,
-	noop,
+	mount_component,
 	safe_not_equal,
 	set_data,
 	space,
-	svg_element,
 	text,
 	toggle_class,
-	xlink_attr
+	transition_in,
+	transition_out
 } from "/~/node_modules/svelte/internal/index.mjs";
 
+import AFIcon from "/~/abfab/ui/icon.svelte";
+
 function create_if_block(ctx) {
-	let pa_icon;
-	let svg;
-	let use;
-	let use_xlink_href_value;
-	let svg_class_value;
+	let aficon;
+	let current;
+
+	aficon = new AFIcon({
+			props: {
+				size: /*size*/ ctx[2],
+				icon: /*icon*/ ctx[1]
+			}
+		});
 
 	return {
 		c() {
-			pa_icon = element("pa-icon");
-			svg = svg_element("svg");
-			use = svg_element("use");
-			xlink_attr(use, "xlink:href", use_xlink_href_value = "/~/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1]);
-			attr(svg, "class", svg_class_value = "pa-" + /*size*/ ctx[2]);
+			create_component(aficon.$$.fragment);
 		},
 		m(target, anchor) {
-			insert(target, pa_icon, anchor);
-			append(pa_icon, svg);
-			append(svg, use);
+			mount_component(aficon, target, anchor);
+			current = true;
 		},
 		p(ctx, dirty) {
-			if (dirty & /*icon*/ 2 && use_xlink_href_value !== (use_xlink_href_value = "/~/abfab/pastanaga/icons.svg#" + /*icon*/ ctx[1])) {
-				xlink_attr(use, "xlink:href", use_xlink_href_value);
-			}
-
-			if (dirty & /*size*/ 4 && svg_class_value !== (svg_class_value = "pa-" + /*size*/ ctx[2])) {
-				attr(svg, "class", svg_class_value);
-			}
+			const aficon_changes = {};
+			if (dirty & /*size*/ 4) aficon_changes.size = /*size*/ ctx[2];
+			if (dirty & /*icon*/ 2) aficon_changes.icon = /*icon*/ ctx[1];
+			aficon.$set(aficon_changes);
+		},
+		i(local) {
+			if (current) return;
+			transition_in(aficon.$$.fragment, local);
+			current = true;
+		},
+		o(local) {
+			transition_out(aficon.$$.fragment, local);
+			current = false;
 		},
 		d(detaching) {
-			if (detaching) detach(pa_icon);
+			destroy_component(aficon, detaching);
 		}
 	};
 }
@@ -61,6 +72,7 @@ function create_fragment(ctx) {
 	let span0;
 	let t1;
 	let button_class_value;
+	let current;
 	let mounted;
 	let dispose;
 	let if_block = /*icon*/ ctx[1] && create_if_block(ctx);
@@ -92,6 +104,7 @@ function create_fragment(ctx) {
 			append(span1, t0);
 			append(span1, span0);
 			append(span0, t1);
+			current = true;
 
 			if (!mounted) {
 				dispose = listen(button, "click", /*click_handler*/ ctx[7]);
@@ -102,31 +115,41 @@ function create_fragment(ctx) {
 			if (/*icon*/ ctx[1]) {
 				if (if_block) {
 					if_block.p(ctx, dirty);
+
+					if (dirty & /*icon*/ 2) {
+						transition_in(if_block, 1);
+					}
 				} else {
 					if_block = create_if_block(ctx);
 					if_block.c();
+					transition_in(if_block, 1);
 					if_block.m(span1, t0);
 				}
 			} else if (if_block) {
-				if_block.d(1);
-				if_block = null;
+				group_outros();
+
+				transition_out(if_block, 1, 1, () => {
+					if_block = null;
+				});
+
+				check_outros();
 			}
 
-			if (dirty & /*label*/ 1) set_data(t1, /*label*/ ctx[0]);
+			if (!current || dirty & /*label*/ 1) set_data(t1, /*label*/ ctx[0]);
 
 			if (dirty & /*icon*/ 2) {
 				toggle_class(span0, "pa-sr-only", !!/*icon*/ ctx[1]);
 			}
 
-			if (dirty & /*size, kind, aspect*/ 28 && button_class_value !== (button_class_value = "pa-button pa-" + /*size*/ ctx[2] + " pa-" + /*kind*/ ctx[4] + " pa-" + /*aspect*/ ctx[3])) {
+			if (!current || dirty & /*size, kind, aspect*/ 28 && button_class_value !== (button_class_value = "pa-button pa-" + /*size*/ ctx[2] + " pa-" + /*kind*/ ctx[4] + " pa-" + /*aspect*/ ctx[3])) {
 				attr(button, "class", button_class_value);
 			}
 
-			if (dirty & /*label*/ 1) {
+			if (!current || dirty & /*label*/ 1) {
 				attr(button, "aria-label", /*label*/ ctx[0]);
 			}
 
-			if (dirty & /*disabled*/ 64) {
+			if (!current || dirty & /*disabled*/ 64) {
 				button.disabled = /*disabled*/ ctx[6];
 			}
 
@@ -138,8 +161,15 @@ function create_fragment(ctx) {
 				toggle_class(button, "pa-button-icon", /*icon*/ ctx[1]);
 			}
 		},
-		i: noop,
-		o: noop,
+		i(local) {
+			if (current) return;
+			transition_in(if_block);
+			current = true;
+		},
+		o(local) {
+			transition_out(if_block);
+			current = false;
+		},
 		d(detaching) {
 			if (detaching) detach(button);
 			if (if_block) if_block.d();
