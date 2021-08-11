@@ -147,7 +147,7 @@ function instance($$self, $$props, $$invalidate) {
 			const response = await API.get(`${path}/@basic`);
 			const basicData = await response.json();
 
-			if (basicData.type === "Content") {
+			if (basicData.type_name === "Content") {
 				const module = await import(getRealPath(basicData.view));
 				$$invalidate(0, component = module.default);
 				$$invalidate(1, context = basicData.data);

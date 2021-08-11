@@ -15,7 +15,7 @@ class IDirectory(IFolder):
     type_name='Directory',
     schema=IDirectory,
     globally_addable=True,
-    allowed_types=['File', 'Directory'])
+    allowed_types=['File', 'Directory', 'Content'])
 @implementer(IAbFabEditable)
 class Directory(content.Folder):
     pass

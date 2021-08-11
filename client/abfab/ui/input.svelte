@@ -7,6 +7,7 @@
     export let placeholder;
     export let hint;
     export let disabled = false;
+    export let required = false;
     export let readonly = false;
     export let value;
     export let error;
@@ -24,6 +25,7 @@
            name={id}
            placeholder={placeholder}
            disabled={disabled}
+           required={required}
            readonly={readonly}
            aria-describedby={(hint || error) && id+'-hint'}
            bind:value={value}

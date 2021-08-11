@@ -24,7 +24,7 @@ import { onMount } from "/~/node_modules/svelte/index.mjs";
 
 function create_if_block(ctx) {
 	let small;
-	let t_value = (/*error*/ ctx[7] || /*hint*/ ctx[4]) + "";
+	let t_value = (/*error*/ ctx[8] || /*hint*/ ctx[4]) + "";
 	let t;
 	let small_id_value;
 
@@ -35,21 +35,21 @@ function create_if_block(ctx) {
 			attr(small, "aria-live", "polite");
 			attr(small, "class", "pa-field-help");
 			attr(small, "id", small_id_value = /*id*/ ctx[1] + "-hint");
-			toggle_class(small, "pa-field-help-error", !!/*error*/ ctx[7]);
+			toggle_class(small, "pa-field-help-error", !!/*error*/ ctx[8]);
 		},
 		m(target, anchor) {
 			insert(target, small, anchor);
 			append(small, t);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*error, hint*/ 144 && t_value !== (t_value = (/*error*/ ctx[7] || /*hint*/ ctx[4]) + "")) set_data(t, t_value);
+			if (dirty & /*error, hint*/ 272 && t_value !== (t_value = (/*error*/ ctx[8] || /*hint*/ ctx[4]) + "")) set_data(t, t_value);
 
 			if (dirty & /*id*/ 2 && small_id_value !== (small_id_value = /*id*/ ctx[1] + "-hint")) {
 				attr(small, "id", small_id_value);
 			}
 
-			if (dirty & /*error*/ 128) {
-				toggle_class(small, "pa-field-help-error", !!/*error*/ ctx[7]);
+			if (dirty & /*error*/ 256) {
+				toggle_class(small, "pa-field-help-error", !!/*error*/ ctx[8]);
 			}
 		},
 		d(detaching) {
@@ -68,7 +68,7 @@ function create_fragment(ctx) {
 	let t2;
 	let mounted;
 	let dispose;
-	let if_block = (/*hint*/ ctx[4] || /*error*/ ctx[7]) && create_if_block(ctx);
+	let if_block = (/*hint*/ ctx[4] || /*error*/ ctx[8]) && create_if_block(ctx);
 
 	return {
 		c() {
@@ -84,10 +84,11 @@ function create_fragment(ctx) {
 			attr(input, "name", /*id*/ ctx[1]);
 			attr(input, "placeholder", /*placeholder*/ ctx[3]);
 			input.disabled = /*disabled*/ ctx[5];
-			input.readOnly = /*readonly*/ ctx[6];
-			attr(input, "aria-describedby", input_aria_describedby_value = (/*hint*/ ctx[4] || /*error*/ ctx[7]) && /*id*/ ctx[1] + "-hint");
+			input.required = /*required*/ ctx[6];
+			input.readOnly = /*readonly*/ ctx[7];
+			attr(input, "aria-describedby", input_aria_describedby_value = (/*hint*/ ctx[4] || /*error*/ ctx[8]) && /*id*/ ctx[1] + "-hint");
 			toggle_class(input, "pa-field-control-filled", !!/*value*/ ctx[0]);
-			toggle_class(input, "pa-field-error", !!/*error*/ ctx[7]);
+			toggle_class(input, "pa-field-error", !!/*error*/ ctx[8]);
 			attr(label_1, "class", "pa-field-label");
 			attr(label_1, "for", /*id*/ ctx[1]);
 			attr(div, "class", "pa-field");
@@ -95,7 +96,7 @@ function create_fragment(ctx) {
 		m(target, anchor) {
 			insert(target, div, anchor);
 			append(div, input);
-			/*input_binding*/ ctx[17](input);
+			/*input_binding*/ ctx[18](input);
 			set_input_value(input, /*value*/ ctx[0]);
 			append(div, t0);
 			append(div, label_1);
@@ -105,14 +106,14 @@ function create_fragment(ctx) {
 
 			if (!mounted) {
 				dispose = [
-					listen(input, "input", /*input_input_handler*/ ctx[18]),
-					listen(input, "input", /*input_handler*/ ctx[10]),
-					listen(input, "keyup", /*keyup_handler*/ ctx[11]),
-					listen(input, "change", /*change_handler*/ ctx[12]),
-					listen(input, "keypress", /*keypress_handler*/ ctx[13]),
-					listen(input, "keydown", /*keydown_handler*/ ctx[14]),
-					listen(input, "focus", /*focus_handler*/ ctx[15]),
-					listen(input, "blur", /*blur_handler*/ ctx[16])
+					listen(input, "input", /*input_input_handler*/ ctx[19]),
+					listen(input, "input", /*input_handler*/ ctx[11]),
+					listen(input, "keyup", /*keyup_handler*/ ctx[12]),
+					listen(input, "change", /*change_handler*/ ctx[13]),
+					listen(input, "keypress", /*keypress_handler*/ ctx[14]),
+					listen(input, "keydown", /*keydown_handler*/ ctx[15]),
+					listen(input, "focus", /*focus_handler*/ ctx[16]),
+					listen(input, "blur", /*blur_handler*/ ctx[17])
 				];
 
 				mounted = true;
@@ -135,11 +136,15 @@ function create_fragment(ctx) {
 				input.disabled = /*disabled*/ ctx[5];
 			}
 
-			if (dirty & /*readonly*/ 64) {
-				input.readOnly = /*readonly*/ ctx[6];
+			if (dirty & /*required*/ 64) {
+				input.required = /*required*/ ctx[6];
 			}
 
-			if (dirty & /*hint, error, id*/ 146 && input_aria_describedby_value !== (input_aria_describedby_value = (/*hint*/ ctx[4] || /*error*/ ctx[7]) && /*id*/ ctx[1] + "-hint")) {
+			if (dirty & /*readonly*/ 128) {
+				input.readOnly = /*readonly*/ ctx[7];
+			}
+
+			if (dirty & /*hint, error, id*/ 274 && input_aria_describedby_value !== (input_aria_describedby_value = (/*hint*/ ctx[4] || /*error*/ ctx[8]) && /*id*/ ctx[1] + "-hint")) {
 				attr(input, "aria-describedby", input_aria_describedby_value);
 			}
 
@@ -151,8 +156,8 @@ function create_fragment(ctx) {
 				toggle_class(input, "pa-field-control-filled", !!/*value*/ ctx[0]);
 			}
 
-			if (dirty & /*error*/ 128) {
-				toggle_class(input, "pa-field-error", !!/*error*/ ctx[7]);
+			if (dirty & /*error*/ 256) {
+				toggle_class(input, "pa-field-error", !!/*error*/ ctx[8]);
 			}
 
 			if (dirty & /*label*/ 4) set_data(t1, /*label*/ ctx[2]);
@@ -161,7 +166,7 @@ function create_fragment(ctx) {
 				attr(label_1, "for", /*id*/ ctx[1]);
 			}
 
-			if (/*hint*/ ctx[4] || /*error*/ ctx[7]) {
+			if (/*hint*/ ctx[4] || /*error*/ ctx[8]) {
 				if (if_block) {
 					if_block.p(ctx, dirty);
 				} else {
@@ -178,7 +183,7 @@ function create_fragment(ctx) {
 		o: noop,
 		d(detaching) {
 			if (detaching) detach(div);
-			/*input_binding*/ ctx[17](null);
+			/*input_binding*/ ctx[18](null);
 			if (if_block) if_block.d();
 			mounted = false;
 			run_all(dispose);
@@ -193,11 +198,12 @@ function instance($$self, $$props, $$invalidate) {
 	let { placeholder } = $$props;
 	let { hint } = $$props;
 	let { disabled = false } = $$props;
+	let { required = false } = $$props;
 	let { readonly = false } = $$props;
 	let { value } = $$props;
 	let { error } = $$props;
 	let element;
-	onMount(() => $$invalidate(8, element.type = type, element));
+	onMount(() => $$invalidate(9, element.type = type, element));
 
 	function input_handler(event) {
 		bubble($$self, event);
@@ -230,7 +236,7 @@ function instance($$self, $$props, $$invalidate) {
 	function input_binding($$value) {
 		binding_callbacks[$$value ? "unshift" : "push"](() => {
 			element = $$value;
-			$$invalidate(8, element);
+			$$invalidate(9, element);
 		});
 	}
 
@@ -242,13 +248,14 @@ function instance($$self, $$props, $$invalidate) {
 	$$self.$$set = $$props => {
 		if ("id" in $$props) $$invalidate(1, id = $$props.id);
 		if ("label" in $$props) $$invalidate(2, label = $$props.label);
-		if ("type" in $$props) $$invalidate(9, type = $$props.type);
+		if ("type" in $$props) $$invalidate(10, type = $$props.type);
 		if ("placeholder" in $$props) $$invalidate(3, placeholder = $$props.placeholder);
 		if ("hint" in $$props) $$invalidate(4, hint = $$props.hint);
 		if ("disabled" in $$props) $$invalidate(5, disabled = $$props.disabled);
-		if ("readonly" in $$props) $$invalidate(6, readonly = $$props.readonly);
+		if ("required" in $$props) $$invalidate(6, required = $$props.required);
+		if ("readonly" in $$props) $$invalidate(7, readonly = $$props.readonly);
 		if ("value" in $$props) $$invalidate(0, value = $$props.value);
-		if ("error" in $$props) $$invalidate(7, error = $$props.error);
+		if ("error" in $$props) $$invalidate(8, error = $$props.error);
 	};
 
 	return [
@@ -258,6 +265,7 @@ function instance($$self, $$props, $$invalidate) {
 		placeholder,
 		hint,
 		disabled,
+		required,
 		readonly,
 		error,
 		element,
@@ -281,13 +289,14 @@ class Component extends SvelteComponent {
 		init(this, options, instance, create_fragment, safe_not_equal, {
 			id: 1,
 			label: 2,
-			type: 9,
+			type: 10,
 			placeholder: 3,
 			hint: 4,
 			disabled: 5,
-			readonly: 6,
+			required: 6,
+			readonly: 7,
 			value: 0,
-			error: 7
+			error: 8
 		});
 	}
 }

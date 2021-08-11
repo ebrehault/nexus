@@ -1,5 +1,5 @@
 import { writable, derived, get } from '/~/node_modules/svelte/store';
-import { getRealPath, API, navigateTo } from '/~/abfab/core.js';
+import { getRealPath, API, redirectToLogin } from '/~/abfab/core.js';
 
 export const EditorStore = writable({
     tree: [],
@@ -86,10 +86,36 @@ const deleteTreeItem = (path, tree) => {
     }
 };
 
+const addTreeItem = (parentPath, newItem, tree) => {
+    if (!tree) {
+        tree = get(EditorStore).tree;
+    }
+    if (!parentPath) {
+        tree.push(newItem);
+        return tree;
+    }
+    const parent = tree.find((item) => item.path === parentPath);
+    if (parent) {
+        if (!parent.children) {
+            parent.children = [];
+        }
+        parent.children.push(newItem);
+        return tree.map((item) => (item.path === parentPath ? parent : item));
+    } else if (tree.find((item) => parentPath.startsWith(item.path))) {
+        return tree.map((item) =>
+            parentPath.startsWith(item.path)
+                ? { ...item, children: addTreeItem(parentPath, newItem, item.children || []) }
+                : item,
+        );
+    } else {
+        return tree;
+    }
+};
+
 export const showNavigation = derived(EditorStore, (state) => state.showNavigation);
 
 export function saveFile(filepath, type, content) {
-    filepath = `/~/${filepath.slice(1)}`;
+    filepath = getRealPath(filepath);
     const path = filepath.split('/');
     const filename = path.pop();
     const container = path.join('/');
@@ -102,7 +128,7 @@ export function saveFile(filepath, type, content) {
                 '@type': type,
                 id: filename,
             };
-            if (type === 'Content') {
+            if (content && type === 'Content') {
                 body.data = JSON.parse(content);
             }
             return res.status === 404
@@ -129,11 +155,15 @@ export async function deleteFile(path) {
     }
 }
 
-let redirecting = false;
-
-function redirectToLogin() {
-    if (!redirecting) {
-        navigateTo(`/~/abfab/login/login.svelte?from=${window.location.pathname}`);
-        redirecting = true;
-    }
+export async function addFile(containerPath, name, type, content) {
+    const path = `${containerPath}/${name}`;
+    await saveFile(path, type, content);
+    EditorStore.update((state) => ({
+        ...state,
+        tree: addTreeItem(containerPath, {
+            name: path.split('/').pop(),
+            path: path,
+            type: type,
+        }),
+    }));
 }

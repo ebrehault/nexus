@@ -141,7 +141,7 @@ async def get_tree(context, request, depth=3):
                    permission='guillotina.Public', allow_access=True)
 async def get_content_basic(context, request):
     return {
-        "type": context.type_name,
+        "type_name": context.type_name,
         "path": get_content_path(context),
         "view": context.view,
         "data": context.data,

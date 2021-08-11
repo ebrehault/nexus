@@ -28,6 +28,7 @@ import {
 import VimEditor from "./vim.svelte";
 import CodeMirrorEditor from "./codemirror.svelte";
 import Viewer from "./viewer.svelte";
+import Add from "./add.svelte";
 import AFButton from "../ui/button.svelte";
 import Toolbar from "./toolbar.svelte";
 import Navigation from "./navigation.svelte";
@@ -48,8 +49,8 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (112:8) {#if !useVim}
-function create_if_block_6(ctx) {
+// (119:8) {#if !useVim}
+function create_if_block_8(ctx) {
 	let li;
 	let afbutton;
 	let current;
@@ -64,7 +65,7 @@ function create_if_block_6(ctx) {
 			}
 		});
 
-	afbutton.$on("click", /*triggerSave*/ ctx[11]);
+	afbutton.$on("click", /*triggerSave*/ ctx[12]);
 
 	return {
 		c() {
@@ -93,8 +94,91 @@ function create_if_block_6(ctx) {
 	};
 }
 
-// (118:8) {#if play}
-function create_if_block_5(ctx) {
+// (125:8) {#if type === 'File'}
+function create_if_block_6(ctx) {
+	let t;
+	let li;
+	let afbutton;
+	let current;
+	let if_block = /*play*/ ctx[5] && create_if_block_7(ctx);
+
+	afbutton = new AFButton({
+			props: {
+				kind: "primary",
+				aspect: "basic",
+				icon: "play",
+				label: "Play",
+				size: "small",
+				active: /*play*/ ctx[5]
+			}
+		});
+
+	afbutton.$on("click", /*togglePlay*/ ctx[11]);
+
+	return {
+		c() {
+			if (if_block) if_block.c();
+			t = space();
+			li = element("li");
+			create_component(afbutton.$$.fragment);
+		},
+		m(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insert(target, t, anchor);
+			insert(target, li, anchor);
+			mount_component(afbutton, li, null);
+			current = true;
+		},
+		p(ctx, dirty) {
+			if (/*play*/ ctx[5]) {
+				if (if_block) {
+					if_block.p(ctx, dirty);
+
+					if (dirty & /*play*/ 32) {
+						transition_in(if_block, 1);
+					}
+				} else {
+					if_block = create_if_block_7(ctx);
+					if_block.c();
+					transition_in(if_block, 1);
+					if_block.m(t.parentNode, t);
+				}
+			} else if (if_block) {
+				group_outros();
+
+				transition_out(if_block, 1, 1, () => {
+					if_block = null;
+				});
+
+				check_outros();
+			}
+
+			const afbutton_changes = {};
+			if (dirty & /*play*/ 32) afbutton_changes.active = /*play*/ ctx[5];
+			afbutton.$set(afbutton_changes);
+		},
+		i(local) {
+			if (current) return;
+			transition_in(if_block);
+			transition_in(afbutton.$$.fragment, local);
+			current = true;
+		},
+		o(local) {
+			transition_out(if_block);
+			transition_out(afbutton.$$.fragment, local);
+			current = false;
+		},
+		d(detaching) {
+			if (if_block) if_block.d(detaching);
+			if (detaching) detach(t);
+			if (detaching) detach(li);
+			destroy_component(afbutton);
+		}
+	};
+}
+
+// (126:12) {#if play}
+function create_if_block_7(ctx) {
 	let li;
 	let afbutton;
 	let current;
@@ -108,7 +192,7 @@ function create_if_block_5(ctx) {
 			}
 		});
 
-	afbutton.$on("click", /*refreshViewer*/ ctx[14]);
+	afbutton.$on("click", /*refreshViewer*/ ctx[15]);
 
 	return {
 		c() {
@@ -137,8 +221,8 @@ function create_if_block_5(ctx) {
 	};
 }
 
-// (132:4) {#if $showNavigation}
-function create_if_block_4(ctx) {
+// (141:4) {#if $showNavigation}
+function create_if_block_5(ctx) {
 	let navigation;
 	let current;
 	navigation = new Navigation({});
@@ -166,14 +250,43 @@ function create_if_block_4(ctx) {
 	};
 }
 
-// (139:12) {:else}
+// (146:12) {#if type === 'Directory'}
+function create_if_block_4(ctx) {
+	let add;
+	let current;
+	add = new Add({});
+
+	return {
+		c() {
+			create_component(add.$$.fragment);
+		},
+		m(target, anchor) {
+			mount_component(add, target, anchor);
+			current = true;
+		},
+		i(local) {
+			if (current) return;
+			transition_in(add.$$.fragment, local);
+			current = true;
+		},
+		o(local) {
+			transition_out(add.$$.fragment, local);
+			current = false;
+		},
+		d(detaching) {
+			destroy_component(add, detaching);
+		}
+	};
+}
+
+// (151:12) {:else}
 function create_else_block(ctx) {
 	let codemirroreditor;
 	let current;
-	let codemirroreditor_props = { context: /*_context*/ ctx[3] };
+	let codemirroreditor_props = { context: /*_context*/ ctx[4] };
 	codemirroreditor = new CodeMirrorEditor({ props: codemirroreditor_props });
 	/*codemirroreditor_binding*/ ctx[17](codemirroreditor);
-	codemirroreditor.$on("save", /*save*/ ctx[12]);
+	codemirroreditor.$on("save", /*save*/ ctx[13]);
 
 	return {
 		c() {
@@ -185,7 +298,7 @@ function create_else_block(ctx) {
 		},
 		p(ctx, dirty) {
 			const codemirroreditor_changes = {};
-			if (dirty & /*_context*/ 8) codemirroreditor_changes.context = /*_context*/ ctx[3];
+			if (dirty & /*_context*/ 16) codemirroreditor_changes.context = /*_context*/ ctx[4];
 			codemirroreditor.$set(codemirroreditor_changes);
 		},
 		i(local) {
@@ -204,12 +317,12 @@ function create_else_block(ctx) {
 	};
 }
 
-// (137:12) {#if useVim}
+// (149:12) {#if useVim}
 function create_if_block_3(ctx) {
 	let vimeditor;
 	let current;
-	vimeditor = new VimEditor({ props: { context: /*_context*/ ctx[3] } });
-	vimeditor.$on("save", /*save*/ ctx[12]);
+	vimeditor = new VimEditor({ props: { context: /*_context*/ ctx[4] } });
+	vimeditor.$on("save", /*save*/ ctx[13]);
 
 	return {
 		c() {
@@ -221,7 +334,7 @@ function create_if_block_3(ctx) {
 		},
 		p(ctx, dirty) {
 			const vimeditor_changes = {};
-			if (dirty & /*_context*/ 8) vimeditor_changes.context = /*_context*/ ctx[3];
+			if (dirty & /*_context*/ 16) vimeditor_changes.context = /*_context*/ ctx[4];
 			vimeditor.$set(vimeditor_changes);
 		},
 		i(local) {
@@ -239,7 +352,7 @@ function create_if_block_3(ctx) {
 	};
 }
 
-// (143:8) {#if hasError }
+// (155:8) {#if hasError }
 function create_if_block_1(ctx) {
 	let div1;
 	let span;
@@ -258,7 +371,7 @@ function create_if_block_1(ctx) {
 			}
 		});
 
-	afbutton.$on("click", /*discardErrors*/ ctx[13]);
+	afbutton.$on("click", /*discardErrors*/ ctx[14]);
 	let if_block = /*error*/ ctx[0] && create_if_block_2(ctx);
 	let each_value = /*warnings*/ ctx[1];
 	let each_blocks = [];
@@ -355,7 +468,7 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (150:20) {#if error}
+// (162:20) {#if error}
 function create_if_block_2(ctx) {
 	let div;
 	let t0_value = /*error*/ ctx[0].message + "";
@@ -389,7 +502,7 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (151:20) {#each warnings as warning}
+// (163:20) {#each warnings as warning}
 function create_each_block(ctx) {
 	let div;
 	let t0_value = /*warning*/ ctx[20].message + "";
@@ -429,11 +542,11 @@ function create_each_block(ctx) {
 	};
 }
 
-// (161:4) {#if play}
+// (173:4) {#if play}
 function create_if_block(ctx) {
 	let viewer_1;
 	let current;
-	let viewer_1_props = { componentPath: /*componentPath*/ ctx[5] };
+	let viewer_1_props = { componentPath: /*componentPath*/ ctx[6] };
 	viewer_1 = new Viewer({ props: viewer_1_props });
 	/*viewer_1_binding*/ ctx[18](viewer_1);
 
@@ -447,7 +560,7 @@ function create_if_block(ctx) {
 		},
 		p(ctx, dirty) {
 			const viewer_1_changes = {};
-			if (dirty & /*componentPath*/ 32) viewer_1_changes.componentPath = /*componentPath*/ ctx[5];
+			if (dirty & /*componentPath*/ 64) viewer_1_changes.componentPath = /*componentPath*/ ctx[6];
 			viewer_1.$set(viewer_1_changes);
 		},
 		i(local) {
@@ -476,50 +589,36 @@ function create_fragment(ctx) {
 	let ul;
 	let t2;
 	let t3;
-	let li;
-	let afbutton;
-	let t4;
 	let main;
 	let toolbar;
+	let t4;
 	let t5;
-	let t6;
 	let div1;
 	let div0;
+	let t6;
 	let current_block_type_index;
-	let if_block3;
+	let if_block4;
 	let t7;
 	let div1_class_value;
 	let t8;
 	let current;
-	let if_block0 = !/*useVim*/ ctx[9] && create_if_block_6(ctx);
-	let if_block1 = /*play*/ ctx[4] && create_if_block_5(ctx);
-
-	afbutton = new AFButton({
-			props: {
-				kind: "primary",
-				aspect: "basic",
-				icon: "play",
-				label: "Play",
-				size: "small",
-				active: /*play*/ ctx[4]
-			}
-		});
-
-	afbutton.$on("click", /*togglePlay*/ ctx[10]);
+	let if_block0 = !/*useVim*/ ctx[10] && create_if_block_8(ctx);
+	let if_block1 = /*type*/ ctx[2] === "File" && create_if_block_6(ctx);
 	toolbar = new Toolbar({});
-	let if_block2 = /*$showNavigation*/ ctx[8] && create_if_block_4(ctx);
+	let if_block2 = /*$showNavigation*/ ctx[9] && create_if_block_5(ctx);
+	let if_block3 = /*type*/ ctx[2] === "Directory" && create_if_block_4(ctx);
 	const if_block_creators = [create_if_block_3, create_else_block];
 	const if_blocks = [];
 
 	function select_block_type(ctx, dirty) {
-		if (/*useVim*/ ctx[9]) return 0;
+		if (/*useVim*/ ctx[10]) return 0;
 		return 1;
 	}
 
 	current_block_type_index = select_block_type(ctx, -1);
-	if_block3 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-	let if_block4 = /*hasError*/ ctx[2] && create_if_block_1(ctx);
-	let if_block5 = /*play*/ ctx[4] && create_if_block(ctx);
+	if_block4 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+	let if_block5 = /*hasError*/ ctx[3] && create_if_block_1(ctx);
+	let if_block6 = /*play*/ ctx[5] && create_if_block(ctx);
 
 	return {
 		c() {
@@ -533,21 +632,20 @@ function create_fragment(ctx) {
 			t2 = space();
 			if (if_block1) if_block1.c();
 			t3 = space();
-			li = element("li");
-			create_component(afbutton.$$.fragment);
-			t4 = space();
 			main = element("main");
 			create_component(toolbar.$$.fragment);
-			t5 = space();
+			t4 = space();
 			if (if_block2) if_block2.c();
-			t6 = space();
+			t5 = space();
 			div1 = element("div");
 			div0 = element("div");
-			if_block3.c();
+			if (if_block3) if_block3.c();
+			t6 = space();
+			if_block4.c();
 			t7 = space();
-			if (if_block4) if_block4.c();
-			t8 = space();
 			if (if_block5) if_block5.c();
+			t8 = space();
+			if (if_block6) if_block6.c();
 			attr(link, "rel", "stylesheet");
 			attr(link, "href", "/~/abfab/pastanaga/pastanaga.css");
 			if (img.src !== (img_src_value = "/~/abfab/abfab.svg")) attr(img, "src", img_src_value);
@@ -556,9 +654,9 @@ function create_fragment(ctx) {
 			attr(ul, "class", "svelte-18wrgxe");
 			attr(header, "class", "svelte-18wrgxe");
 			attr(div0, "class", "editor svelte-18wrgxe");
-			attr(div1, "class", div1_class_value = "editor-container " + (/*play*/ ctx[4] ? "half" : "") + " svelte-18wrgxe");
-			toggle_class(div1, "with-nav", /*$showNavigation*/ ctx[8]);
-			toggle_class(div1, "has-error", /*hasError*/ ctx[2]);
+			attr(div1, "class", div1_class_value = "editor-container " + (/*play*/ ctx[5] ? "half" : "") + " svelte-18wrgxe");
+			toggle_class(div1, "with-nav", /*$showNavigation*/ ctx[9]);
+			toggle_class(div1, "has-error", /*hasError*/ ctx[3]);
 			attr(main, "class", "svelte-18wrgxe");
 		},
 		m(target, anchor) {
@@ -571,39 +669,38 @@ function create_fragment(ctx) {
 			if (if_block0) if_block0.m(ul, null);
 			append(ul, t2);
 			if (if_block1) if_block1.m(ul, null);
-			append(ul, t3);
-			append(ul, li);
-			mount_component(afbutton, li, null);
-			insert(target, t4, anchor);
+			insert(target, t3, anchor);
 			insert(target, main, anchor);
 			mount_component(toolbar, main, null);
-			append(main, t5);
+			append(main, t4);
 			if (if_block2) if_block2.m(main, null);
-			append(main, t6);
+			append(main, t5);
 			append(main, div1);
 			append(div1, div0);
+			if (if_block3) if_block3.m(div0, null);
+			append(div0, t6);
 			if_blocks[current_block_type_index].m(div0, null);
 			append(div1, t7);
-			if (if_block4) if_block4.m(div1, null);
+			if (if_block5) if_block5.m(div1, null);
 			append(main, t8);
-			if (if_block5) if_block5.m(main, null);
+			if (if_block6) if_block6.m(main, null);
 			current = true;
 		},
 		p(ctx, [dirty]) {
-			if (!/*useVim*/ ctx[9]) if_block0.p(ctx, dirty);
+			if (!/*useVim*/ ctx[10]) if_block0.p(ctx, dirty);
 
-			if (/*play*/ ctx[4]) {
+			if (/*type*/ ctx[2] === "File") {
 				if (if_block1) {
 					if_block1.p(ctx, dirty);
 
-					if (dirty & /*play*/ 16) {
+					if (dirty & /*type*/ 4) {
 						transition_in(if_block1, 1);
 					}
 				} else {
-					if_block1 = create_if_block_5(ctx);
+					if_block1 = create_if_block_6(ctx);
 					if_block1.c();
 					transition_in(if_block1, 1);
-					if_block1.m(ul, t3);
+					if_block1.m(ul, null);
 				}
 			} else if (if_block1) {
 				group_outros();
@@ -615,20 +712,16 @@ function create_fragment(ctx) {
 				check_outros();
 			}
 
-			const afbutton_changes = {};
-			if (dirty & /*play*/ 16) afbutton_changes.active = /*play*/ ctx[4];
-			afbutton.$set(afbutton_changes);
-
-			if (/*$showNavigation*/ ctx[8]) {
+			if (/*$showNavigation*/ ctx[9]) {
 				if (if_block2) {
-					if (dirty & /*$showNavigation*/ 256) {
+					if (dirty & /*$showNavigation*/ 512) {
 						transition_in(if_block2, 1);
 					}
 				} else {
-					if_block2 = create_if_block_4(ctx);
+					if_block2 = create_if_block_5(ctx);
 					if_block2.c();
 					transition_in(if_block2, 1);
-					if_block2.m(main, t6);
+					if_block2.m(main, t5);
 				}
 			} else if (if_block2) {
 				group_outros();
@@ -640,55 +733,41 @@ function create_fragment(ctx) {
 				check_outros();
 			}
 
-			if_block3.p(ctx, dirty);
-
-			if (/*hasError*/ ctx[2]) {
-				if (if_block4) {
-					if_block4.p(ctx, dirty);
-
-					if (dirty & /*hasError*/ 4) {
-						transition_in(if_block4, 1);
+			if (/*type*/ ctx[2] === "Directory") {
+				if (if_block3) {
+					if (dirty & /*type*/ 4) {
+						transition_in(if_block3, 1);
 					}
 				} else {
-					if_block4 = create_if_block_1(ctx);
-					if_block4.c();
-					transition_in(if_block4, 1);
-					if_block4.m(div1, null);
+					if_block3 = create_if_block_4(ctx);
+					if_block3.c();
+					transition_in(if_block3, 1);
+					if_block3.m(div0, t6);
 				}
-			} else if (if_block4) {
+			} else if (if_block3) {
 				group_outros();
 
-				transition_out(if_block4, 1, 1, () => {
-					if_block4 = null;
+				transition_out(if_block3, 1, 1, () => {
+					if_block3 = null;
 				});
 
 				check_outros();
 			}
 
-			if (!current || dirty & /*play*/ 16 && div1_class_value !== (div1_class_value = "editor-container " + (/*play*/ ctx[4] ? "half" : "") + " svelte-18wrgxe")) {
-				attr(div1, "class", div1_class_value);
-			}
+			if_block4.p(ctx, dirty);
 
-			if (dirty & /*play, $showNavigation*/ 272) {
-				toggle_class(div1, "with-nav", /*$showNavigation*/ ctx[8]);
-			}
-
-			if (dirty & /*play, hasError*/ 20) {
-				toggle_class(div1, "has-error", /*hasError*/ ctx[2]);
-			}
-
-			if (/*play*/ ctx[4]) {
+			if (/*hasError*/ ctx[3]) {
 				if (if_block5) {
 					if_block5.p(ctx, dirty);
 
-					if (dirty & /*play*/ 16) {
+					if (dirty & /*hasError*/ 8) {
 						transition_in(if_block5, 1);
 					}
 				} else {
-					if_block5 = create_if_block(ctx);
+					if_block5 = create_if_block_1(ctx);
 					if_block5.c();
 					transition_in(if_block5, 1);
-					if_block5.m(main, null);
+					if_block5.m(div1, null);
 				}
 			} else if (if_block5) {
 				group_outros();
@@ -699,28 +778,63 @@ function create_fragment(ctx) {
 
 				check_outros();
 			}
+
+			if (!current || dirty & /*play*/ 32 && div1_class_value !== (div1_class_value = "editor-container " + (/*play*/ ctx[5] ? "half" : "") + " svelte-18wrgxe")) {
+				attr(div1, "class", div1_class_value);
+			}
+
+			if (dirty & /*play, $showNavigation*/ 544) {
+				toggle_class(div1, "with-nav", /*$showNavigation*/ ctx[9]);
+			}
+
+			if (dirty & /*play, hasError*/ 40) {
+				toggle_class(div1, "has-error", /*hasError*/ ctx[3]);
+			}
+
+			if (/*play*/ ctx[5]) {
+				if (if_block6) {
+					if_block6.p(ctx, dirty);
+
+					if (dirty & /*play*/ 32) {
+						transition_in(if_block6, 1);
+					}
+				} else {
+					if_block6 = create_if_block(ctx);
+					if_block6.c();
+					transition_in(if_block6, 1);
+					if_block6.m(main, null);
+				}
+			} else if (if_block6) {
+				group_outros();
+
+				transition_out(if_block6, 1, 1, () => {
+					if_block6 = null;
+				});
+
+				check_outros();
+			}
 		},
 		i(local) {
 			if (current) return;
 			transition_in(if_block0);
 			transition_in(if_block1);
-			transition_in(afbutton.$$.fragment, local);
 			transition_in(toolbar.$$.fragment, local);
 			transition_in(if_block2);
 			transition_in(if_block3);
 			transition_in(if_block4);
 			transition_in(if_block5);
+			transition_in(if_block6);
 			current = true;
 		},
 		o(local) {
 			transition_out(if_block0);
 			transition_out(if_block1);
-			transition_out(afbutton.$$.fragment, local);
 			transition_out(toolbar.$$.fragment, local);
 			transition_out(if_block2);
 			transition_out(if_block3);
 			transition_out(if_block4);
 			transition_out(if_block5);
+			transition_out(if_block6);
 			current = false;
 		},
 		d(detaching) {
@@ -729,14 +843,14 @@ function create_fragment(ctx) {
 			if (detaching) detach(header);
 			if (if_block0) if_block0.d();
 			if (if_block1) if_block1.d();
-			destroy_component(afbutton);
-			if (detaching) detach(t4);
+			if (detaching) detach(t3);
 			if (detaching) detach(main);
 			destroy_component(toolbar);
 			if (if_block2) if_block2.d();
+			if (if_block3) if_block3.d();
 			if_blocks[current_block_type_index].d();
-			if (if_block4) if_block4.d();
 			if (if_block5) if_block5.d();
+			if (if_block6) if_block6.d();
 		}
 	};
 }
@@ -748,7 +862,7 @@ function updateErrors() {
 function instance($$self, $$props, $$invalidate) {
 	let hasError;
 	let $showNavigation;
-	component_subscribe($$self, showNavigation, $$value => $$invalidate(8, $showNavigation = $$value));
+	component_subscribe($$self, showNavigation, $$value => $$invalidate(9, $showNavigation = $$value));
 	let { context } = $$props;
 	let _context = "";
 	let error;
@@ -762,8 +876,8 @@ function instance($$self, $$props, $$invalidate) {
 	let codemirror;
 
 	function togglePlay() {
-		$$invalidate(5, componentPath = location.pathname.replace("/@edit", ""));
-		$$invalidate(4, play = !play);
+		$$invalidate(6, componentPath = location.pathname.replace("/@edit", ""));
+		$$invalidate(5, play = !play);
 		window.dispatchEvent(new Event("resize"));
 	}
 
@@ -831,40 +945,48 @@ function instance($$self, $$props, $$invalidate) {
 	function codemirroreditor_binding($$value) {
 		binding_callbacks[$$value ? "unshift" : "push"](() => {
 			codemirror = $$value;
-			$$invalidate(7, codemirror);
+			$$invalidate(8, codemirror);
 		});
 	}
 
 	function viewer_1_binding($$value) {
 		binding_callbacks[$$value ? "unshift" : "push"](() => {
 			viewer = $$value;
-			$$invalidate(6, viewer);
+			$$invalidate(7, viewer);
 		});
 	}
 
 	$$self.$$set = $$props => {
-		if ("context" in $$props) $$invalidate(15, context = $$props.context);
+		if ("context" in $$props) $$invalidate(16, context = $$props.context);
 	};
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*context, type*/ 98304) {
+		if ($$self.$$.dirty & /*context, type*/ 65540) {
 			$: {
+				let obj;
+
 				try {
-					const obj = JSON.parse(context);
-					$$invalidate(16, type = obj.type);
-					$$invalidate(3, _context = type === "Content" ? JSON.stringify(obj.data) : context);
+					obj = JSON.parse(context);
+					$$invalidate(2, type = obj.type_name);
 				} catch(e) {
-					$$invalidate(16, type = "File");
-					$$invalidate(3, _context = context);
+					$$invalidate(2, type = "File");
+				}
+
+				if (type === "File") {
+					$$invalidate(4, _context = context);
+				} else if (type === "Content") {
+					$$invalidate(4, _context = JSON.stringify(obj.data));
+				} else if (type === "Directory") {
+					$$invalidate(4, _context = "{\"views\": {}}");
 				}
 			}
 		}
 
 		if ($$self.$$.dirty & /*error, warnings*/ 3) {
-			$: $$invalidate(2, hasError = !!error || warnings.length > 0);
+			$: $$invalidate(3, hasError = !!error || warnings.length > 0);
 		}
 
-		if ($$self.$$.dirty & /*hasError*/ 4) {
+		if ($$self.$$.dirty & /*hasError*/ 8) {
 			$: if (hasError) {
 				updateErrors();
 			}
@@ -874,6 +996,7 @@ function instance($$self, $$props, $$invalidate) {
 	return [
 		error,
 		warnings,
+		type,
 		hasError,
 		_context,
 		play,
@@ -888,7 +1011,6 @@ function instance($$self, $$props, $$invalidate) {
 		discardErrors,
 		refreshViewer,
 		context,
-		type,
 		codemirroreditor_binding,
 		viewer_1_binding
 	];
@@ -898,7 +1020,7 @@ class Component extends SvelteComponent {
 	constructor(options) {
 		super();
 		if (!document.getElementById("svelte-18wrgxe-style")) add_css();
-		init(this, options, instance, create_fragment, safe_not_equal, { context: 15 });
+		init(this, options, instance, create_fragment, safe_not_equal, { context: 16 });
 	}
 }
 

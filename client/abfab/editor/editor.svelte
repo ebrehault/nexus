@@ -2,6 +2,7 @@
     import VimEditor from './vim.svelte';
     import CodeMirrorEditor from './codemirror.svelte';
     import Viewer from './viewer.svelte';
+    import Add from './add.svelte';
     import AFButton from '../ui/button.svelte';
     import Toolbar from './toolbar.svelte';
     import Navigation from './navigation.svelte';
@@ -23,13 +24,19 @@
     let codemirror;
 
     $: {
+        let obj;
         try {
-            const obj = JSON.parse(context);
-            type = obj.type;
-            _context = type === 'Content' ? JSON.stringify(obj.data) : context;
+            obj = JSON.parse(context);
+            type = obj.type_name;
         } catch (e) {
             type = 'File';
+        }
+        if (type === 'File') {
             _context = context;
+        } else if (type === 'Content') {
+            _context = JSON.stringify(obj.data)
+        } else if (type === 'Directory') {
+            _context = '{"views": {}}';
         }
     }
     $: hasError = !!error || warnings.length > 0;
@@ -115,16 +122,18 @@
                 on:click={triggerSave}/>
         </li>
         {/if}
-        {#if play}
-        <li>
-            <AFButton aspect="basic" icon="refresh" label="Refresh" size="small"
-                on:click={refreshViewer}/>
-        </li>
-        {/if}
-        <li>
-            <AFButton kind="primary" aspect="basic" icon="play" label="Play" size="small" active={play}
+        {#if type === 'File'}
+            {#if play}
+            <li>
+                <AFButton aspect="basic" icon="refresh" label="Refresh" size="small"
+                    on:click={refreshViewer}/>
+            </li>
+            {/if}
+            <li>
+                <AFButton kind="primary" aspect="basic" icon="play" label="Play" size="small" active={play}
                 on:click={togglePlay}/>
-        </li>
+            </li>
+        {/if}
     </ul>
 </header>
 <main>
@@ -134,10 +143,13 @@
     {/if}
     <div class="editor-container {play ? 'half' : ''}" class:with-nav={$showNavigation} class:has-error={hasError}>
         <div class="editor">
+            {#if type === 'Directory'}
+                <Add></Add>
+            {/if}
             {#if useVim}
-            <VimEditor context={_context} on:save={save}></VimEditor>
+                <VimEditor context={_context} on:save={save}></VimEditor>
             {:else}
-            <CodeMirrorEditor bind:this={codemirror} context={_context} on:save={save}></CodeMirrorEditor>
+                <CodeMirrorEditor bind:this={codemirror} context={_context} on:save={save}></CodeMirrorEditor>
             {/if}
         </div>
         {#if hasError }

@@ -52,7 +52,7 @@
         } else {
             const response = await API.get(`${path}/@basic`);
             const basicData = await response.json();
-            if (basicData.type === 'Content') {
+            if (basicData.type_name === 'Content') {
                 const module = await import(getRealPath(basicData.view));
                 component = module.default;
                 context = basicData.data;
