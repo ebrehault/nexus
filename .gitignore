@@ -1,4 +1,5 @@
 /node_modules
+/libs
 *.pyc
 __pycache__
 *.egg-info
