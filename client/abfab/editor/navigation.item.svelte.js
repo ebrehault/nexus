@@ -23,7 +23,7 @@ import {
 	toggle_class,
 	transition_in,
 	transition_out
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
 import { getTreeItem, updateTreeItem } from "./editor.js";
 import AFIcon from "/~/abfab/ui/icon.svelte";

@@ -65,7 +65,7 @@
         if (isSvelte) {
             try {
                 const result = compile(source, {
-                    sveltePath: ABFAB_ROOT + '/node_modules/svelte',
+                    sveltePath: ABFAB_ROOT + '/libs/svelte',
                 });
                 error = undefined;
                 js = result.js;

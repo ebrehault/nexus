@@ -18,7 +18,7 @@ import {
 	space,
 	transition_in,
 	transition_out
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
 import { deleteFile, EditorStore } from "./editor.js";
 import NavItem from "./navigation.item.svelte";

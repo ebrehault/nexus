@@ -1,4 +1,4 @@
-import { writable, derived, get } from '/~/node_modules/svelte/store';
+import { writable, derived, get } from '/~/libs/svelte/store';
 import { getRealPath, API, redirectToLogin } from '/~/abfab/core.js';
 
 export const EditorStore = writable({

@@ -33,30 +33,30 @@
     }
 
     async function loadPlugins() {
-        await import('/~/node_modules/codemirror/addon/mode/simple.js');
-        await import('/~/node_modules/codemirror/addon/mode/multiplex.js');
-        await import('/~/node_modules/codemirror/mode/javascript/javascript.js');
-        await import('/~/node_modules/codemirror/mode/handlebars/handlebars.js');
-        await import('/~/node_modules/codemirror/mode/htmlmixed/htmlmixed.js');
-        await import('/~/node_modules/codemirror/mode/xml/xml.js');
-        await import('/~/node_modules/codemirror/mode/css/css.js');
-        await import('/~/node_modules/codemirror/mode/markdown/markdown.js');
-        await import('/~/node_modules/codemirror/addon/edit/closebrackets.js');
-        await import('/~/node_modules/codemirror/addon/edit/closetag.js');
-        await import('/~/node_modules/codemirror/addon/edit/continuelist.js');
-        await import('/~/node_modules/codemirror/addon/comment/comment.js');
-        await import('/~/node_modules/codemirror/addon/fold/foldcode.js');
-        await import('/~/node_modules/codemirror/addon/fold/foldgutter.js');
-        await import('/~/node_modules/codemirror/addon/fold/brace-fold.js');
-        await import('/~/node_modules/codemirror/addon/fold/xml-fold.js');
-        await import('/~/node_modules/codemirror/addon/fold/indent-fold.js');
-        await import('/~/node_modules/codemirror/addon/fold/markdown-fold.js');
-        await import('/~/node_modules/codemirror/addon/fold/comment-fold.js');
+        await import('/~/libs/codemirror/addon/mode/simple.js');
+        await import('/~/libs/codemirror/addon/mode/multiplex.js');
+        await import('/~/libs/codemirror/mode/javascript/javascript.js');
+        await import('/~/libs/codemirror/mode/handlebars/handlebars.js');
+        await import('/~/libs/codemirror/mode/htmlmixed/htmlmixed.js');
+        await import('/~/libs/codemirror/mode/xml/xml.js');
+        await import('/~/libs/codemirror/mode/css/css.js');
+        await import('/~/libs/codemirror/mode/markdown/markdown.js');
+        await import('/~/libs/codemirror/addon/edit/closebrackets.js');
+        await import('/~/libs/codemirror/addon/edit/closetag.js');
+        await import('/~/libs/codemirror/addon/edit/continuelist.js');
+        await import('/~/libs/codemirror/addon/comment/comment.js');
+        await import('/~/libs/codemirror/addon/fold/foldcode.js');
+        await import('/~/libs/codemirror/addon/fold/foldgutter.js');
+        await import('/~/libs/codemirror/addon/fold/brace-fold.js');
+        await import('/~/libs/codemirror/addon/fold/xml-fold.js');
+        await import('/~/libs/codemirror/addon/fold/indent-fold.js');
+        await import('/~/libs/codemirror/addon/fold/markdown-fold.js');
+        await import('/~/libs/codemirror/addon/fold/comment-fold.js');
     }
 
     onMount(async () => {
         if (!window.CodeMirror) {
-            await import('/~/node_modules/codemirror/lib/codemirror.js');
+            await import('/~/libs/codemirror/lib/codemirror.js');
             await loadPlugins();
             init();
         }
@@ -112,8 +112,8 @@
 </script>
 <textarea bind:this={textarea}></textarea>
 <svelte:head>
-    <link rel="stylesheet" href="/~/node_modules/codemirror/lib/codemirror.css">
-    <link rel="stylesheet" href="/~/node_modules/codemirror/theme/blackboard.css">
+    <link rel="stylesheet" href="/~/libs/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/~/libs/codemirror/theme/blackboard.css">
 </svelte:head>
 <style>
     textarea {

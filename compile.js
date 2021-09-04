@@ -12,7 +12,7 @@ fs.readFile(source, 'utf8', (err, data) => {
         return;
     }
     const { js } = svelte.compile(data, {
-        sveltePath: ABFAB_ROOT + '/node_modules/svelte',
+        sveltePath: ABFAB_ROOT + '/libs/svelte',
     });
     if (js.code) {
         const code = js.code.replace(RE, 'from "$1/index.mjs";');

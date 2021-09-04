@@ -10,7 +10,7 @@ import {
     safe_not_equal,
     set_data,
     text,
-} from '../node_modules/svelte/internal/index.mjs';
+} from '../libs/svelte/internal/index.mjs';
 
 function create_fragment(ctx) {
     let h1;

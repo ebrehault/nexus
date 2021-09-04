@@ -23,7 +23,7 @@ import {
 	toggle_class,
 	transition_in,
 	transition_out
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
 import VimEditor from "./vim.svelte";
 import CodeMirrorEditor from "./codemirror.svelte";
@@ -33,8 +33,8 @@ import AFButton from "../ui/button.svelte";
 import Toolbar from "./toolbar.svelte";
 import Navigation from "./navigation.svelte";
 import { showNavigation, loadTree, saveFile } from "./editor.js";
-import { onMount } from "/~/node_modules/svelte/index.mjs";
-import { compile } from "/~/node_modules/svelte/compiler.mjs";
+import { onMount } from "/~/libs/svelte/index.mjs";
+import { compile } from "/~/libs/svelte/compiler.mjs";
 
 function add_css() {
 	var style = element("style");
@@ -896,10 +896,7 @@ function instance($$self, $$props, $$invalidate) {
 
 		if (isSvelte) {
 			try {
-				const result = compile(source, {
-					sveltePath: ABFAB_ROOT + "/node_modules/svelte"
-				});
-
+				const result = compile(source, { sveltePath: ABFAB_ROOT + "/libs/svelte" });
 				$$invalidate(0, error = undefined);
 				js = result.js;
 				const warningsFixed = result.warnings.length === 0 && warnings.length > 0;

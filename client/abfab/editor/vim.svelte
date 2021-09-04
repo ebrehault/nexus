@@ -1,7 +1,7 @@
 <script>
     export let context;
 
-    import { VimWasm, checkBrowserCompatibility } from '/~/node_modules/vim-wasm/vimwasm.js';
+    import { VimWasm, checkBrowserCompatibility } from '/~/libs/vim-wasm/vimwasm.js';
     import { EditorStore } from './editor.js';
     import { createEventDispatcher } from 'svelte';
     
@@ -40,7 +40,7 @@
         vim = new VimWasm({
             canvas: screenCanvasElement,
             input: document.getElementById('vim-input'),
-            workerScriptPath: '/~/node_modules/vim-wasm/vim.js',
+            workerScriptPath: '/~/libs/vim-wasm/vim.js',
         });
     
         // Handle drag and drop

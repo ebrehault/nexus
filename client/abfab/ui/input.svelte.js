@@ -18,9 +18,9 @@ import {
 	space,
 	text,
 	toggle_class
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
-import { onMount } from "/~/node_modules/svelte/index.mjs";
+import { onMount } from "/~/libs/svelte/index.mjs";
 
 function create_if_block(ctx) {
 	let small;

@@ -13,7 +13,7 @@ import {
 	safe_not_equal,
 	svg_element,
 	xlink_attr
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
 function create_fragment(ctx) {
 	let pa_icon;

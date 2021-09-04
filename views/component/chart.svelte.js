@@ -10,9 +10,9 @@ import {
 	insert,
 	noop,
 	safe_not_equal
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
-import { onMount } from "/~/node_modules/svelte/index.mjs";
+import { onMount } from "/~/libs/svelte/index.mjs";
 import "https://unpkg.com/d3@7.0.0";
 
 function add_css() {

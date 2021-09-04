@@ -18,7 +18,7 @@ import {
 	space,
 	transition_in,
 	transition_out
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
 import AFInput from "/~/abfab/ui/input.svelte";
 import AFRadio from "/~/abfab/ui/radio.svelte";
@@ -28,14 +28,14 @@ import { navigateTo } from "../core.js";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-1p9ajj1-style";
-	style.textContent = "main.svelte-1p9ajj1.svelte-1p9ajj1{display:flex}main.svelte-1p9ajj1>div.svelte-1p9ajj1{padding:0 1em 1em;width:50%}.drop-zone.svelte-1p9ajj1.svelte-1p9ajj1{position:relative;border:1px dashed var(--color-neutral-secondary-default);text-align:center;height:100%}.upload-field.svelte-1p9ajj1.svelte-1p9ajj1{display:block;width:100%;height:100%;opacity:0;position:absolute;top:0}.add.svelte-1p9ajj1.svelte-1p9ajj1{display:flex}.add.svelte-1p9ajj1 .pa-field{width:100%;margin-bottom:0}";
+	style.id = "svelte-12qli9o-style";
+	style.textContent = "main.svelte-12qli9o.svelte-12qli9o{display:flex}main.svelte-12qli9o>div.svelte-12qli9o{padding:0 0 1em 1em;width:50%}.drop-zone.svelte-12qli9o.svelte-12qli9o{position:relative;border:1px dashed var(--color-neutral-secondary-default);text-align:center;height:100%}.upload-field.svelte-12qli9o.svelte-12qli9o{display:block;width:100%;height:100%;opacity:0;position:absolute;top:0}.add.svelte-12qli9o.svelte-12qli9o{display:flex;padding-top:1em}.add.svelte-12qli9o .pa-field{width:100%;margin-bottom:0}";
 	append(document.head, style);
 }
 
 function create_fragment(ctx) {
 	let main;
-	let div1;
+	let div2;
 	let afradio0;
 	let updating_group;
 	let t0;
@@ -45,14 +45,15 @@ function create_fragment(ctx) {
 	let afradio2;
 	let updating_group_2;
 	let t2;
-	let div0;
+	let div1;
 	let afinput;
 	let updating_value;
 	let t3;
+	let div0;
 	let afbutton;
 	let t4;
+	let div4;
 	let div3;
-	let div2;
 	let p;
 	let t6;
 	let input;
@@ -133,52 +134,54 @@ function create_fragment(ctx) {
 	return {
 		c() {
 			main = element("main");
-			div1 = element("div");
+			div2 = element("div");
 			create_component(afradio0.$$.fragment);
 			t0 = space();
 			create_component(afradio1.$$.fragment);
 			t1 = space();
 			create_component(afradio2.$$.fragment);
 			t2 = space();
-			div0 = element("div");
+			div1 = element("div");
 			create_component(afinput.$$.fragment);
 			t3 = space();
+			div0 = element("div");
 			create_component(afbutton.$$.fragment);
 			t4 = space();
+			div4 = element("div");
 			div3 = element("div");
-			div2 = element("div");
 			p = element("p");
 			p.textContent = "or drag & drop here";
 			t6 = space();
 			input = element("input");
-			attr(div0, "class", "add svelte-1p9ajj1");
-			attr(div1, "class", "svelte-1p9ajj1");
-			attr(input, "class", "upload-field svelte-1p9ajj1");
+			attr(div1, "class", "add svelte-12qli9o");
+			attr(div2, "class", "svelte-12qli9o");
+			attr(input, "class", "upload-field svelte-12qli9o");
 			attr(input, "type", "file");
 			input.multiple = true;
-			attr(div2, "class", "drop-zone svelte-1p9ajj1");
-			attr(div3, "class", "svelte-1p9ajj1");
-			attr(main, "class", "svelte-1p9ajj1");
+			attr(div3, "class", "drop-zone svelte-12qli9o");
+			attr(div4, "class", "svelte-12qli9o");
+			attr(main, "class", "svelte-12qli9o");
 		},
 		m(target, anchor) {
 			insert(target, main, anchor);
-			append(main, div1);
-			mount_component(afradio0, div1, null);
-			append(div1, t0);
-			mount_component(afradio1, div1, null);
-			append(div1, t1);
-			mount_component(afradio2, div1, null);
-			append(div1, t2);
+			append(main, div2);
+			mount_component(afradio0, div2, null);
+			append(div2, t0);
+			mount_component(afradio1, div2, null);
+			append(div2, t1);
+			mount_component(afradio2, div2, null);
+			append(div2, t2);
+			append(div2, div1);
+			mount_component(afinput, div1, null);
+			append(div1, t3);
 			append(div1, div0);
-			mount_component(afinput, div0, null);
-			append(div0, t3);
 			mount_component(afbutton, div0, null);
 			append(main, t4);
-			append(main, div3);
-			append(div3, div2);
-			append(div2, p);
-			append(div2, t6);
-			append(div2, input);
+			append(main, div4);
+			append(div4, div3);
+			append(div3, p);
+			append(div3, t6);
+			append(div3, input);
 			/*input_binding*/ ctx[9](input);
 			current = true;
 
@@ -345,7 +348,7 @@ function instance($$self, $$props, $$invalidate) {
 class Component extends SvelteComponent {
 	constructor(options) {
 		super();
-		if (!document.getElementById("svelte-1p9ajj1-style")) add_css();
+		if (!document.getElementById("svelte-12qli9o-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, {});
 	}
 }

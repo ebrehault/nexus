@@ -11,17 +11,12 @@ import {
 	insert,
 	noop,
 	safe_not_equal
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
 const { document: document_1 } = globals;
-
-import {
-	VimWasm,
-	checkBrowserCompatibility
-} from "/~/node_modules/vim-wasm/vimwasm.js";
-
+import { VimWasm, checkBrowserCompatibility } from "/~/libs/vim-wasm/vimwasm.js";
 import { EditorStore } from "./editor.js";
-import { createEventDispatcher } from "/~/node_modules/svelte/index.mjs";
+import { createEventDispatcher } from "/~/libs/svelte/index.mjs";
 
 function add_css() {
 	var style = element("style");
@@ -77,7 +72,7 @@ function instance($$self, $$props, $$invalidate) {
 		$$invalidate(1, vim = new VimWasm({
 				canvas: screenCanvasElement,
 				input: document.getElementById("vim-input"),
-				workerScriptPath: "/~/node_modules/vim-wasm/vim.js"
+				workerScriptPath: "/~/libs/vim-wasm/vim.js"
 			}));
 
 		// Handle drag and drop

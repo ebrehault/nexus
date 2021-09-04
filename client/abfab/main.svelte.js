@@ -13,11 +13,11 @@ import {
 	safe_not_equal,
 	transition_in,
 	transition_out
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
 import { AbFabStore, getRealPath, API } from "/~/abfab/core.js";
-import { onDestroy } from "/~/node_modules/svelte/index.mjs";
-import { derived } from "/~/node_modules/svelte/store/index.mjs";
+import { onDestroy } from "/~/libs/svelte/index.mjs";
+import { derived } from "/~/libs/svelte/store/index.mjs";
 
 function create_fragment(ctx) {
 	let switch_instance;

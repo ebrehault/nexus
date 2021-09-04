@@ -11,10 +11,10 @@ import {
 	noop,
 	safe_not_equal,
 	space
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
-import { onMount } from "/~/node_modules/svelte/index.mjs";
-import { createEventDispatcher } from "/~/node_modules/svelte/index.mjs";
+import { onMount } from "/~/libs/svelte/index.mjs";
+import { createEventDispatcher } from "/~/libs/svelte/index.mjs";
 
 function add_css() {
 	var style = element("style");
@@ -37,9 +37,9 @@ function create_fragment(ctx) {
 			link1 = element("link");
 			attr(textarea_1, "class", "svelte-11exmak");
 			attr(link0, "rel", "stylesheet");
-			attr(link0, "href", "/~/node_modules/codemirror/lib/codemirror.css");
+			attr(link0, "href", "/~/libs/codemirror/lib/codemirror.css");
 			attr(link1, "rel", "stylesheet");
-			attr(link1, "href", "/~/node_modules/codemirror/theme/blackboard.css");
+			attr(link1, "href", "/~/libs/codemirror/theme/blackboard.css");
 		},
 		m(target, anchor) {
 			insert(target, textarea_1, anchor);
@@ -62,25 +62,25 @@ function create_fragment(ctx) {
 }
 
 async function loadPlugins() {
-	await import("/~/node_modules/codemirror/addon/mode/simple.js");
-	await import("/~/node_modules/codemirror/addon/mode/multiplex.js");
-	await import("/~/node_modules/codemirror/mode/javascript/javascript.js");
-	await import("/~/node_modules/codemirror/mode/handlebars/handlebars.js");
-	await import("/~/node_modules/codemirror/mode/htmlmixed/htmlmixed.js");
-	await import("/~/node_modules/codemirror/mode/xml/xml.js");
-	await import("/~/node_modules/codemirror/mode/css/css.js");
-	await import("/~/node_modules/codemirror/mode/markdown/markdown.js");
-	await import("/~/node_modules/codemirror/addon/edit/closebrackets.js");
-	await import("/~/node_modules/codemirror/addon/edit/closetag.js");
-	await import("/~/node_modules/codemirror/addon/edit/continuelist.js");
-	await import("/~/node_modules/codemirror/addon/comment/comment.js");
-	await import("/~/node_modules/codemirror/addon/fold/foldcode.js");
-	await import("/~/node_modules/codemirror/addon/fold/foldgutter.js");
-	await import("/~/node_modules/codemirror/addon/fold/brace-fold.js");
-	await import("/~/node_modules/codemirror/addon/fold/xml-fold.js");
-	await import("/~/node_modules/codemirror/addon/fold/indent-fold.js");
-	await import("/~/node_modules/codemirror/addon/fold/markdown-fold.js");
-	await import("/~/node_modules/codemirror/addon/fold/comment-fold.js");
+	await import("/~/libs/codemirror/addon/mode/simple.js");
+	await import("/~/libs/codemirror/addon/mode/multiplex.js");
+	await import("/~/libs/codemirror/mode/javascript/javascript.js");
+	await import("/~/libs/codemirror/mode/handlebars/handlebars.js");
+	await import("/~/libs/codemirror/mode/htmlmixed/htmlmixed.js");
+	await import("/~/libs/codemirror/mode/xml/xml.js");
+	await import("/~/libs/codemirror/mode/css/css.js");
+	await import("/~/libs/codemirror/mode/markdown/markdown.js");
+	await import("/~/libs/codemirror/addon/edit/closebrackets.js");
+	await import("/~/libs/codemirror/addon/edit/closetag.js");
+	await import("/~/libs/codemirror/addon/edit/continuelist.js");
+	await import("/~/libs/codemirror/addon/comment/comment.js");
+	await import("/~/libs/codemirror/addon/fold/foldcode.js");
+	await import("/~/libs/codemirror/addon/fold/foldgutter.js");
+	await import("/~/libs/codemirror/addon/fold/brace-fold.js");
+	await import("/~/libs/codemirror/addon/fold/xml-fold.js");
+	await import("/~/libs/codemirror/addon/fold/indent-fold.js");
+	await import("/~/libs/codemirror/addon/fold/markdown-fold.js");
+	await import("/~/libs/codemirror/addon/fold/comment-fold.js");
 }
 
 function instance($$self, $$props, $$invalidate) {
@@ -106,7 +106,7 @@ function instance($$self, $$props, $$invalidate) {
 
 	onMount(async () => {
 		if (!window.CodeMirror) {
-			await import("/~/node_modules/codemirror/lib/codemirror.js");
+			await import("/~/libs/codemirror/lib/codemirror.js");
 			await loadPlugins();
 			init();
 		}

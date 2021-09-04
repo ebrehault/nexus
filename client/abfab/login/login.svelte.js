@@ -19,7 +19,7 @@ import {
 	text,
 	transition_in,
 	transition_out
-} from "/~/node_modules/svelte/internal/index.mjs";
+} from "/~/libs/svelte/internal/index.mjs";
 
 import AFInput from "/~/abfab/ui/input.svelte";
 import AFButton from "/~/abfab/ui/button.svelte";
