@@ -7,9 +7,9 @@ applications:
 databases:
     db:
         storage: postgresql
-        dsn: postgresql://guillotina:secret@localhost:5432/guillotina
+        dsn: postgresql://guillotina:guillotina@postgres:5432/guillotina
         read_only: false
-host: localhost
+host: 0.0.0.0
 port: 8080
 root_user:
     password: root
