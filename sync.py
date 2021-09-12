@@ -17,7 +17,8 @@ def save_object(path, data):
         get_parent_url(path),
         json=data,
         headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
-        auth=AUTH)
+        auth=AUTH,
+        verify=False)
     if not res.ok:
         logging.error("{}: {}".format(res.status_code, path))
 
@@ -26,7 +27,8 @@ def update_object(path, data):
         get_url(path),
         json=data,
         headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
-        auth=AUTH)
+        auth=AUTH,
+        verify=False)
     if not res.ok:
         logging.error("{}: {}".format(res.status_code, path))
 
@@ -45,6 +47,7 @@ def upload_file(remote_content_path, local_content_path, file_id):
                 "X-UPLOAD-FILENAME": file_id
             },
             auth=AUTH,
+            verify=False,
         )
         chunk = source_file.read(CHUNK_SIZE)
         while chunk:
@@ -57,6 +60,7 @@ def upload_file(remote_content_path, local_content_path, file_id):
                     "X-UPLOAD-FILENAME": file_id
                 },
                 auth=AUTH,
+                verify=False,
             )
             offset += CHUNK_SIZE
             chunk = source_file.read(CHUNK_SIZE)
@@ -105,12 +109,13 @@ def compile_svelte(path):
             os.system('node compile.js {}'.format(path))
 
 def delete_remote(path):
-    requests.delete(get_url(path), auth=AUTH)
+    requests.delete(get_url(path), auth=AUTH, verify=False)
 
 def download_file(obj, root):
     res = requests.get(
         obj['url'] + "/@edit-data",
-        auth=AUTH)
+        auth=AUTH,
+        verify=False)
     with open(os.path.join(root, obj['path'][1:]), 'wb') as f:
         f.write(res.content)
 
@@ -118,7 +123,8 @@ def download_folder(path, root):
     res = requests.get(
         get_url(path) + "/@allfiles",
         headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
-        auth=AUTH)
+        auth=AUTH,
+        verify=False)
     for item in res.json():
         if item['type'] == 'File' and (not args.svelteOnly or item['path'].endswith('.svelte')):
             download_file(item, root)

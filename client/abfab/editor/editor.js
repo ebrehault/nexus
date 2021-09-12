@@ -11,7 +11,13 @@ export const loadTree = async () => {
     const response = await API.get('/~/@tree');
     if (response.ok) {
         const currentLocation = window.location.pathname.replace('/@edit', '');
-        const tree = await response.json();
+        const tree = [
+            {
+                type: 'Directory',
+                path: '/',
+                children: await response.json(),
+            },
+        ];
         const dirs = [];
         const mapTree = (item) => {
             if (item.type === 'Directory') {
@@ -19,7 +25,7 @@ export const loadTree = async () => {
             }
             const itemPath = getRealPath(item.path);
             return {
-                name: item.path.split('/').pop(),
+                name: item.path === '/' ? '~' : item.path.split('/').pop(),
                 path: itemPath,
                 type: item.type,
                 children: !!item.children

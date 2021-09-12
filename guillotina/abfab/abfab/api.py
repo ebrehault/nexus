@@ -2,7 +2,7 @@ from guillotina import configure
 from guillotina.component import get_multi_adapter
 from guillotina.behaviors.attachment import IAttachment
 from guillotina.api.content import DefaultGET
-from guillotina.response import HTTPFound
+from guillotina.response import HTTPFound, Response
 from guillotina.interfaces import IFileManager, IContainer
 from guillotina.utils import get_current_container, navigate_to, get_object_url, get_content_path
 from abfab.content import IFile, IDirectory, IContent, IAbFabEditable
@@ -100,7 +100,14 @@ async def get_view_or_data(context, request):
                    permission='guillotina.Public', allow_access=True)
 async def run_editor(context, request):
     editor_view = await get_object_by_path('/abfab/editor/editor.svelte')
-    return wrap_component(request, editor_view, './@edit-data', 'text')
+    return Response(
+        content=wrap_component(request, editor_view, './@edit-data', 'text'),
+        status=200,
+        headers={
+            'Cross-Origin-Opener-Policy': 'same-origin',
+            'Cross-Origin-Embedder-Policy': 'require-corp',
+        }
+    )
 
 @configure.service(context=IFile, method='GET', name='@edit-data',
                    permission='guillotina.Public', allow_access=True)
